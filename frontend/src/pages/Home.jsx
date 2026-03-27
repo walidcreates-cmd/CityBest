@@ -1,6 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import './Home.css';
 import SIRAJGANJ_AREAS from '../data/sirajganjAreas.js';
+import { auth } from '../firebase';
+import {
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+} from 'firebase/auth';
 
 const CATEGORIES = [
   { id:'all',        label:'All',        emoji:'🛒' },
@@ -34,11 +39,29 @@ function useToast() {
 function getSavedAddress() {
   try { return JSON.parse(localStorage.getItem('cb_address')); } catch { return null; }
 }
+
 function saveAddress(addr) {
   try { localStorage.setItem('cb_address', JSON.stringify(addr)); } catch {}
 }
 
-// ── Address Picker Modal ───────────────────────────────────────────────────
+function isPhoneVerified() {
+  try {
+    const u = JSON.parse(localStorage.getItem('cb_user'));
+    return !!(u && u.phone);
+  } catch { return false; }
+}
+
+function saveUser(user) {
+  try {
+    localStorage.setItem('cb_user', JSON.stringify({
+      uid: user.uid,
+      phone: user.phoneNumber,
+      email: user.email,
+    }));
+  } catch {}
+}
+
+// ─── Address Picker ───────────────────────────────────────────────────────────
 function AddressPicker({ onSave, initialAddress }) {
   const [query,       setQuery]       = useState(initialAddress?.area || '');
   const [suggestions, setSuggestions] = useState([]);
@@ -62,76 +85,151 @@ function AddressPicker({ onSave, initialAddress }) {
   };
 
   const handleSave = () => {
-    if (!selected && !query.trim()) return;
-    const addr = { area: selected || query.trim(), houseNo: houseNo.trim(), roadNo: roadNo.trim() };
+    const addr = { area: selected || query.trim(), houseNo, roadNo };
     saveAddress(addr);
     onSave(addr);
   };
 
   return (
-    <div className="cb-modal-overlay">
-      <div className="cb-modal">
-        <div className="cb-modal-header">
-          <div className="cb-modal-icon">📍</div>
-          <div>
-            <div className="cb-modal-title">Where do you live?</div>
-            <div className="cb-modal-sub">আপনি কোথায় থাকেন?</div>
-          </div>
+    <div className="cb-modal">
+      <div className="cb-modal-header">
+        <div className="cb-modal-icon">📍</div>
+        <div>
+          <div className="cb-modal-title">Where do you live?</div>
+          <div className="cb-modal-sub">আপনি কোথায় থাকেন?</div>
+        </div>
+      </div>
+
+      <div className="cb-modal-section">
+        <label className="cb-modal-label">Area / Village name</label>
+        <div className="cb-modal-search">
+          <span>🔍</span>
+          <input ref={inputRef} type="text" placeholder='Type area name e.g. "Janpur"'
+            value={query} onChange={e => handleSearch(e.target.value)} className="cb-modal-input" />
+          {query && <button className="cb-modal-clear" onClick={() => { setQuery(''); setSelected(''); setSuggestions([]); setStep(1); }}>✕</button>}
         </div>
 
-        <div className="cb-modal-section">
-          <label className="cb-modal-label">Area / Village name</label>
-          <div className="cb-modal-search">
-            <span>🔍</span>
-            <input ref={inputRef} type="text" placeholder='Type area name e.g. "Janpur"'
-              value={query} onChange={e => handleSearch(e.target.value)} className="cb-modal-input" />
-            {query && <button className="cb-modal-clear" onClick={() => { setQuery(''); setSelected(''); setSuggestions([]); setStep(1); }}>✕</button>}
-          </div>
-
-          {suggestions.length > 0 && (
-            <div className="cb-suggestions">
-              {suggestions.map(area => (
-                <button key={area} className="cb-suggestion-item" onClick={() => handlePick(area)}>
-                  <span className="cb-sug-pin">📍</span>
-                  <div>
-                    <div className="cb-sug-name">{area}</div>
-                    <div className="cb-sug-sub">Sirajganj Sadar</div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
-
-          {query.trim() && suggestions.length === 0 && !selected && (
-            <div className="cb-no-results">
-              <span>🤔</span> Not found — you can still use "<strong>{query}</strong>"
-              <button className="cb-use-custom" onClick={() => handlePick(query)}>Use this →</button>
-            </div>
-          )}
-        </div>
-
-        {step === 2 && selected && (
-          <div className="cb-modal-section">
-            <div className="cb-selected-area">✅ <strong>{selected}</strong>, Sirajganj Sadar</div>
-            <label className="cb-modal-label" style={{marginTop:14}}>House / Apartment number <span className="cb-optional">(optional)</span></label>
-            <input type="text" placeholder='e.g. "House 12", "Flat B-3"' value={houseNo}
-              onChange={e => setHouseNo(e.target.value)} className="cb-modal-input cb-detail-input" />
-            <label className="cb-modal-label" style={{marginTop:10}}>Road / Street <span className="cb-optional">(optional)</span></label>
-            <input type="text" placeholder='e.g. "Road 4", "Main Bazar Road"' value={roadNo}
-              onChange={e => setRoadNo(e.target.value)} className="cb-modal-input cb-detail-input" />
+        {suggestions.length > 0 && (
+          <div className="cb-suggestions">
+            {suggestions.map(area => (
+              <button key={area} className="cb-suggestion-item" onClick={() => handlePick(area)}>
+                <span className="cb-sug-pin">📍</span>
+                <div>
+                  <div className="cb-sug-name">{area}</div>
+                  <div className="cb-sug-sub">Sirajganj Sadar</div>
+                </div>
+              </button>
+            ))}
           </div>
         )}
+      </div>
 
-        <button className="cb-modal-save" onClick={handleSave} disabled={!selected && !query.trim()}>
-          Confirm Location ✅
-        </button>
-        <div className="cb-modal-note">🔒 We only deliver within Sirajganj Sadar area</div>
+      <button className="cb-modal-save" onClick={handleSave} disabled={!selected && !query.trim()}>
+        Confirm Location ✅
+      </button>
+      <div className="cb-modal-note">🔒 We only deliver within Sirajganj Sadar area</div>
+    </div>
+  );
+}
+
+// ─── Phone OTP Modal ──────────────────────────────────────────────────────────
+function PhoneOtpModal({ onSuccess, onSkip }) {
+  const [phone,   setPhone]   = useState('');
+  const [otp,     setOtp]     = useState('');
+  const [step,    setStep]    = useState('phone');
+  const [loading, setLoading] = useState(false);
+  const [error,   setError]   = useState('');
+  const confirmRef            = useRef(null);
+
+  const setupRecaptcha = () => {
+    if (window.recaptchaVerifier) {
+      window.recaptchaVerifier.clear();
+      window.recaptchaVerifier = null;
+    }
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'home-recaptcha', { size: 'normal' });
+    return window.recaptchaVerifier.render();
+  };
+
+  const sendOtp = async () => {
+    setError('');
+    if (!phone || phone.length < 10) { setError('সঠিক মোবাইল নম্বর দিন'); return; }
+    setLoading(true);
+    try {
+      await setupRecaptcha();
+      const fullPhone = phone.startsWith('+') ? phone : `+88${phone}`;
+      const result = await signInWithPhoneNumber(auth, fullPhone, window.recaptchaVerifier);
+      confirmRef.current = result;
+      setStep('otp');
+    } catch (err) {
+      setError('OTP পাঠানো সম্ভব হয়নি। আবার চেষ্টা করুন।');
+      console.error(err);
+      if (window.recaptchaVerifier) { window.recaptchaVerifier.clear(); window.recaptchaVerifier = null; }
+    }
+    setLoading(false);
+  };
+
+  const verifyOtp = async () => {
+    setError('');
+    if (!otp || otp.length !== 6) { setError('৬ সংখ্যার OTP দিন'); return; }
+    setLoading(true);
+    try {
+      const result = await confirmRef.current.confirm(otp);
+      saveUser(result.user);
+      onSuccess();
+    } catch (err) {
+      setError('OTP সঠিক নয়। আবার চেষ্টা করুন।');
+      console.error(err);
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div style={{position:'fixed',inset:0,zIndex:999,background:'rgba(0,0,0,0.6)',display:'flex',alignItems:'center',justifyContent:'center',padding:16}}>
+      <div style={{background:'#fff',borderRadius:20,padding:28,width:'100%',maxWidth:360,boxShadow:'0 4px 24px rgba(0,0,0,0.15)'}}>
+        <div style={{textAlign:'center',marginBottom:20}}>
+          <div style={{fontSize:40}}>📱</div>
+          <h2 style={{fontSize:22,fontWeight:800,color:'#1a9e5c',margin:'8px 0 4px'}}>নম্বর যাচাই করুন</h2>
+          <p style={{color:'#6b7280',fontSize:14}}>ডেলিভারি নিশ্চিত করতে আপনার মোবাইল নম্বর দিন</p>
+        </div>
+
+        {step === 'phone' && (<>
+          <p style={{fontWeight:600,marginBottom:8,color:'#374151'}}>মোবাইল নম্বর</p>
+          <div style={{display:'flex',alignItems:'center',border:'2px solid #1a9e5c',borderRadius:10,overflow:'hidden',marginBottom:14}}>
+            <span style={{padding:'12px 10px',background:'#f0fdf4',color:'#1a9e5c',fontWeight:700}}>+88</span>
+            <input style={{flex:1,padding:'12px 10px',border:'none',outline:'none',fontSize:16}}
+              type="tel" placeholder="01XXXXXXXXX"
+              value={phone} onChange={e => setPhone(e.target.value.replace(/\D/g,''))} maxLength={11} />
+          </div>
+          <div id="home-recaptcha" style={{margin:'10px 0'}} />
+          <button style={{width:'100%',padding:13,background:'#1a9e5c',color:'#fff',border:'none',borderRadius:10,fontSize:15,fontWeight:600,cursor:'pointer',opacity:loading?0.7:1}}
+            onClick={sendOtp} disabled={loading}>
+            {loading ? 'পাঠানো হচ্ছে...' : 'OTP পাঠান'}
+          </button>
+        </>)}
+
+        {step === 'otp' && (<>
+          <p style={{fontWeight:600,marginBottom:8,color:'#374151'}}>OTP দিন</p>
+          <p style={{color:'#1a9e5c',fontWeight:700,marginBottom:14}}>+88{phone}</p>
+          <input style={{width:'100%',padding:'12px',border:'2px solid #1a9e5c',borderRadius:10,fontSize:24,textAlign:'center',letterSpacing:8,outline:'none',boxSizing:'border-box'}}
+            type="number" placeholder="------" value={otp}
+            onChange={e => setOtp(e.target.value)} maxLength={6} />
+          <button style={{width:'100%',marginTop:14,padding:13,background:'#1a9e5c',color:'#fff',border:'none',borderRadius:10,fontSize:15,fontWeight:600,cursor:'pointer',opacity:loading?0.7:1}}
+            onClick={verifyOtp} disabled={loading}>
+            {loading ? 'যাচাই হচ্ছে...' : 'যাচাই করুন ✅'}
+          </button>
+          <button style={{width:'100%',marginTop:8,padding:10,background:'transparent',border:'none',color:'#888',fontSize:14,cursor:'pointer'}}
+            onClick={() => setStep('phone')}>← নম্বর পরিবর্তন করুন</button>
+        </>)}
+
+        {error && <div style={{marginTop:14,color:'#e53935',fontSize:14,textAlign:'center',fontWeight:600}}>{error}</div>}
+        <button style={{width:'100%',marginTop:12,padding:10,background:'transparent',border:'none',color:'#9ca3af',fontSize:13,cursor:'pointer'}}
+          onClick={onSkip}>এখন না, পরে করব</button>
       </div>
     </div>
   );
 }
 
-// ── Qty Control ────────────────────────────────────────────────────────────
+// ─── Qty Control ──────────────────────────────────────────────────────────────
 function QtyControl({ qty, onAdd, onIncrease, onDecrease }) {
   if (qty === 0) return <button className="cb-add-btn" onClick={onAdd}>+</button>;
   return (
@@ -143,38 +241,45 @@ function QtyControl({ qty, onAdd, onIncrease, onDecrease }) {
   );
 }
 
-// ── Product Card ───────────────────────────────────────────────────────────
+// ─── Product Card ─────────────────────────────────────────────────────────────
 function ProductCard({ product, onAdd, onIncrease, onDecrease }) {
   return (
     <div className="cb-product-card">
-      {product.isFast     && <div className="cb-badge-fast">⚡ FAST</div>}
-      {product.stock==='low' && <div className="cb-stock-low">⚠️ Low stock</div>}
-      <div className="cb-product-img">{product.emoji}</div>
-      <div className="cb-product-info">
-        <div className="cb-product-name">{product.name}</div>
-        <div className="cb-product-name-bn">{product.nameBn}</div>
-        <div className="cb-product-unit">{product.unit}</div>
-      </div>
+      {product.isFast && <div className="cb-badge-fast">⚡ FAST</div>}
+      <div className="cb-product-emoji">{product.emoji}</div>
+      <div className="cb-product-name">{product.name}</div>
+      <div className="cb-product-name-bn">{product.nameBn}</div>
+      <div className="cb-product-unit">{product.unit}</div>
       <div className="cb-product-bottom">
-        <div className="cb-product-price"><span className="cb-currency">৳</span>{product.price.toLocaleString()}</div>
-        <QtyControl qty={product.qty} onAdd={onAdd} onIncrease={onIncrease} onDecrease={onDecrease} />
+        <div className="cb-product-price">৳{product.price}</div>
+        <QtyControl qty={product.qty || 0} onAdd={() => onAdd(product)} onIncrease={() => onIncrease(product.id)} onDecrease={() => onDecrease(product.id)} />
       </div>
     </div>
   );
 }
 
-// ── Main Home ──────────────────────────────────────────────────────────────
-export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
+// ─── Main Home ────────────────────────────────────────────────────────────────
+export default function Home({ products, onUpdateQty, onOpenCart, cartCount }) {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery,    setSearchQuery]    = useState('');
   const [address,        setAddress]        = useState(getSavedAddress);
   const [showPicker,     setShowPicker]     = useState(!getSavedAddress());
+  const [showOtp,        setShowOtp]        = useState(false);
   const { toast, show: showToast } = useToast();
 
   const handleAddressSave = (addr) => {
     setAddress(addr);
     setShowPicker(false);
-    showToast(`📍 Delivering to ${addr.area}!`);
+    if (!isPhoneVerified()) {
+      setShowOtp(true);
+    } else {
+      showToast(`🚴 Delivering to ${addr.area}!`);
+    }
+  };
+
+  const handleOtpSuccess = () => {
+    setShowOtp(false);
+    showToast(`🚴 Delivering to ${address?.area}! নম্বর যাচাই সম্পন্ন ✅`);
   };
 
   const handleAdd = (product) => {
@@ -184,7 +289,7 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
 
   const handleDecrease = (product) => {
     onUpdateQty(product.id, -1);
-    if (product.qty === 1) showToast(`❌ ${product.name} removed`);
+    if (product.qty === 1) showToast(`🗑 ${product.name} removed`);
   };
 
   const filteredProducts = products.filter(p => {
@@ -195,60 +300,56 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
   });
 
   const [sectionTitle, sectionSubtitle] = SECTION_TITLES[activeCategory] || SECTION_TITLES.all;
-  const navArea    = address?.area    || 'Set location';
-  const navSubArea = address?.houseNo ? `${address.houseNo}${address.roadNo ? ', '+address.roadNo : ''}` : 'Tap to set ▾';
+  const navArea    = address?.area || 'Set location';
+  const navSubArea = address?.houseNo ? `${address.houseNo}${address.roadNo ? ', '+address.roadNo : ''}` : 'Tap to set →';
 
   return (
-    <div className="cb-root">
-      {showPicker && <AddressPicker onSave={handleAddressSave} initialAddress={address} />}
-
+    <div className="cb-wrap">
       {/* NAV */}
       <nav className="cb-nav">
         <div className="cb-nav-logo">
-          <div className="cb-logo-icon">🏙️</div>
+          <span className="cb-logo-icon">🛒</span>
           <div>
-            <div className="cb-logo-text">CityBest</div>
-            <div className="cb-logo-tag">Sirajganj Delivery</div>
+            <div className="cb-logo-name">CityBest</div>
+            <div className="cb-logo-sub">SIRAJGANJ DELIVERY</div>
           </div>
         </div>
         <button className="cb-nav-location" onClick={() => setShowPicker(true)}>
-          <span>📍</span>
+          <span className="cb-nav-dot">●</span>
           <div>
-            <div className="cb-loc-city">{navArea}</div>
-            <div className="cb-loc-sub">{navSubArea}</div>
+            <div className="cb-nav-area">{navArea}</div>
+            <div className="cb-nav-sub">{navSubArea}</div>
           </div>
         </button>
-        <button className="cb-cart-btn" onClick={onOpenCart} aria-label="Open cart">
-          🛒 <span className="cb-cart-count">{cartTotal}</span>
+        <button className="cb-cart-btn" onClick={onOpenCart}>
+          🛒 <span className="cb-cart-count">{cartCount}</span>
         </button>
       </nav>
 
       {/* SEARCH */}
       <div className="cb-search-wrap">
-        <div className="cb-search-bar">
-          <span className="cb-search-icon">🔍</span>
-          <input type="text" placeholder='Search "চাল", "gas cylinder"...'
-            value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
-          {searchQuery && <button className="cb-search-clear" onClick={() => setSearchQuery('')}>✕</button>}
-        </div>
+        <span className="cb-search-icon">🔍</span>
+        <input className="cb-search-input" type="text"
+          placeholder='Search "চাল", "gas cylinder"...'
+          value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
       </div>
 
       {/* HERO */}
       <div className="cb-hero">
         <div className="cb-hero-text">
-          <h1>Sirajganj's best<br />grocery. Delivered. 🚀</h1>
-          <p className="cb-hero-tagline">Fast delivery across Sirajganj</p>
-          <p className="cb-hero-tagline-bn">সিরাজগঞ্জে দ্রুত ডেলিভারি</p>
-          <button className="cb-hero-cta" onClick={onOpenCart}>Shop Now</button>
+          <h2 className="cb-hero-title">Sirajganj's best grocery. Delivered. 🚀</h2>
+          <p className="cb-hero-sub">Fast delivery across Sirajganj</p>
+          <p className="cb-hero-sub-bn">সিরাজগঞ্জে দ্রুত ডেলিভারি</p>
+          <button className="cb-hero-btn" onClick={onOpenCart}>Shop Now</button>
         </div>
-        <div className="cb-hero-emoji">🛵</div>
+        <div className="cb-hero-img">🛵</div>
       </div>
 
       {/* BADGES */}
-      <div className="cb-badge-row">
-        <span className="cb-pill cb-pill-green">⚡ Fast Delivery</span>
-        <span className="cb-pill cb-pill-orange">🔥 Best Prices</span>
-        <span className="cb-pill cb-pill-blue">✅ Quality Assured</span>
+      <div className="cb-badges">
+        <span className="cb-badge">⚡ Fast Delivery</span>
+        <span className="cb-badge">🔥 Best Prices</span>
+        <span className="cb-badge">✅ Quality Assured</span>
       </div>
 
       {/* CATEGORIES */}
@@ -257,25 +358,26 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
           <div className="cb-section-title">Categories</div>
           <div className="cb-section-sub">আপনি কী খুঁজছেন?</div>
         </div>
-        <button className="cb-see-all" onClick={() => showToast('All categories coming soon!')}>See all</button>
+        <button className="cb-see-all">See all</button>
       </div>
-      <div className="cb-cats-scroll">
+      <div className="cb-categories">
         {CATEGORIES.map(cat => (
-          <button key={cat.id} className={`cb-cat-pill ${activeCategory===cat.id ? 'active' : ''}`}
-            onClick={() => { setActiveCategory(cat.id); setSearchQuery(''); }}>
-            <div className="cb-cat-icon-wrap">{cat.emoji}</div>
+          <button key={cat.id}
+            className={`cb-cat-btn ${activeCategory === cat.id ? 'active' : ''}`}
+            onClick={() => setActiveCategory(cat.id)}>
+            <span className="cb-cat-emoji">{cat.emoji}</span>
             <span className="cb-cat-label">{cat.label}</span>
           </button>
         ))}
       </div>
 
       {/* PROMO */}
-      <div className="cb-promo-strip">
+      <div className="cb-promo">
         <div>
-          <p>First order 20% OFF! 🎉</p>
-          <span className="cb-promo-bn">প্রথম অর্ডারে ২০% ছাড়</span>
+          <div className="cb-promo-title">First order 20% OFF! 🎉</div>
+          <div className="cb-promo-sub">প্রথম অর্ডারে ২০% ছাড়</div>
         </div>
-        <button className="cb-promo-code" onClick={() => showToast('✂️ Code CITY20 copied!')}>CITY20</button>
+        <div className="cb-promo-code">CITY20</div>
       </div>
 
       {/* PRODUCTS */}
@@ -284,18 +386,17 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
           <div className="cb-section-title">{sectionTitle}</div>
           <div className="cb-section-sub">{sectionSubtitle}</div>
         </div>
-        <button className="cb-see-all" onClick={() => showToast('More products coming!')}>See all</button>
+        <button className="cb-see-all">See all</button>
       </div>
-      <div className="cb-products-grid">
+      <div className="cb-products">
         {filteredProducts.length === 0
-          ? <div className="cb-empty">😔 No products found</div>
-          : filteredProducts.map(product => (
-              <ProductCard key={product.id} product={product}
-                onAdd={() => handleAdd(product)}
-                onIncrease={() => onUpdateQty(product.id, 1)}
-                onDecrease={() => handleDecrease(product)}
-              />
-            ))
+          ? <div className="cb-empty-cat">No products found</div>
+          : filteredProducts.map(p => (
+            <ProductCard key={p.id} product={p}
+              onAdd={handleAdd}
+              onIncrease={(id) => onUpdateQty(id, 1)}
+              onDecrease={(id) => { const pr = products.find(x => x.id === id); if (pr) handleDecrease(pr); }} />
+          ))
         }
       </div>
 
@@ -312,7 +413,7 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
           <span className="cb-nav-label">Search</span>
         </button>
         <button className="cb-nav-item" onClick={onOpenCart}>
-          <span className="cb-nav-icon">📦</span>
+          <span className="cb-nav-icon">🛒</span>
           <span className="cb-nav-label">Orders</span>
         </button>
         <button className="cb-nav-item" onClick={() => showToast('👤 Profile coming soon!')}>
@@ -322,6 +423,21 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
       </nav>
 
       <div className={`cb-toast ${toast.visible ? 'show' : ''}`} role="status">{toast.msg}</div>
+
+      {/* ADDRESS PICKER MODAL */}
+      {showPicker && (
+        <div className="cb-overlay">
+          <AddressPicker onSave={handleAddressSave} initialAddress={address} />
+        </div>
+      )}
+
+      {/* PHONE OTP MODAL */}
+      {showOtp && (
+        <PhoneOtpModal
+          onSuccess={handleOtpSuccess}
+          onSkip={() => { setShowOtp(false); showToast(`🚴 Delivering to ${address?.area}!`); }}
+        />
+      )}
     </div>
   );
 }
