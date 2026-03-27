@@ -1,17 +1,15 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { auth } from '../firebase';
 import {
   RecaptchaVerifier,
   signInWithPhoneNumber,
   GoogleAuthProvider,
-  signInWithPopup,
 } from 'firebase/auth';
 import { useAuth } from '../context/AuthContext';
 import './Cart.css';
 
 const MERCHANT_ID = '900701000667617966';
 const DELIVERY_FEE = 30;
-const googleProvider = new GoogleAuthProvider();
 
 const MOBILE_APPS = [
   { id:'bkash',  name:'bKash',         color:'#E2136E', emoji:'💚', bg:'#fce4f0' },
@@ -53,7 +51,7 @@ function saveUser(user) {
   } catch {}
 }
 
-// ─── Cart Item ───────────────────────────────────────────────────────────────
+// ─── Cart Item ────────────────────────────────────────────────────────────────
 function CartItem({ item, onIncrease, onDecrease }) {
   return (
     <div className="ct-item">
@@ -77,31 +75,25 @@ function CartItem({ item, onIncrease, onDecrease }) {
 
 // ─── Phone Login Step ─────────────────────────────────────────────────────────
 function PhoneLoginStep({ onSuccess, onBack }) {
-  const [phone,    setPhone]   = useState('');
-  const [otp,      setOtp]     = useState('');
-  const [step,     setStep]    = useState('phone');
-  const [loading,  setLoading] = useState(false);
-  const [error,    setError]   = useState('');
-  const confirmRef             = useRef(null);
-  const { toast, show: showToast } = useToast();
+  const [phone,   setPhone]   = useState('');
+  const [otp,     setOtp]     = useState('');
+  const [step,    setStep]    = useState('phone');
+  const [loading, setLoading] = useState(false);
+  const [error,   setError]   = useState('');
+  const confirmRef            = useRef(null);
 
   const setupRecaptcha = () => {
     if (window.recaptchaVerifier) {
       window.recaptchaVerifier.clear();
       window.recaptchaVerifier = null;
     }
-    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'ct-recaptcha', {
-      size: 'normal',
-    });
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'ct-recaptcha', { size: 'normal' });
     return window.recaptchaVerifier.render();
   };
 
   const sendOtp = async () => {
     setError('');
-    if (!phone || phone.length < 10) {
-      setError('সঠিক মোবাইল নম্বর দিন');
-      return;
-    }
+    if (!phone || phone.length < 10) { setError('সঠিক মোবাইল নম্বর দিন'); return; }
     setLoading(true);
     try {
       await setupRecaptcha();
@@ -112,20 +104,14 @@ function PhoneLoginStep({ onSuccess, onBack }) {
     } catch (err) {
       setError('OTP পাঠানো সম্ভব হয়নি। আবার চেষ্টা করুন।');
       console.error(err);
-      if (window.recaptchaVerifier) {
-        window.recaptchaVerifier.clear();
-        window.recaptchaVerifier = null;
-      }
+      if (window.recaptchaVerifier) { window.recaptchaVerifier.clear(); window.recaptchaVerifier = null; }
     }
     setLoading(false);
   };
 
   const verifyOtp = async () => {
     setError('');
-    if (!otp || otp.length !== 6) {
-      setError('৬ সংখ্যার OTP দিন');
-      return;
-    }
+    if (!otp || otp.length !== 6) { setError('৬ সংখ্যার OTP দিন'); return; }
     setLoading(true);
     try {
       const result = await confirmRef.current.confirm(otp);
@@ -146,11 +132,9 @@ function PhoneLoginStep({ onSuccess, onBack }) {
           <h1 style={styles.logoText}>CityBest</h1>
           <p style={styles.tagline}>অর্ডার করতে মোবাইল নম্বর যাচাই করুন</p>
         </div>
-
         <div style={styles.loginNote}>
           আপনার নম্বর শুধুমাত্র অর্ডার নিশ্চিত করতে ব্যবহার করা হবে
         </div>
-
         {step === 'phone' && (<>
           <p style={styles.label}>মোবাইল নম্বর দিন</p>
           <div style={styles.inputRow}>
@@ -159,25 +143,21 @@ function PhoneLoginStep({ onSuccess, onBack }) {
               value={phone} onChange={e => setPhone(e.target.value.replace(/\D/g,''))} maxLength={11} />
           </div>
           <div id="ct-recaptcha" style={{margin:'10px 0'}} />
-          <button style={{...styles.btn, opacity: loading ? 0.7 : 1}}
-            onClick={sendOtp} disabled={loading}>
+          <button style={{...styles.btn, opacity: loading ? 0.7 : 1}} onClick={sendOtp} disabled={loading}>
             {loading ? 'পাঠানো হচ্ছে...' : 'OTP পাঠান'}
           </button>
         </>)}
-
         {step === 'otp' && (<>
           <p style={styles.label}>আপনার ফোনে আসা OTP দিন</p>
           <p style={{color:'#1a9e5c', fontWeight:700, marginBottom:14}}>+88{phone}</p>
           <input style={{...styles.input, width:'100%', textAlign:'center', fontSize:24, letterSpacing:8}}
             type="number" placeholder="------" value={otp}
             onChange={e => setOtp(e.target.value)} maxLength={6} />
-          <button style={{...styles.btn, opacity: loading ? 0.7 : 1}}
-            onClick={verifyOtp} disabled={loading}>
+          <button style={{...styles.btn, opacity: loading ? 0.7 : 1}} onClick={verifyOtp} disabled={loading}>
             {loading ? 'যাচাই হচ্ছে...' : 'যাচাই করুন'}
           </button>
           <button style={styles.backBtn} onClick={() => setStep('phone')}>← নম্বর পরিবর্তন করুন</button>
         </>)}
-
         {error && <div style={styles.error}>{error}</div>}
         <button style={styles.backBtn} onClick={onBack}>← কার্টে ফিরুন</button>
       </div>
@@ -190,7 +170,6 @@ function PaymentStep({ total, onSuccess, onBack }) {
   const [selected, setSelected] = useState(null);
   const [loading,  setLoading]  = useState(false);
   const { toast, show: showToast } = useToast();
-  const address = getSavedAddress();
 
   const handlePay = async () => {
     if (!selected) { showToast('পেমেন্ট পদ্ধতি বেছে নিন'); return; }
@@ -209,41 +188,45 @@ function PaymentStep({ total, onSuccess, onBack }) {
   };
 
   return (
-    <div className="ct-payment">
-      <div className="ct-payment-header">
+    <div className="ct-payment-wrap">
+      <div className="ct-pay-header">
         <button className="ct-back-btn" onClick={onBack}>← Back</button>
-        <span className="ct-payment-title">Choose Payment</span>
+        <span className="ct-pay-title">Choose Payment</span>
       </div>
-      <div className="ct-total-box">
-        <div className="ct-total-label">Total to pay</div>
-        <div className="ct-total-amount">৳{total.toLocaleString()}</div>
+
+      <div className="ct-pay-amount-box">
+        <div className="ct-pay-amount-label">Total to pay</div>
+        <div className="ct-pay-amount-val">৳{total.toLocaleString()}</div>
       </div>
-      <div className="ct-payment-section">
-        <div className="ct-section-title">💚 Mobile Banking</div>
-        <p className="ct-section-sub">bKash, Nagad, Rocket & more — all use same Merchant ID</p>
-        <div className="ct-apps-grid">
-          {MOBILE_APPS.map(app => (
-            <button key={app.id}
-              className={`ct-app-btn ${selected === app.id ? 'ct-app-selected' : ''}`}
-              style={{ background: selected === app.id ? app.bg : '#fff', borderColor: selected === app.id ? app.color : '#e5e7eb' }}
-              onClick={() => setSelected(app.id)}>
-              <span style={{ color: app.color, fontWeight: 700 }}>{app.name}</span>
-            </button>
-          ))}
+
+      <div className="ct-app-grid">
+        {MOBILE_APPS.map(app => (
+          <button key={app.id}
+            className={`ct-app-btn ${selected === app.id ? 'ct-app-selected' : ''}`}
+            style={{ background: selected === app.id ? app.bg : '#fff', borderColor: selected === app.id ? app.color : '#e5e7eb' }}
+            onClick={() => setSelected(app.id)}>
+            <span className="ct-app-emoji">{app.emoji}</span>
+            <span className="ct-app-name" style={{ color: app.color }}>{app.name}</span>
+          </button>
+        ))}
+      </div>
+
+      <button
+        className={`ct-cod-btn ${selected === 'cod' ? 'ct-app-selected' : ''}`}
+        onClick={() => setSelected('cod')}
+        style={{ background: selected === 'cod' ? '#f0fdf4' : '#fff' }}>
+        <span style={{fontSize:28}}>💵</span>
+        <div>
+          <div className="ct-cod-title">Cash on Delivery</div>
+          <div className="ct-cod-sub">Pay when rider arrives at your door</div>
         </div>
-      </div>
-      <div className="ct-payment-section">
-        <button
-          className={`ct-cod-btn ${selected === 'cod' ? 'ct-cod-selected' : ''}`}
-          onClick={() => setSelected('cod')}>
-          <span className="ct-cod-icon">💵</span>
-          <div><div className="ct-cod-title">Cash on Delivery</div>
-          <div className="ct-cod-sub">Pay when rider arrives at your door</div></div>
-          <span className="ct-cod-arrow">→</span>
-        </button>
-      </div>
-      {toast.visible && <div className="ct-toast">{toast.msg}</div>}
-      <button className="ct-pay-btn" onClick={handlePay} disabled={loading}>
+        <span>→</span>
+      </button>
+
+      {toast.visible && <div className="ct-toast show">{toast.msg}</div>}
+
+      <button className="ct-paid-btn" onClick={handlePay} disabled={loading}
+        style={{margin:'16px', width:'calc(100% - 32px)', padding:'16px', background: loading ? '#9ca3af' : '#1a9e5c', color:'#fff', border:'none', borderRadius:14, fontSize:16, fontWeight:800, cursor:'pointer'}}>
         {loading ? 'Processing...' : `Pay ৳${total.toLocaleString()}`}
       </button>
     </div>
@@ -272,7 +255,7 @@ function OrderSuccess({ order, onContinue }) {
 
 // ─── Main Cart ────────────────────────────────────────────────────────────────
 export default function Cart({ cartItems, onIncrease, onDecrease, onClose }) {
-  const [view, setView]   = useState('cart');
+  const [view,  setView]  = useState('cart');
   const [order, setOrder] = useState(null);
   const { toast, show: showToast } = useToast();
   const address = getSavedAddress();
@@ -338,7 +321,6 @@ export default function Cart({ cartItems, onIncrease, onDecrease, onClose }) {
         </div>
       </>)}
 
-      {/* Login step — only shown if not phone verified */}
       {view === 'login' && (
         <PhoneLoginStep
           onSuccess={() => setView('payment')}
