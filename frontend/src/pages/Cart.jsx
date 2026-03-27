@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import './Cart.css';
 
 const DELIVERY_FEE = 60;
 
