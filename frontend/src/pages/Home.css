@@ -482,3 +482,6 @@
   width: 100%;
   box-sizing: border-box;
 }
+/* -- Final nav fix -- */
+.cb-root { overflow: visible; }
+.cb-nav { position: sticky; top: 0; width: 100%; max-width: 480px; left: auto; right: auto; transform: none; margin: 0; }
