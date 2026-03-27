@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PaymentStep from './PaymentStep';
 import OrderSuccess from './OrderSuccess';
 
@@ -14,9 +14,9 @@ function CartItem({ item, onIncrease, onDecrease }) {
         <div className="ct-item-unit">{item.unit}</div>
       </div>
       <div className="ct-item-right">
-        <div className="ct-item-price">৳{(item.price * item.qty).toLocaleString()}</div>
+        <div className="ct-item-price">{String.fromCharCode(2547)}{(item.price * item.qty).toLocaleString()}</div>
         <div className="ct-qty-ctrl">
-          <button className="ct-qty-btn" onClick={() => onDecrease(item.id)}>−</button>
+          <button className="ct-qty-btn" onClick={() => onDecrease(item.id)}>{String.fromCharCode(8722)}</button>
           <span className="ct-qty-num">{item.qty}</span>
           <button className="ct-qty-btn" onClick={() => onIncrease(item.id)}>+</button>
         </div>
@@ -31,12 +31,17 @@ function PhoneLoginStep({ onSuccess, onBack }) {
   const [step, setStep] = useState('phone');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [t, setT] = useState({});
+
+  useEffect(() => {
+    fetch('/strings.json').then(r => r.json()).then(setT);
+  }, []);
 
   const API = 'https://citybest-1.onrender.com';
 
   const sendOtp = async () => {
     setError('');
-    if (!phone || phone.length < 10) { setError('সঠিক ফোন নম্বর দিন'); return; }
+    if (!phone || phone.length < 10) { setError(t.errPhone || ''); return; }
     setLoading(true);
     try {
       const res = await fetch(`${API}/api/otp/send`, {
@@ -46,14 +51,14 @@ function PhoneLoginStep({ onSuccess, onBack }) {
       });
       const data = await res.json();
       if (data.success) { setStep('otp'); }
-      else { setError(data.message || 'OTP পাঠানো যায়নি'); }
-    } catch { setError('সার্ভার সমস্যা, আবার চেষ্টা করুন'); }
+      else { setError(data.message || t.errSend || ''); }
+    } catch { setError(t.errServer || ''); }
     setLoading(false);
   };
 
   const verifyOtp = async () => {
     setError('');
-    if (!otp || otp.length < 4) { setError('OTP কোড দিন'); return; }
+    if (!otp || otp.length < 4) { setError(t.errOtp || ''); return; }
     setLoading(true);
     try {
       const res = await fetch(`${API}/api/otp/verify`, {
@@ -63,8 +68,8 @@ function PhoneLoginStep({ onSuccess, onBack }) {
       });
       const data = await res.json();
       if (data.success) { onSuccess({ phone }); }
-      else { setError(data.message || 'OTP সঠিক নয়'); }
-    } catch { setError('সার্ভার সমস্যা, আবার চেষ্টা করুন'); }
+      else { setError(data.message || t.errVerify || ''); }
+    } catch { setError(t.errServer || ''); }
     setLoading(false);
   };
 
@@ -74,31 +79,24 @@ function PhoneLoginStep({ onSuccess, onBack }) {
         <div style={styles.logoWrap}>
           <div style={styles.logoIcon}>🛒</div>
           <div style={styles.logoText}>CityBest</div>
-          {step === 'phone' ? (
-            <div style={styles.tagline}>আপনার ফোন নম্বর দিয়ে লগইন করুন</div>
-          ) : (
-            <div style={styles.tagline}>OTP কোড দিন</div>
-          )}
+          <div style={styles.tagline}>{step === 'phone' ? t.tagline : t.otpTagline}</div>
         </div>
 
         {step === 'phone' && (
           <div style={styles.loginNote}>
-            আপনার মোবাইলে একটি OTP কোড পাঠানো হবে।<br />
-            কোডটি দিয়ে আপনার অর্ডার নিশ্চিত করুন।<br />
-            ডেলিভারি পেতে সঠিক নম্বর দিন।
+            {t.note1}<br />{t.note2}<br />{t.note3}
           </div>
         )}
 
         {step === 'otp' && (
           <div style={styles.loginNote}>
-            আপনার {phone} নম্বরে OTP পাঠানো হয়েছে।<br />
-            কোডটি নিচে লিখুন।
+            {phone} {t.otpSentNote}<br />{t.otpWriteNote}
           </div>
         )}
 
         {step === 'phone' && (
           <>
-            <div style={styles.label}>আপনার মোবাইল নম্বর</div>
+            <div style={styles.label}>{t.label}</div>
             <div style={styles.inputRow}>
               <span style={styles.prefix}>+88</span>
               <input
@@ -111,40 +109,45 @@ function PhoneLoginStep({ onSuccess, onBack }) {
               />
             </div>
             <button style={styles.btn} onClick={sendOtp} disabled={loading}>
-              {loading ? 'পাঠানো হচ্ছে...' : 'OTP পাঠান'}
+              {loading ? t.sending : t.sendBtn}
             </button>
           </>
         )}
 
         {step === 'otp' && (
           <>
-            <div style={styles.label}>OTP কোড</div>
+            <div style={styles.label}>{t.otpLabel}</div>
             <div style={styles.inputRow}>
               <input
                 style={{...styles.input, paddingLeft:14}}
                 type="tel"
-                placeholder="৬ সংখ্যার কোড"
+                placeholder={t.otpPlaceholder}
                 value={otp}
                 onChange={e => setOtp(e.target.value.replace(/\D/g, ''))}
                 maxLength={6}
               />
             </div>
             <button style={styles.btn} onClick={verifyOtp} disabled={loading}>
-              {loading ? 'যাচাই হচ্ছে...' : 'কোড যাচাই করুন'}
+              {loading ? t.verifying : t.verifyBtn}
             </button>
           </>
         )}
 
         {error && <div style={styles.error}>{error}</div>}
-        <button style={styles.backBtn} onClick={onBack}>← পেছনে যান</button>
+        <button style={styles.backBtn} onClick={onBack}>{t.backBtn}</button>
       </div>
     </div>
   );
 }
 
-export default function Cart({ cartItems, onClose, onIncrease, onDecrease, isLoggedIn, onLoginSuccess }) {
+export default function Cart({ cartItems, onClose, onIncrease, onDecrease, isLoggedIn }) {
   const [view, setView] = useState('cart');
   const [order, setOrder] = useState(null);
+  const [t, setT] = useState({});
+
+  useEffect(() => {
+    fetch('/strings.json').then(r => r.json()).then(setT);
+  }, []);
 
   const subtotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
   const total = subtotal + DELIVERY_FEE;
@@ -157,8 +160,8 @@ export default function Cart({ cartItems, onClose, onIncrease, onDecrease, isLog
   if (cartItems.length === 0 && view === 'cart') return (
     <div className="ct-empty">
       <div className="ct-empty-icon">🛒</div>
-      <p>আপনার কার্ট খালি আছে</p>
-      <button className="ct-continue-btn" onClick={onClose}>কেনাকাটা চালিয়ে যান</button>
+      <p>{t.emptyCart}</p>
+      <button className="ct-continue-btn" onClick={onClose}>{t.continueShopping}</button>
     </div>
   );
 
@@ -166,8 +169,8 @@ export default function Cart({ cartItems, onClose, onIncrease, onDecrease, isLog
     <div className="ct-wrap">
       {view === 'cart' && (<>
         <div className="ct-header">
-          <span className="ct-title">আপনার কার্ট</span>
-          <button className="ct-close-btn" onClick={onClose}>✕</button>
+          <span className="ct-title">{t.cartTitle}</span>
+          <button className="ct-close-btn" onClick={onClose}>{String.fromCharCode(10005)}</button>
         </div>
         <div className="ct-items">
           {cartItems.map(item => (
@@ -175,14 +178,14 @@ export default function Cart({ cartItems, onClose, onIncrease, onDecrease, isLog
           ))}
         </div>
         <div className="ct-summary">
-          <div className="ct-summary-row"><span>Subtotal</span><span>৳{subtotal.toLocaleString()}</span></div>
-          <div className="ct-summary-row"><span>Delivery</span><span>৳{DELIVERY_FEE}</span></div>
-          <div className="ct-summary-row ct-summary-total"><span>Total</span><span>৳{total.toLocaleString()}</span></div>
+          <div className="ct-summary-row"><span>Subtotal</span><span>{String.fromCharCode(2547)}{subtotal.toLocaleString()}</span></div>
+          <div className="ct-summary-row"><span>Delivery</span><span>{String.fromCharCode(2547)}{DELIVERY_FEE}</span></div>
+          <div className="ct-summary-row ct-summary-total"><span>Total</span><span>{String.fromCharCode(2547)}{total.toLocaleString()}</span></div>
         </div>
         <div className="ct-checkout-wrap">
           <button className="ct-checkout-btn" onClick={() => setView(isLoggedIn() ? 'payment' : 'login')}>
             <span>Proceed to Payment</span>
-            <span>৳{total.toLocaleString()} →</span>
+            <span>{String.fromCharCode(2547)}{total.toLocaleString()} {String.fromCharCode(8594)}</span>
           </button>
         </div>
       </>)}
