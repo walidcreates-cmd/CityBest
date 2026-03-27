@@ -2,12 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import './Home.css';
 import SIRAJGANJ_AREAS from '../data/sirajganjAreas.js';
 
-// ── Products ───────────────────────────────────────────────────────────────
-const SAMPLE_PRODUCTS = [
-  { id:1, emoji:'🔵', name:'Gas Cylinder', nameBn:'সিলিন্ডার গ্যাস', price:1250, unit:'12 kg cylinder', category:'gas',  isFast:true,  stock:'low' },
-  { id:2, emoji:'🍚', name:'Miniket Rice',  nameBn:'মিনিকেট চাল',    price:75,   unit:'per kg',         category:'rice', isFast:true,  stock:'ok'  },
-];
-
 const CATEGORIES = [
   { id:'all',        label:'All',        emoji:'🛒' },
   { id:'gas',        label:'Gas',        emoji:'🔵' },
@@ -26,7 +20,6 @@ const SECTION_TITLES = {
   dairy:      ['Dairy Products',     'দুগ্ধজাত পণ্য'],
 };
 
-// ── Toast ──────────────────────────────────────────────────────────────────
 function useToast() {
   const [toast, setToast] = useState({ msg:'', visible:false });
   const timer = useRef();
@@ -38,12 +31,8 @@ function useToast() {
   return { toast, show };
 }
 
-// ── Address stored in localStorage so customer never re-enters ─────────────
 function getSavedAddress() {
-  try {
-    const raw = localStorage.getItem('cb_address');
-    return raw ? JSON.parse(raw) : null;
-  } catch { return null; }
+  try { return JSON.parse(localStorage.getItem('cb_address')); } catch { return null; }
 }
 function saveAddress(addr) {
   try { localStorage.setItem('cb_address', JSON.stringify(addr)); } catch {}
@@ -56,38 +45,25 @@ function AddressPicker({ onSave, initialAddress }) {
   const [selected,    setSelected]    = useState(initialAddress?.area || '');
   const [houseNo,     setHouseNo]     = useState(initialAddress?.houseNo || '');
   const [roadNo,      setRoadNo]      = useState(initialAddress?.roadNo  || '');
-  const [step,        setStep]        = useState(initialAddress ? 2 : 1); // 1=search 2=details
+  const [step,        setStep]        = useState(initialAddress ? 2 : 1);
   const inputRef = useRef();
 
-  useEffect(() => {
-    if (inputRef.current) inputRef.current.focus();
-  }, []);
+  useEffect(() => { if (inputRef.current) inputRef.current.focus(); }, []);
 
-  // Live filter as customer types
   const handleSearch = (val) => {
-    setQuery(val);
-    setSelected('');
+    setQuery(val); setSelected('');
     if (!val.trim()) { setSuggestions([]); return; }
     const q = val.toLowerCase();
-    const matches = SIRAJGANJ_AREAS.filter(a => a.toLowerCase().includes(q)).slice(0, 6);
-    setSuggestions(matches);
+    setSuggestions(SIRAJGANJ_AREAS.filter(a => a.toLowerCase().includes(q)).slice(0, 6));
   };
 
   const handlePick = (area) => {
-    setSelected(area);
-    setQuery(area);
-    setSuggestions([]);
-    setStep(2);
+    setSelected(area); setQuery(area); setSuggestions([]); setStep(2);
   };
 
   const handleSave = () => {
     if (!selected && !query.trim()) return;
-    const addr = {
-      area:    selected || query.trim(),
-      houseNo: houseNo.trim(),
-      roadNo:  roadNo.trim(),
-      display: selected || query.trim(),
-    };
+    const addr = { area: selected || query.trim(), houseNo: houseNo.trim(), roadNo: roadNo.trim() };
     saveAddress(addr);
     onSave(addr);
   };
@@ -95,8 +71,6 @@ function AddressPicker({ onSave, initialAddress }) {
   return (
     <div className="cb-modal-overlay">
       <div className="cb-modal">
-
-        {/* Header */}
         <div className="cb-modal-header">
           <div className="cb-modal-icon">📍</div>
           <div>
@@ -105,33 +79,19 @@ function AddressPicker({ onSave, initialAddress }) {
           </div>
         </div>
 
-        {/* Step 1 — Area search */}
         <div className="cb-modal-section">
           <label className="cb-modal-label">Area / Village name</label>
           <div className="cb-modal-search">
             <span>🔍</span>
-            <input
-              ref={inputRef}
-              type="text"
-              placeholder='Type area name e.g. "Janpur"'
-              value={query}
-              onChange={e => handleSearch(e.target.value)}
-              className="cb-modal-input"
-            />
-            {query && (
-              <button className="cb-modal-clear" onClick={() => { setQuery(''); setSelected(''); setSuggestions([]); setStep(1); }}>✕</button>
-            )}
+            <input ref={inputRef} type="text" placeholder='Type area name e.g. "Janpur"'
+              value={query} onChange={e => handleSearch(e.target.value)} className="cb-modal-input" />
+            {query && <button className="cb-modal-clear" onClick={() => { setQuery(''); setSelected(''); setSuggestions([]); setStep(1); }}>✕</button>}
           </div>
 
-          {/* Suggestion dropdown */}
           {suggestions.length > 0 && (
             <div className="cb-suggestions">
               {suggestions.map(area => (
-                <button
-                  key={area}
-                  className="cb-suggestion-item"
-                  onClick={() => handlePick(area)}
-                >
+                <button key={area} className="cb-suggestion-item" onClick={() => handlePick(area)}>
                   <span className="cb-sug-pin">📍</span>
                   <div>
                     <div className="cb-sug-name">{area}</div>
@@ -142,61 +102,30 @@ function AddressPicker({ onSave, initialAddress }) {
             </div>
           )}
 
-          {/* No results hint */}
           {query.trim() && suggestions.length === 0 && !selected && (
             <div className="cb-no-results">
               <span>🤔</span> Not found — you can still use "<strong>{query}</strong>"
-              <button className="cb-use-custom" onClick={() => handlePick(query)}>
-                Use this →
-              </button>
+              <button className="cb-use-custom" onClick={() => handlePick(query)}>Use this →</button>
             </div>
           )}
         </div>
 
-        {/* Step 2 — House / Road details (shows after area picked) */}
         {step === 2 && selected && (
           <div className="cb-modal-section">
-            <div className="cb-selected-area">
-              ✅ <strong>{selected}</strong>, Sirajganj Sadar
-            </div>
-
-            <label className="cb-modal-label" style={{ marginTop: 14 }}>
-              House / Apartment number <span className="cb-optional">(optional)</span>
-            </label>
-            <input
-              type="text"
-              placeholder='e.g. "House 12", "Flat B-3"'
-              value={houseNo}
-              onChange={e => setHouseNo(e.target.value)}
-              className="cb-modal-input cb-detail-input"
-            />
-
-            <label className="cb-modal-label" style={{ marginTop: 10 }}>
-              Road / Street <span className="cb-optional">(optional)</span>
-            </label>
-            <input
-              type="text"
-              placeholder='e.g. "Road 4", "Main Bazar Road"'
-              value={roadNo}
-              onChange={e => setRoadNo(e.target.value)}
-              className="cb-modal-input cb-detail-input"
-            />
+            <div className="cb-selected-area">✅ <strong>{selected}</strong>, Sirajganj Sadar</div>
+            <label className="cb-modal-label" style={{marginTop:14}}>House / Apartment number <span className="cb-optional">(optional)</span></label>
+            <input type="text" placeholder='e.g. "House 12", "Flat B-3"' value={houseNo}
+              onChange={e => setHouseNo(e.target.value)} className="cb-modal-input cb-detail-input" />
+            <label className="cb-modal-label" style={{marginTop:10}}>Road / Street <span className="cb-optional">(optional)</span></label>
+            <input type="text" placeholder='e.g. "Road 4", "Main Bazar Road"' value={roadNo}
+              onChange={e => setRoadNo(e.target.value)} className="cb-modal-input cb-detail-input" />
           </div>
         )}
 
-        {/* Save button */}
-        <button
-          className="cb-modal-save"
-          onClick={handleSave}
-          disabled={!selected && !query.trim()}
-        >
+        <button className="cb-modal-save" onClick={handleSave} disabled={!selected && !query.trim()}>
           Confirm Location ✅
         </button>
-
-        <div className="cb-modal-note">
-          🔒 We only deliver within Sirajganj Sadar area
-        </div>
-
+        <div className="cb-modal-note">🔒 We only deliver within Sirajganj Sadar area</div>
       </div>
     </div>
   );
@@ -219,7 +148,7 @@ function ProductCard({ product, onAdd, onIncrease, onDecrease }) {
   return (
     <div className="cb-product-card">
       {product.isFast     && <div className="cb-badge-fast">⚡ FAST</div>}
-      {product.stock === 'low' && <div className="cb-stock-low">⚠️ Low stock</div>}
+      {product.stock==='low' && <div className="cb-stock-low">⚠️ Low stock</div>}
       <div className="cb-product-img">{product.emoji}</div>
       <div className="cb-product-info">
         <div className="cb-product-name">{product.name}</div>
@@ -227,9 +156,7 @@ function ProductCard({ product, onAdd, onIncrease, onDecrease }) {
         <div className="cb-product-unit">{product.unit}</div>
       </div>
       <div className="cb-product-bottom">
-        <div className="cb-product-price">
-          <span className="cb-currency">৳</span>{product.price.toLocaleString()}
-        </div>
+        <div className="cb-product-price"><span className="cb-currency">৳</span>{product.price.toLocaleString()}</div>
         <QtyControl qty={product.qty} onAdd={onAdd} onIncrease={onIncrease} onDecrease={onDecrease} />
       </div>
     </div>
@@ -237,34 +164,29 @@ function ProductCard({ product, onAdd, onIncrease, onDecrease }) {
 }
 
 // ── Main Home ──────────────────────────────────────────────────────────────
-export default function Home() {
-  const [products,       setProducts]       = useState(SAMPLE_PRODUCTS.map(p => ({ ...p, qty:0 })));
+export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery,    setSearchQuery]    = useState('');
-  const [cartTotal,      setCartTotal]      = useState(0);
   const [address,        setAddress]        = useState(getSavedAddress);
-  const [showPicker,     setShowPicker]     = useState(!getSavedAddress()); // show on first visit
+  const [showPicker,     setShowPicker]     = useState(!getSavedAddress());
   const { toast, show: showToast } = useToast();
 
-  // Cart helpers
-  const updateQty = (id, delta) => {
-    setProducts(prev => prev.map(p => p.id === id ? { ...p, qty: Math.max(0, p.qty + delta) } : p));
-    setCartTotal(prev => Math.max(0, prev + delta));
-  };
-  const handleAdd = (product) => { updateQty(product.id, 1); showToast(`✅ ${product.name} added!`); };
-  const handleDecrease = (product) => {
-    updateQty(product.id, -1);
-    if (product.qty === 1) showToast(`❌ ${product.name} removed`);
-  };
-
-  // Address saved
   const handleAddressSave = (addr) => {
     setAddress(addr);
     setShowPicker(false);
     showToast(`📍 Delivering to ${addr.area}!`);
   };
 
-  // Filtered products
+  const handleAdd = (product) => {
+    onUpdateQty(product.id, 1);
+    showToast(`✅ ${product.name} added to cart!`);
+  };
+
+  const handleDecrease = (product) => {
+    onUpdateQty(product.id, -1);
+    if (product.qty === 1) showToast(`❌ ${product.name} removed`);
+  };
+
   const filteredProducts = products.filter(p => {
     const matchCat    = activeCategory === 'all' || p.category === activeCategory;
     const q           = searchQuery.toLowerCase();
@@ -273,21 +195,12 @@ export default function Home() {
   });
 
   const [sectionTitle, sectionSubtitle] = SECTION_TITLES[activeCategory] || SECTION_TITLES.all;
-
-  // Build nav display
   const navArea    = address?.area    || 'Set location';
-  const navSubArea = address?.houseNo ? `${address.houseNo}${address.roadNo ? ', ' + address.roadNo : ''}` : 'Tap to set ▾';
+  const navSubArea = address?.houseNo ? `${address.houseNo}${address.roadNo ? ', '+address.roadNo : ''}` : 'Tap to set ▾';
 
   return (
     <div className="cb-root">
-
-      {/* Address Picker Modal */}
-      {showPicker && (
-        <AddressPicker
-          onSave={handleAddressSave}
-          initialAddress={address}
-        />
-      )}
+      {showPicker && <AddressPicker onSave={handleAddressSave} initialAddress={address} />}
 
       {/* NAV */}
       <nav className="cb-nav">
@@ -298,7 +211,6 @@ export default function Home() {
             <div className="cb-logo-tag">Sirajganj Delivery</div>
           </div>
         </div>
-
         <button className="cb-nav-location" onClick={() => setShowPicker(true)}>
           <span>📍</span>
           <div>
@@ -306,8 +218,7 @@ export default function Home() {
             <div className="cb-loc-sub">{navSubArea}</div>
           </div>
         </button>
-
-        <button className="cb-cart-btn" onClick={() => showToast('🛒 Cart coming soon!')}>
+        <button className="cb-cart-btn" onClick={onOpenCart} aria-label="Open cart">
           🛒 <span className="cb-cart-count">{cartTotal}</span>
         </button>
       </nav>
@@ -316,12 +227,8 @@ export default function Home() {
       <div className="cb-search-wrap">
         <div className="cb-search-bar">
           <span className="cb-search-icon">🔍</span>
-          <input
-            type="text"
-            placeholder='Search "চাল", "gas cylinder"...'
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-          />
+          <input type="text" placeholder='Search "চাল", "gas cylinder"...'
+            value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
           {searchQuery && <button className="cb-search-clear" onClick={() => setSearchQuery('')}>✕</button>}
         </div>
       </div>
@@ -332,7 +239,7 @@ export default function Home() {
           <h1>Sirajganj's best<br />grocery. Delivered. 🚀</h1>
           <p className="cb-hero-tagline">Fast delivery across Sirajganj</p>
           <p className="cb-hero-tagline-bn">সিরাজগঞ্জে দ্রুত ডেলিভারি</p>
-          <button className="cb-hero-cta" onClick={() => showToast('🛍️ Start shopping!')}>Shop Now</button>
+          <button className="cb-hero-cta" onClick={onOpenCart}>Shop Now</button>
         </div>
         <div className="cb-hero-emoji">🛵</div>
       </div>
@@ -354,11 +261,8 @@ export default function Home() {
       </div>
       <div className="cb-cats-scroll">
         {CATEGORIES.map(cat => (
-          <button
-            key={cat.id}
-            className={`cb-cat-pill ${activeCategory === cat.id ? 'active' : ''}`}
-            onClick={() => { setActiveCategory(cat.id); setSearchQuery(''); }}
-          >
+          <button key={cat.id} className={`cb-cat-pill ${activeCategory===cat.id ? 'active' : ''}`}
+            onClick={() => { setActiveCategory(cat.id); setSearchQuery(''); }}>
             <div className="cb-cat-icon-wrap">{cat.emoji}</div>
             <span className="cb-cat-label">{cat.label}</span>
           </button>
@@ -386,11 +290,9 @@ export default function Home() {
         {filteredProducts.length === 0
           ? <div className="cb-empty">😔 No products found</div>
           : filteredProducts.map(product => (
-              <ProductCard
-                key={product.id}
-                product={product}
+              <ProductCard key={product.id} product={product}
                 onAdd={() => handleAdd(product)}
-                onIncrease={() => updateQty(product.id, 1)}
+                onIncrease={() => onUpdateQty(product.id, 1)}
                 onDecrease={() => handleDecrease(product)}
               />
             ))
@@ -409,7 +311,7 @@ export default function Home() {
           <span className="cb-nav-icon">🔍</span>
           <span className="cb-nav-label">Search</span>
         </button>
-        <button className="cb-nav-item" onClick={() => showToast('📦 Orders coming soon!')}>
+        <button className="cb-nav-item" onClick={onOpenCart}>
           <span className="cb-nav-icon">📦</span>
           <span className="cb-nav-label">Orders</span>
         </button>
@@ -419,11 +321,7 @@ export default function Home() {
         </button>
       </nav>
 
-      {/* TOAST */}
-      <div className={`cb-toast ${toast.visible ? 'show' : ''}`} role="status">
-        {toast.msg}
-      </div>
-
+      <div className={`cb-toast ${toast.visible ? 'show' : ''}`} role="status">{toast.msg}</div>
     </div>
   );
 }
