@@ -260,7 +260,7 @@ export default function Cart({ cartItems, onUpdateQty, onClose, onClearCart }) {
   const subtotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
   const total    = subtotal + DELIVERY_FEE;
 
-  const handlePaymentSuccess = ({ method, trxId }) => {
+  const handlePaymentSuccess = async ({ method, trxId }) => {
     const newOrder = {
       id:    Math.random().toString(36).substr(2,8).toUpperCase(),
       method, trxId, total,
@@ -268,7 +268,32 @@ export default function Cart({ cartItems, onUpdateQty, onClose, onClearCart }) {
       items: cartItems,
       time:  new Date().toISOString(),
     };
-    // TODO: save to MongoDB → fetch('/api/orders', { method:'POST', body: JSON.stringify(newOrder) })
+    // Save order to MongoDB via live backend API
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/orders`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          area:          address.area    || 'Sirajganj',
+          houseNo:       address.houseNo || '',
+          roadNo:        address.roadNo  || '',
+          items:         cartItems.map(i => ({
+            name: i.name, nameBn: i.nameBn,
+            emoji: i.emoji, price: i.price,
+            qty: i.qty, unit: i.unit,
+          })),
+          subtotal,
+          deliveryFee:   DELIVERY_FEE,
+          total,
+          paymentMethod: method,
+          transactionId: trxId || null,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) newOrder.id = data.data._id.toString().slice(-8).toUpperCase();
+    } catch (err) {
+      console.error('Order save error:', err);
+    }
     setOrder(newOrder);
     setView('success');
     onClearCart();
