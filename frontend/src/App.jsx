@@ -1,16 +1,15 @@
 import { useState } from 'react';
-import { AuthProvider } from './context/AuthContext';
 import Home from './pages/Home';
 import Cart from './pages/Cart';
 
 const INITIAL_PRODUCTS = [
-  { id:1, emoji:'🔵', name:'Gas Cylinder', nameBn:'সিলিন্ডার গ্যাস', price:1250, unit:'12 kg cylinder', category:'gas',  isFast:true,  stock:'low' },
-  { id:2, emoji:'🍚', name:'Miniket Rice',  nameBn:'মিনিকেট চাল',    price:75,   unit:'per kg',         category:'rice', isFast:true,  stock:'ok'  },
+  { id:1, emoji:'🔵', name:'Gas Cylinder', nameBn:'সিলিন্ডার গ্যাস', price:1250, unit:'12 kg cylinder', category:'gas', isFast:true, stock:'low' },
+  { id:2, emoji:'🍚', name:'Miniket Rice', nameBn:'মিনিকেট চাল', price:75, unit:'per kg', category:'rice', isFast:true, stock:'ok' },
 ];
 
-function AppContent() {
-  const [products,  setProducts]  = useState(INITIAL_PRODUCTS.map(p => ({ ...p, qty:0 })));
-  const [showCart,  setShowCart]  = useState(false);
+export default function App() {
+  const [products, setProducts] = useState(INITIAL_PRODUCTS.map(p => ({ ...p, qty: 0 })));
+  const [showCart, setShowCart] = useState(false);
 
   const cartItems = products.filter(p => p.qty > 0);
   const cartTotal = cartItems.reduce((s, p) => s + p.qty, 0);
@@ -37,19 +36,12 @@ function AppContent() {
       ) : (
         <Cart
           cartItems={cartItems}
-          onUpdateQty={updateQty}
-          onClose={() => setShowCart(false)}
-          onClearCart={clearCart}
+          onIncrease={(id) => updateQty(id, 1)}
+          onDecrease={(id) => updateQty(id, -1)}
+          onClose={() => { setShowCart(false); clearCart(); }}
+          isLoggedIn={() => false}
         />
       )}
     </>
-  );
-}
-
-export default function App() {
-  return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
   );
 }
