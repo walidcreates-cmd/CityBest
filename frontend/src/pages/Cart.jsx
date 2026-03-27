@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import './Cart.css';
+import PaymentStep from './PaymentStep';
+import OrderSuccess from './OrderSuccess';
 
 const DELIVERY_FEE = 60;
 
@@ -125,11 +127,17 @@ function PhoneLoginStep({ onSuccess, onBack }) {
 
 export default function Cart({ cartItems, onClose, onIncrease, onDecrease, isLoggedIn }) {
   const [view, setView] = useState('cart');
+  const [order, setOrder] = useState(null);
   const [t, setT] = useState({});
 
   useEffect(() => {
     fetch('/strings.json').then(r => r.json()).then(setT).catch(() => {});
   }, []);
+
+  const handlePaymentSuccess = (orderData) => {
+    setOrder(orderData);
+    setView('success');
+  };
 
   const subtotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
   const total = subtotal + DELIVERY_FEE;
@@ -170,10 +178,7 @@ export default function Cart({ cartItems, onClose, onIncrease, onDecrease, isLog
         <PhoneLoginStep onSuccess={() => setView('payment')} onBack={() => setView('cart')} />
       )}
       {view === 'payment' && (
-        <div style={{padding:20, textAlign:'center'}}>
-          <p>Payment coming soon</p>
-          <button onClick={() => setView('cart')}>Back</button>
-        </div>
+        <PaymentStep total={total} onSuccess={handlePaymentSuccess} onBack={() => setView('cart')} />
       )}
     </div>
   );
