@@ -68,9 +68,6 @@ function PhoneLoginStep({ onSuccess, onBack }) {
   const confirmRef            = useRef(null);
   const { toast, show: showToast } = useToast();
 
-  const { user } = useAuth();
-  useEffect(() => { if (user) onSuccess(); }, [user]);
-
   const setupRecaptcha = () => {
     if (window.recaptchaVerifier) {
       window.recaptchaVerifier.clear();
@@ -368,12 +365,17 @@ function OrderSuccess({ order, onContinue }) {
 
 // ── Main Cart ──────────────────────────────────────────────────────────────
 export default function Cart({ cartItems, onUpdateQty, onClose, onClearCart }) {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const [view,  setView]  = useState('cart');
   const [order, setOrder] = useState(null);
   const address  = getSavedAddress();
   const subtotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
   const total    = subtotal + DELIVERY_FEE;
+
+  // When on login view, move to payment once user is confirmed logged in
+  useEffect(() => {
+    if (view === 'login' && !loading && user) setView('payment');
+  }, [view, loading, user]);
 
   const handlePaymentSuccess = async ({ method, trxId }) => {
     const newOrder = {
