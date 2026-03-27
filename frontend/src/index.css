@@ -1,22 +1,19 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* your custom styles below */
 *, *::before, *::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
-html, body, #root {
-  height: 100%;
-  background: #f3f4f6;
-}
-
-body {
+html, body {
+  background: #f1f5f9;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-button { cursor: pointer; }
+#root {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: #ffffff;
+  position: relative;
+  box-shadow: 0 0 40px rgba(0,0,0,0.08);
+}
