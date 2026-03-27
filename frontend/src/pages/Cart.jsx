@@ -101,7 +101,8 @@ function PhoneLoginStep({ onSuccess, onBack }) {
     if (!otp || otp.length !== 6) { setError('৬ সংখ্যার OTP দিন'); return; }
     setLoading(true);
     try {
-      await confirmRef.current.confirm(otp);
+      const result = await confirmRef.current.confirm(otp);
+      saveUser(result.user);
       onSuccess();
     } catch {
       setError('OTP ভুল হয়েছে। আবার চেষ্টা করুন।');
@@ -112,7 +113,8 @@ function PhoneLoginStep({ onSuccess, onBack }) {
   const signInGoogle = async () => {
     setLoading(true);
     try {
-      await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
+      saveUser(result.user);
       onSuccess();
     } catch {
       setError('Google লগইন ব্যর্থ হয়েছে।');
@@ -363,19 +365,21 @@ function OrderSuccess({ order, onContinue }) {
   );
 }
 
+// ── localStorage user helpers ─────────────────────────────────────────────
+function isLoggedIn() {
+  try { return !!localStorage.getItem('cb_user'); } catch { return false; }
+}
+function saveUser(user) {
+  try { localStorage.setItem('cb_user', JSON.stringify({ uid: user.uid, phone: user.phoneNumber, email: user.email })); } catch {}
+}
+
 // ── Main Cart ──────────────────────────────────────────────────────────────
 export default function Cart({ cartItems, onUpdateQty, onClose, onClearCart }) {
-  const { user, loading } = useAuth();
   const [view,  setView]  = useState('cart');
   const [order, setOrder] = useState(null);
   const address  = getSavedAddress();
   const subtotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
   const total    = subtotal + DELIVERY_FEE;
-
-  // When on login view, move to payment once user is confirmed logged in
-  useEffect(() => {
-    if (view === 'login' && !loading && user) setView('payment');
-  }, [view, loading, user]);
 
   const handlePaymentSuccess = async ({ method, trxId }) => {
     const newOrder = {
@@ -463,7 +467,7 @@ export default function Cart({ cartItems, onUpdateQty, onClose, onClearCart }) {
           <div className="ct-summary-row ct-summary-total"><span>Total</span><span>৳{total.toLocaleString()}</span></div>
         </div>
         <div className="ct-checkout-wrap">
-          <button className="ct-checkout-btn" onClick={() => setView('login')}>
+          <button className="ct-checkout-btn" onClick={() => setView(isLoggedIn() ? 'payment' : 'login')}>
             <span>Proceed to Payment</span>
             <span>৳{total.toLocaleString()} →</span>
           </button>
