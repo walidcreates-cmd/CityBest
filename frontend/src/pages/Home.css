@@ -457,3 +457,7 @@
 
 /* -- Fix nav width -- */
 .cb-nav { max-width: 480px; margin: 0 auto; }
+
+/* -- Fix sticky nav centering -- */
+.cb-root { overflow-x: hidden; }
+.cb-nav { position: sticky; left: 0; right: 0; margin-left: auto; margin-right: auto; }
