@@ -454,3 +454,6 @@
   left: 50%;
   transform: translateX(-50%);
 }
+
+/* -- Fix nav width -- */
+.cb-nav { max-width: 480px; margin: 0 auto; }
