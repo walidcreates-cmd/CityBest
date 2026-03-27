@@ -27,10 +27,10 @@ function CartItem({ item, onIncrease, onDecrease }) {
 
 function PhoneLoginStep({ onSuccess, onBack }) {
   const [phone, setPhone] = useState('');
-  const [otp,   setOtp]   = useState('');
-  const [step,  setStep]  = useState('phone');
+  const [otp, setOtp] = useState('');
+  const [step, setStep] = useState('phone');
   const [loading, setLoading] = useState(false);
-  const [error,   setError]   = useState('');
+  const [error, setError] = useState('');
 
   const API = 'https://citybest-1.onrender.com';
 
@@ -136,7 +136,6 @@ function PhoneLoginStep({ onSuccess, onBack }) {
         )}
 
         {error && <div style={styles.error}>{error}</div>}
-
         <button style={styles.backBtn} onClick={onBack}>← পেছনে যান</button>
       </div>
     </div>
@@ -144,11 +143,11 @@ function PhoneLoginStep({ onSuccess, onBack }) {
 }
 
 export default function Cart({ cartItems, onClose, onIncrease, onDecrease, isLoggedIn, onLoginSuccess }) {
-  const [view, setView]   = useState('cart');
+  const [view, setView] = useState('cart');
   const [order, setOrder] = useState(null);
 
   const subtotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
-  const total    = subtotal + DELIVERY_FEE;
+  const total = subtotal + DELIVERY_FEE;
 
   const handlePaymentSuccess = (orderData) => {
     setOrder(orderData);
@@ -187,18 +186,12 @@ export default function Cart({ cartItems, onClose, onIncrease, onDecrease, isLog
           </button>
         </div>
       </>)}
-
       {view === 'login' && (
-        <PhoneLoginStep
-          onSuccess={() => setView('payment')}
-          onBack={() => setView('cart')}
-        />
+        <PhoneLoginStep onSuccess={() => setView('payment')} onBack={() => setView('cart')} />
       )}
-
       {view === 'payment' && (
         <PaymentStep total={total} onSuccess={handlePaymentSuccess} onBack={() => setView('cart')} />
       )}
-
       {view === 'success' && order && (
         <OrderSuccess order={order} onContinue={onClose} />
       )}
