@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react';
-import PaymentStep from './PaymentStep';
-import OrderSuccess from './OrderSuccess';
 
 const DELIVERY_FEE = 60;
 
@@ -34,14 +32,14 @@ function PhoneLoginStep({ onSuccess, onBack }) {
   const [t, setT] = useState({});
 
   useEffect(() => {
-    fetch('/strings.json').then(r => r.json()).then(setT);
+    fetch('/strings.json').then(r => r.json()).then(setT).catch(() => {});
   }, []);
 
   const API = 'https://citybest-1.onrender.com';
 
   const sendOtp = async () => {
     setError('');
-    if (!phone || phone.length < 10) { setError(t.errPhone || ''); return; }
+    if (!phone || phone.length < 10) { setError(t.errPhone || 'Invalid phone'); return; }
     setLoading(true);
     try {
       const res = await fetch(`${API}/api/otp/send`, {
@@ -51,14 +49,14 @@ function PhoneLoginStep({ onSuccess, onBack }) {
       });
       const data = await res.json();
       if (data.success) { setStep('otp'); }
-      else { setError(data.message || t.errSend || ''); }
-    } catch { setError(t.errServer || ''); }
+      else { setError(data.message || t.errSend || 'Failed'); }
+    } catch { setError(t.errServer || 'Server error'); }
     setLoading(false);
   };
 
   const verifyOtp = async () => {
     setError('');
-    if (!otp || otp.length < 4) { setError(t.errOtp || ''); return; }
+    if (!otp || otp.length < 4) { setError(t.errOtp || 'Enter OTP'); return; }
     setLoading(true);
     try {
       const res = await fetch(`${API}/api/otp/verify`, {
@@ -68,8 +66,8 @@ function PhoneLoginStep({ onSuccess, onBack }) {
       });
       const data = await res.json();
       if (data.success) { onSuccess({ phone }); }
-      else { setError(data.message || t.errVerify || ''); }
-    } catch { setError(t.errServer || ''); }
+      else { setError(data.message || t.errVerify || 'Wrong OTP'); }
+    } catch { setError(t.errServer || 'Server error'); }
     setLoading(false);
   };
 
@@ -79,62 +77,46 @@ function PhoneLoginStep({ onSuccess, onBack }) {
         <div style={styles.logoWrap}>
           <div style={styles.logoIcon}>🛒</div>
           <div style={styles.logoText}>CityBest</div>
-          <div style={styles.tagline}>{step === 'phone' ? t.tagline : t.otpTagline}</div>
+          <div style={styles.tagline}>{step === 'phone' ? (t.tagline || 'Login') : (t.otpTagline || 'Enter OTP')}</div>
         </div>
-
         {step === 'phone' && (
           <div style={styles.loginNote}>
             {t.note1}<br />{t.note2}<br />{t.note3}
           </div>
         )}
-
         {step === 'otp' && (
           <div style={styles.loginNote}>
             {phone} {t.otpSentNote}<br />{t.otpWriteNote}
           </div>
         )}
-
         {step === 'phone' && (
           <>
-            <div style={styles.label}>{t.label}</div>
+            <div style={styles.label}>{t.label || 'Phone'}</div>
             <div style={styles.inputRow}>
               <span style={styles.prefix}>+88</span>
-              <input
-                style={styles.input}
-                type="tel"
-                placeholder="01XXXXXXXXX"
-                value={phone}
-                onChange={e => setPhone(e.target.value.replace(/\D/g, ''))}
-                maxLength={11}
-              />
+              <input style={styles.input} type="tel" placeholder="01XXXXXXXXX"
+                value={phone} onChange={e => setPhone(e.target.value.replace(/\D/g, ''))} maxLength={11} />
             </div>
             <button style={styles.btn} onClick={sendOtp} disabled={loading}>
-              {loading ? t.sending : t.sendBtn}
+              {loading ? (t.sending || '...') : (t.sendBtn || 'Send OTP')}
             </button>
           </>
         )}
-
         {step === 'otp' && (
           <>
-            <div style={styles.label}>{t.otpLabel}</div>
+            <div style={styles.label}>{t.otpLabel || 'OTP'}</div>
             <div style={styles.inputRow}>
-              <input
-                style={{...styles.input, paddingLeft:14}}
-                type="tel"
-                placeholder={t.otpPlaceholder}
-                value={otp}
-                onChange={e => setOtp(e.target.value.replace(/\D/g, ''))}
-                maxLength={6}
-              />
+              <input style={{...styles.input, paddingLeft:14}} type="tel"
+                placeholder={t.otpPlaceholder || '6 digit code'}
+                value={otp} onChange={e => setOtp(e.target.value.replace(/\D/g, ''))} maxLength={6} />
             </div>
             <button style={styles.btn} onClick={verifyOtp} disabled={loading}>
-              {loading ? t.verifying : t.verifyBtn}
+              {loading ? (t.verifying || '...') : (t.verifyBtn || 'Verify')}
             </button>
           </>
         )}
-
         {error && <div style={styles.error}>{error}</div>}
-        <button style={styles.backBtn} onClick={onBack}>{t.backBtn}</button>
+        <button style={styles.backBtn} onClick={onBack}>{t.backBtn || 'Back'}</button>
       </div>
     </div>
   );
@@ -142,26 +124,20 @@ function PhoneLoginStep({ onSuccess, onBack }) {
 
 export default function Cart({ cartItems, onClose, onIncrease, onDecrease, isLoggedIn }) {
   const [view, setView] = useState('cart');
-  const [order, setOrder] = useState(null);
   const [t, setT] = useState({});
 
   useEffect(() => {
-    fetch('/strings.json').then(r => r.json()).then(setT);
+    fetch('/strings.json').then(r => r.json()).then(setT).catch(() => {});
   }, []);
 
   const subtotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
   const total = subtotal + DELIVERY_FEE;
 
-  const handlePaymentSuccess = (orderData) => {
-    setOrder(orderData);
-    setView('success');
-  };
-
   if (cartItems.length === 0 && view === 'cart') return (
     <div className="ct-empty">
       <div className="ct-empty-icon">🛒</div>
-      <p>{t.emptyCart}</p>
-      <button className="ct-continue-btn" onClick={onClose}>{t.continueShopping}</button>
+      <p>{t.emptyCart || 'Cart is empty'}</p>
+      <button className="ct-continue-btn" onClick={onClose}>{t.continueShopping || 'Continue'}</button>
     </div>
   );
 
@@ -169,7 +145,7 @@ export default function Cart({ cartItems, onClose, onIncrease, onDecrease, isLog
     <div className="ct-wrap">
       {view === 'cart' && (<>
         <div className="ct-header">
-          <span className="ct-title">{t.cartTitle}</span>
+          <span className="ct-title">{t.cartTitle || 'Cart'}</span>
           <button className="ct-close-btn" onClick={onClose}>{String.fromCharCode(10005)}</button>
         </div>
         <div className="ct-items">
@@ -193,10 +169,10 @@ export default function Cart({ cartItems, onClose, onIncrease, onDecrease, isLog
         <PhoneLoginStep onSuccess={() => setView('payment')} onBack={() => setView('cart')} />
       )}
       {view === 'payment' && (
-        <PaymentStep total={total} onSuccess={handlePaymentSuccess} onBack={() => setView('cart')} />
-      )}
-      {view === 'success' && order && (
-        <OrderSuccess order={order} onContinue={onClose} />
+        <div style={{padding:20, textAlign:'center'}}>
+          <p>Payment coming soon</p>
+          <button onClick={() => setView('cart')}>Back</button>
+        </div>
       )}
     </div>
   );
