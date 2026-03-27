@@ -188,47 +188,56 @@ function PaymentStep({ total, onSuccess, onBack }) {
   };
 
   return (
-    <div className="ct-payment-wrap">
-      <div className="ct-pay-header">
-        <button className="ct-back-btn" onClick={onBack}>← Back</button>
-        <span className="ct-pay-title">Choose Payment</span>
+    <div style={{background:'#f9fafb', minHeight:'100%', display:'flex', flexDirection:'column'}}>
+      {/* Header */}
+      <div style={{display:'flex', alignItems:'center', gap:12, padding:'14px 16px', background:'#fff', borderBottom:'1px solid #e5e7eb', position:'sticky', top:0, zIndex:10}}>
+        <button onClick={onBack} style={{background:'#f3f4f6', border:'none', padding:'7px 13px', borderRadius:20, fontSize:13, fontWeight:700, cursor:'pointer', color:'#374151'}}>← Back</button>
+        <span style={{fontSize:16, fontWeight:900, color:'#111827'}}>Choose Payment</span>
       </div>
 
-      <div className="ct-pay-amount-box">
-        <div className="ct-pay-amount-label">Total to pay</div>
-        <div className="ct-pay-amount-val">৳{total.toLocaleString()}</div>
+      {/* Amount */}
+      <div style={{background:'#1a9e5c', margin:14, borderRadius:14, padding:18, textAlign:'center'}}>
+        <div style={{color:'rgba(255,255,255,.85)', fontSize:12, fontWeight:600, marginBottom:4}}>Total to pay</div>
+        <div style={{color:'#fff', fontSize:32, fontWeight:900}}>৳{total.toLocaleString()}</div>
       </div>
 
-      <div className="ct-app-grid">
-        {MOBILE_APPS.map(app => (
-          <button key={app.id}
-            className={`ct-app-btn ${selected === app.id ? 'ct-app-selected' : ''}`}
-            style={{ background: selected === app.id ? app.bg : '#fff', borderColor: selected === app.id ? app.color : '#e5e7eb' }}
-            onClick={() => setSelected(app.id)}>
-            <span className="ct-app-emoji">{app.emoji}</span>
-            <span className="ct-app-name" style={{ color: app.color }}>{app.name}</span>
-          </button>
-        ))}
-      </div>
-
-      <button
-        className={`ct-cod-btn ${selected === 'cod' ? 'ct-app-selected' : ''}`}
-        onClick={() => setSelected('cod')}
-        style={{ background: selected === 'cod' ? '#f0fdf4' : '#fff' }}>
-        <span style={{fontSize:28}}>💵</span>
-        <div>
-          <div className="ct-cod-title">Cash on Delivery</div>
-          <div className="ct-cod-sub">Pay when rider arrives at your door</div>
+      {/* Mobile Banking */}
+      <div style={{padding:'0 16px', marginBottom:8}}>
+        <div style={{fontSize:13, fontWeight:700, color:'#374151', marginBottom:4}}>💚 Mobile Banking</div>
+        <div style={{fontSize:12, color:'#6b7280', marginBottom:12}}>bKash, Nagad, Rocket & more — all use same Merchant ID</div>
+        <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:10}}>
+          {MOBILE_APPS.map(app => (
+            <button key={app.id} onClick={() => setSelected(app.id)}
+              style={{display:'flex', alignItems:'center', gap:8, padding:'12px 14px', borderRadius:12, border:`2px solid ${selected === app.id ? app.color : '#e5e7eb'}`, background: selected === app.id ? app.bg : '#fff', cursor:'pointer', fontFamily:'inherit'}}>
+              <span style={{fontSize:20}}>{app.emoji}</span>
+              <span style={{fontSize:13, fontWeight:800, color:app.color}}>{app.name}</span>
+            </button>
+          ))}
         </div>
-        <span>→</span>
-      </button>
+      </div>
 
-      {toast.visible && <div className="ct-toast show">{toast.msg}</div>}
+      {/* Cash on Delivery */}
+      <div style={{padding:'0 16px', marginBottom:16}}>
+        <button onClick={() => setSelected('cod')}
+          style={{width:'100%', display:'flex', alignItems:'center', gap:14, padding:'16px', borderRadius:14, border:`2px solid ${selected === 'cod' ? '#1a9e5c' : '#e5e7eb'}`, background: selected === 'cod' ? '#f0fdf4' : '#fff', cursor:'pointer', fontFamily:'inherit'}}>
+          <span style={{fontSize:28}}>💵</span>
+          <div style={{textAlign:'left', flex:1}}>
+            <div style={{fontSize:15, fontWeight:800, color:'#111827'}}>Cash on Delivery</div>
+            <div style={{fontSize:12, color:'#6b7280'}}>Pay when rider arrives at your door</div>
+          </div>
+          <span style={{color:'#1a9e5c', fontWeight:700}}>→</span>
+        </button>
+      </div>
 
-      <button className="ct-paid-btn" onClick={handlePay} disabled={loading}
-        style={{margin:'16px', width:'calc(100% - 32px)', padding:'16px', background: loading ? '#9ca3af' : '#1a9e5c', color:'#fff', border:'none', borderRadius:14, fontSize:16, fontWeight:800, cursor:'pointer'}}>
-        {loading ? 'Processing...' : `Pay ৳${total.toLocaleString()}`}
-      </button>
+      {/* Pay Button */}
+      <div style={{padding:'0 16px'}}>
+        <button onClick={handlePay} disabled={loading}
+          style={{width:'100%', padding:16, background: loading ? '#9ca3af' : '#1a9e5c', color:'#fff', border:'none', borderRadius:14, fontSize:16, fontWeight:800, cursor:'pointer', fontFamily:'inherit'}}>
+          {loading ? 'Processing...' : `Pay ৳${total.toLocaleString()}`}
+        </button>
+      </div>
+
+      {toast.visible && <div style={{position:'fixed', bottom:76, left:'50%', transform:'translateX(-50%)', background:'#111827', color:'#fff', padding:'10px 20px', borderRadius:22, fontSize:13, fontWeight:700, whiteSpace:'nowrap'}}>{toast.msg}</div>}
     </div>
   );
 }
