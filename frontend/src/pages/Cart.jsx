@@ -12,11 +12,11 @@ const MERCHANT_ID = '900701000667617966';
 const DELIVERY_FEE = 30;
 
 const MOBILE_APPS = [
-  { id:'bkash',  name:'bKash',         color:'#E2136E', emoji:'💚', bg:'#fce4f0' },
-  { id:'nagad',  name:'Nagad',         color:'#F26522', emoji:'🟠', bg:'#fef0e8' },
-  { id:'rocket', name:'Rocket',        color:'#8B1A8B', emoji:'🚀', bg:'#f5e8f5' },
-  { id:'upay',   name:'Upay',          color:'#00A651', emoji:'💚', bg:'#e8f7ef' },
-  { id:'other',  name:'Other Bank App',color:'#374151', emoji:'🏦', bg:'#f3f4f6' },
+  { id:'bkash',  name:'bKash',         color:'#E2136E', emoji:'ðŸ’š', bg:'#fce4f0' },
+  { id:'nagad',  name:'Nagad',         color:'#F26522', emoji:'ðŸŸ ', bg:'#fef0e8' },
+  { id:'rocket', name:'Rocket',        color:'#8B1A8B', emoji:'ðŸš€', bg:'#f5e8f5' },
+  { id:'upay',   name:'Upay',          color:'#00A651', emoji:'ðŸ’š', bg:'#e8f7ef' },
+  { id:'other',  name:'Other Bank App',color:'#374151', emoji:'ðŸ¦', bg:'#f3f4f6' },
 ];
 
 function getSavedAddress() {
@@ -51,7 +51,7 @@ function saveUser(user) {
   } catch {}
 }
 
-// ─── Cart Item ────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Cart Item â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function CartItem({ item, onIncrease, onDecrease }) {
   return (
     <div className="ct-item">
@@ -62,9 +62,9 @@ function CartItem({ item, onIncrease, onDecrease }) {
         <div className="ct-item-unit">{item.unit}</div>
       </div>
       <div className="ct-item-right">
-        <div className="ct-item-price">৳{(item.price * item.qty).toLocaleString()}</div>
+        <div className="ct-item-price">à§³{(item.price * item.qty).toLocaleString()}</div>
         <div className="ct-qty-ctrl">
-          <button className="ct-qty-btn" onClick={() => onDecrease(item.id)}>−</button>
+          <button className="ct-qty-btn" onClick={() => onDecrease(item.id)}>âˆ’</button>
           <span className="ct-qty-num">{item.qty}</span>
           <button className="ct-qty-btn" onClick={() => onIncrease(item.id)}>+</button>
         </div>
@@ -73,7 +73,7 @@ function CartItem({ item, onIncrease, onDecrease }) {
   );
 }
 
-// ─── Phone Login Step ─────────────────────────────────────────────────────────
+// â”€â”€â”€ Phone Login Step â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function PhoneLoginStep({ onSuccess, onBack }) {
   const [phone,   setPhone]   = useState('');
   const [otp,     setOtp]     = useState('');
@@ -93,7 +93,7 @@ function PhoneLoginStep({ onSuccess, onBack }) {
 
   const sendOtp = async () => {
     setError('');
-    if (!phone || phone.length < 10) { setError('সঠিক মোবাইল নম্বর দিন'); return; }
+    if (!phone || phone.length < 10) { setError('à¦¸à¦ à¦¿à¦• à¦®à§‹à¦¬à¦¾à¦‡à¦² à¦¨à¦®à§à¦¬à¦° à¦¦à¦¿à¦¨'); return; }
     setLoading(true);
     try {
       await setupRecaptcha();
@@ -102,7 +102,7 @@ function PhoneLoginStep({ onSuccess, onBack }) {
       confirmRef.current = result;
       setStep('otp');
     } catch (err) {
-      setError('OTP পাঠানো সম্ভব হয়নি। আবার চেষ্টা করুন।');
+      setError('OTP à¦ªà¦¾à¦ à¦¾à¦¨à§‹ à¦¸à¦®à§à¦­à¦¬ à¦¹à¦¯à¦¼à¦¨à¦¿à¥¤ à¦†à¦¬à¦¾à¦° à¦šà§‡à¦·à§à¦Ÿà¦¾ à¦•à¦°à§à¦¨à¥¤');
       console.error(err);
       if (window.recaptchaVerifier) { window.recaptchaVerifier.clear(); window.recaptchaVerifier = null; }
     }
@@ -111,14 +111,14 @@ function PhoneLoginStep({ onSuccess, onBack }) {
 
   const verifyOtp = async () => {
     setError('');
-    if (!otp || otp.length !== 6) { setError('৬ সংখ্যার OTP দিন'); return; }
+    if (!otp || otp.length !== 6) { setError('à§¬ à¦¸à¦‚à¦–à§à¦¯à¦¾à¦° OTP à¦¦à¦¿à¦¨'); return; }
     setLoading(true);
     try {
       const result = await confirmRef.current.confirm(otp);
       saveUser(result.user);
       onSuccess();
     } catch (err) {
-      setError('OTP সঠিক নয়। আবার চেষ্টা করুন।');
+      setError('OTP à¦¸à¦ à¦¿à¦• à¦¨à¦¯à¦¼à¥¤ à¦†à¦¬à¦¾à¦° à¦šà§‡à¦·à§à¦Ÿà¦¾ à¦•à¦°à§à¦¨à¥¤');
       console.error(err);
     }
     setLoading(false);
@@ -128,15 +128,15 @@ function PhoneLoginStep({ onSuccess, onBack }) {
     <div style={styles.page}>
       <div style={styles.card}>
         <div style={styles.logoWrap}>
-          <span style={styles.logoIcon}>🛒</span>
+          <span style={styles.logoIcon}>ðŸ›’</span>
           <h1 style={styles.logoText}>CityBest</h1>
-          <p style={styles.tagline}>অর্ডার করতে মোবাইল নম্বর যাচাই করুন</p>
+          <p style={styles.tagline}>à¦…à¦°à§à¦¡à¦¾à¦° à¦•à¦°à¦¤à§‡ à¦®à§‹à¦¬à¦¾à¦‡à¦² à¦¨à¦®à§à¦¬à¦° à¦¯à¦¾à¦šà¦¾à¦‡ à¦•à¦°à§à¦¨</p>
         </div>
         <div style={styles.loginNote}>
-          আপনার নম্বর শুধুমাত্র অর্ডার নিশ্চিত করতে ব্যবহার করা হবে
+          à¦†à¦ªà¦¨à¦¾à¦° à¦¨à¦®à§à¦¬à¦° à¦¶à§à¦§à§à¦®à¦¾à¦¤à§à¦° à¦…à¦°à§à¦¡à¦¾à¦° à¦¨à¦¿à¦¶à§à¦šà¦¿à¦¤ à¦•à¦°à¦¤à§‡ à¦¬à§à¦¯à¦¬à¦¹à¦¾à¦° à¦•à¦°à¦¾ à¦¹à¦¬à§‡
         </div>
         {step === 'phone' && (<>
-          <p style={styles.label}>মোবাইল নম্বর দিন</p>
+          <p style={styles.label}>à¦®à§‹à¦¬à¦¾à¦‡à¦² à¦¨à¦®à§à¦¬à¦° à¦¦à¦¿à¦¨</p>
           <div style={styles.inputRow}>
             <span style={styles.prefix}>+88</span>
             <input style={styles.input} type="tel" placeholder="01XXXXXXXXX"
@@ -144,35 +144,35 @@ function PhoneLoginStep({ onSuccess, onBack }) {
           </div>
           <div id="ct-recaptcha" style={{margin:'10px 0'}} />
           <button style={{...styles.btn, opacity: loading ? 0.7 : 1}} onClick={sendOtp} disabled={loading}>
-            {loading ? 'পাঠানো হচ্ছে...' : 'OTP পাঠান'}
+            {loading ? 'à¦ªà¦¾à¦ à¦¾à¦¨à§‹ à¦¹à¦šà§à¦›à§‡...' : 'OTP à¦ªà¦¾à¦ à¦¾à¦¨'}
           </button>
         </>)}
         {step === 'otp' && (<>
-          <p style={styles.label}>আপনার ফোনে আসা OTP দিন</p>
+          <p style={styles.label}>à¦†à¦ªà¦¨à¦¾à¦° à¦«à§‹à¦¨à§‡ à¦†à¦¸à¦¾ OTP à¦¦à¦¿à¦¨</p>
           <p style={{color:'#1a9e5c', fontWeight:700, marginBottom:14}}>+88{phone}</p>
           <input style={{...styles.input, width:'100%', textAlign:'center', fontSize:24, letterSpacing:8}}
             type="number" placeholder="------" value={otp}
             onChange={e => setOtp(e.target.value)} maxLength={6} />
           <button style={{...styles.btn, opacity: loading ? 0.7 : 1}} onClick={verifyOtp} disabled={loading}>
-            {loading ? 'যাচাই হচ্ছে...' : 'যাচাই করুন'}
+            {loading ? 'à¦¯à¦¾à¦šà¦¾à¦‡ à¦¹à¦šà§à¦›à§‡...' : 'à¦¯à¦¾à¦šà¦¾à¦‡ à¦•à¦°à§à¦¨'}
           </button>
-          <button style={styles.backBtn} onClick={() => setStep('phone')}>← নম্বর পরিবর্তন করুন</button>
+          <button style={styles.backBtn} onClick={() => setStep('phone')}>â† à¦¨à¦®à§à¦¬à¦° à¦ªà¦°à¦¿à¦¬à¦°à§à¦¤à¦¨ à¦•à¦°à§à¦¨</button>
         </>)}
         {error && <div style={styles.error}>{error}</div>}
-        <button style={styles.backBtn} onClick={onBack}>← কার্টে ফিরুন</button>
+        <button style={styles.backBtn} onClick={onBack}>â† à¦•à¦¾à¦°à§à¦Ÿà§‡ à¦«à¦¿à¦°à§à¦¨</button>
       </div>
     </div>
   );
 }
 
-// ─── Payment Step ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ Payment Step â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function PaymentStep({ total, onSuccess, onBack }) {
   const [selected, setSelected] = useState(null);
   const [loading,  setLoading]  = useState(false);
   const { toast, show: showToast } = useToast();
 
   const handlePay = async () => {
-    if (!selected) { showToast('পেমেন্ট পদ্ধতি বেছে নিন'); return; }
+    if (!selected) { showToast('à¦ªà§‡à¦®à§‡à¦¨à§à¦Ÿ à¦ªà¦¦à§à¦§à¦¤à¦¿ à¦¬à§‡à¦›à§‡ à¦¨à¦¿à¦¨'); return; }
     if (selected === 'cod') { onSuccess('Cash on Delivery'); return; }
     setLoading(true);
     try {
@@ -183,28 +183,28 @@ function PaymentStep({ total, onSuccess, onBack }) {
       });
       const data = await res.json();
       if (data.bkashURL) window.location.href = data.bkashURL;
-      else { showToast('পেমেন্ট শুরু করা যায়নি'); setLoading(false); }
-    } catch { showToast('সংযোগ সমস্যা'); setLoading(false); }
+      else { showToast('à¦ªà§‡à¦®à§‡à¦¨à§à¦Ÿ à¦¶à§à¦°à§ à¦•à¦°à¦¾ à¦¯à¦¾à¦¯à¦¼à¦¨à¦¿'); setLoading(false); }
+    } catch { showToast('à¦¸à¦‚à¦¯à§‹à¦— à¦¸à¦®à¦¸à§à¦¯à¦¾'); setLoading(false); }
   };
 
   return (
     <div style={{background:'#f9fafb', minHeight:'100%', display:'flex', flexDirection:'column'}}>
       {/* Header */}
       <div style={{display:'flex', alignItems:'center', gap:12, padding:'14px 16px', background:'#fff', borderBottom:'1px solid #e5e7eb', position:'sticky', top:0, zIndex:10}}>
-        <button onClick={onBack} style={{background:'#f3f4f6', border:'none', padding:'7px 13px', borderRadius:20, fontSize:13, fontWeight:700, cursor:'pointer', color:'#374151'}}>← Back</button>
+        <button onClick={onBack} style={{background:'#f3f4f6', border:'none', padding:'7px 13px', borderRadius:20, fontSize:13, fontWeight:700, cursor:'pointer', color:'#374151'}}>â† Back</button>
         <span style={{fontSize:16, fontWeight:900, color:'#111827'}}>Choose Payment</span>
       </div>
 
       {/* Amount */}
       <div style={{background:'#1a9e5c', margin:14, borderRadius:14, padding:18, textAlign:'center'}}>
         <div style={{color:'rgba(255,255,255,.85)', fontSize:12, fontWeight:600, marginBottom:4}}>Total to pay</div>
-        <div style={{color:'#fff', fontSize:32, fontWeight:900}}>৳{total.toLocaleString()}</div>
+        <div style={{color:'#fff', fontSize:32, fontWeight:900}}>à§³{total.toLocaleString()}</div>
       </div>
 
       {/* Mobile Banking */}
       <div style={{padding:'0 16px', marginBottom:8}}>
-        <div style={{fontSize:13, fontWeight:700, color:'#374151', marginBottom:4}}>💚 Mobile Banking</div>
-        <div style={{fontSize:12, color:'#6b7280', marginBottom:12}}>bKash, Nagad, Rocket & more — all use same Merchant ID</div>
+        <div style={{fontSize:13, fontWeight:700, color:'#374151', marginBottom:4}}>ðŸ’š Mobile Banking</div>
+        <div style={{fontSize:12, color:'#6b7280', marginBottom:12}}>bKash, Nagad, Rocket & more â€” all use same Merchant ID</div>
         <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:10}}>
           {MOBILE_APPS.map(app => (
             <button key={app.id} onClick={() => setSelected(app.id)}
@@ -220,12 +220,12 @@ function PaymentStep({ total, onSuccess, onBack }) {
       <div style={{padding:'0 16px', marginBottom:16}}>
         <button onClick={() => setSelected('cod')}
           style={{width:'100%', display:'flex', alignItems:'center', gap:14, padding:'16px', borderRadius:14, border:`2px solid ${selected === 'cod' ? '#1a9e5c' : '#e5e7eb'}`, background: selected === 'cod' ? '#f0fdf4' : '#fff', cursor:'pointer', fontFamily:'inherit'}}>
-          <span style={{fontSize:28}}>💵</span>
+          <span style={{fontSize:28}}>ðŸ’µ</span>
           <div style={{textAlign:'left', flex:1}}>
             <div style={{fontSize:15, fontWeight:800, color:'#111827'}}>Cash on Delivery</div>
             <div style={{fontSize:12, color:'#6b7280'}}>Pay when rider arrives at your door</div>
           </div>
-          <span style={{color:'#1a9e5c', fontWeight:700}}>→</span>
+          <span style={{color:'#1a9e5c', fontWeight:700}}>â†’</span>
         </button>
       </div>
 
@@ -233,7 +233,7 @@ function PaymentStep({ total, onSuccess, onBack }) {
       <div style={{padding:'0 16px'}}>
         <button onClick={handlePay} disabled={loading}
           style={{width:'100%', padding:16, background: loading ? '#9ca3af' : '#1a9e5c', color:'#fff', border:'none', borderRadius:14, fontSize:16, fontWeight:800, cursor:'pointer', fontFamily:'inherit'}}>
-          {loading ? 'Processing...' : `Pay ৳${total.toLocaleString()}`}
+          {loading ? 'Processing...' : `Pay à§³${total.toLocaleString()}`}
         </button>
       </div>
 
@@ -242,27 +242,27 @@ function PaymentStep({ total, onSuccess, onBack }) {
   );
 }
 
-// ─── Order Success ────────────────────────────────────────────────────────────
+// â”€â”€â”€ Order Success â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function OrderSuccess({ order, onContinue }) {
   return (
     <div className="ct-success">
-      <div className="ct-success-icon">🎉</div>
+      <div className="ct-success-icon">ðŸŽ‰</div>
       <h2 className="ct-success-title">Order Placed!</h2>
-      <p className="ct-success-sub">অর্ডার সফল হয়েছে</p>
+      <p className="ct-success-sub">à¦…à¦°à§à¦¡à¦¾à¦° à¦¸à¦«à¦² à¦¹à¦¯à¦¼à§‡à¦›à§‡</p>
       <div className="ct-success-card">
         <div className="ct-success-row"><span>Order ID</span><span>#{order.id}</span></div>
         <div className="ct-success-row"><span>Payment</span><span>{order.payment}</span></div>
-        <div className="ct-success-row"><span>Total</span><span>৳{order.total}</span></div>
+        <div className="ct-success-row"><span>Total</span><span>à§³{order.total}</span></div>
         <div className="ct-success-row"><span>Deliver to</span><span>{order.area}</span></div>
-        <div className="ct-success-row"><span>Status</span><span>✅ Confirmed</span></div>
+        <div className="ct-success-row"><span>Status</span><span>âœ… Confirmed</span></div>
       </div>
-      <p className="ct-success-note">🛵 Your order is being prepared.<br/>Our rider will deliver to your address soon!</p>
-      <button className="ct-continue-btn" onClick={onContinue}>Continue Shopping →</button>
+      <p className="ct-success-note">ðŸ›µ Your order is being prepared.<br/>Our rider will deliver to your address soon!</p>
+      <button className="ct-continue-btn" onClick={onContinue}>Continue Shopping â†’</button>
     </div>
   );
 }
 
-// ─── Main Cart ────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Main Cart â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export default function Cart({ cartItems, onIncrease, onDecrease, onClose }) {
   const [view,  setView]  = useState('cart');
   const [order, setOrder] = useState(null);
@@ -299,9 +299,9 @@ export default function Cart({ cartItems, onIncrease, onDecrease, onClose }) {
 
   if (cartItems.length === 0 && view === 'cart') return (
     <div className="ct-empty">
-      <div className="ct-empty-icon">🛒</div>
-      <p>কার্ট খালি আছে</p>
-      <button className="ct-continue-btn" onClick={onClose}>শপিং করুন</button>
+      <div className="ct-empty-icon">ðŸ›’</div>
+      <p>à¦•à¦¾à¦°à§à¦Ÿ à¦–à¦¾à¦²à¦¿ à¦†à¦›à§‡</p>
+      <button className="ct-continue-btn" onClick={onClose}>à¦¶à¦ªà¦¿à¦‚ à¦•à¦°à§à¦¨</button>
     </div>
   );
 
@@ -309,8 +309,8 @@ export default function Cart({ cartItems, onIncrease, onDecrease, onClose }) {
     <div className="ct-wrap">
       {view === 'cart' && (<>
         <div className="ct-header">
-          <span className="ct-title">আপনার কার্ট</span>
-          <button className="ct-close-btn" onClick={onClose}>✕</button>
+          <span className="ct-title">à¦†à¦ªà¦¨à¦¾à¦° à¦•à¦¾à¦°à§à¦Ÿ</span>
+          <button className="ct-close-btn" onClick={onClose}>âœ•</button>
         </div>
         <div className="ct-items">
           {cartItems.map(item => (
@@ -318,14 +318,14 @@ export default function Cart({ cartItems, onIncrease, onDecrease, onClose }) {
           ))}
         </div>
         <div className="ct-summary">
-          <div className="ct-summary-row"><span>Subtotal</span><span>৳{subtotal.toLocaleString()}</span></div>
-          <div className="ct-summary-row"><span>Delivery</span><span>৳{DELIVERY_FEE}</span></div>
-          <div className="ct-summary-row ct-summary-total"><span>Total</span><span>৳{total.toLocaleString()}</span></div>
+          <div className="ct-summary-row"><span>Subtotal</span><span>à§³{subtotal.toLocaleString()}</span></div>
+          <div className="ct-summary-row"><span>Delivery</span><span>à§³{DELIVERY_FEE}</span></div>
+          <div className="ct-summary-row ct-summary-total"><span>Total</span><span>à§³{total.toLocaleString()}</span></div>
         </div>
         <div className="ct-checkout-wrap">
           <button className="ct-checkout-btn" onClick={() => setView(isLoggedIn() ? 'payment' : 'login')}>
             <span>Proceed to Payment</span>
-            <span>৳{total.toLocaleString()} →</span>
+            <span>à§³{total.toLocaleString()} â†’</span>
           </button>
         </div>
       </>)}
