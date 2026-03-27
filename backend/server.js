@@ -35,7 +35,7 @@ async function verifyToken(req, res, next) {
 
 // Routes
 app.use('/api/products', require('./routes/products'));        // public
-app.use('/api/orders',   verifyToken, require('./routes/orders')); // protected
+app.use('/api/orders', require('./routes/orders')); // protected
 app.use('/api/admin',    verifyToken, require('./routes/admin'));   // protected
 
 // Health check
