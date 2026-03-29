@@ -16,7 +16,6 @@ export default function PaymentStep({ total, onSuccess, onBack, savedAddress, ca
   const DELIVERY_FEE = 30;
 
   const placeOrder = async () => {
-
     if (!name || !address || !phone) { setError('সব তথ্য দিন'); return; }
     setLoading(true);
     const subtotal = total - DELIVERY_FEE;
