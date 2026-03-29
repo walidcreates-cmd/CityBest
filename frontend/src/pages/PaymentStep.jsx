@@ -16,7 +16,7 @@ export default function PaymentStep({ total, onSuccess, onBack, savedAddress, ca
   const DELIVERY_FEE = 30;
 
   const placeOrder = async () => {
-    console.log('CART:', JSON.stringify(cartItems.map(i => ({n:i.name, v:i.selectedVariantName, p:i.price}))));
+    (leave empty)
     if (!name || !address || !phone) { setError('সব তথ্য দিন'); return; }
     setLoading(true);
     const subtotal = total - DELIVERY_FEE;
