@@ -54,7 +54,7 @@ function ProductCard({ product, onAdd, onIncrease, onDecrease }) {
     <div className="cb-product-card">
       {product.isFast     && <div className="cb-badge-fast">⚡ FAST</div>}
       {product.stock==='low' && <div className="cb-stock-low">⚠️ Low stock</div>}
-      <div className="cb-product-img">{product.image ? <img src={product.image} alt={product.name} style={{ width:'100%', height:'100%', objectFit:'contain' }} /> : product.emoji}</div>
+      <div className="cb-product-img">{product.emoji}</div>
       <div className="cb-product-info">
         <div className="cb-product-name">{product.name}</div>
         <div className="cb-product-name-bn">{product.nameBn}</div>
