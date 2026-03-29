@@ -7,6 +7,7 @@ export default function LocationModal({ onClose, onConfirm }) {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markerRef = useRef(null);
+  const searchRef = useRef(null);
   const [address, setAddress] = useState("Loading...");
   const [coords, setCoords] = useState(SIRAJGANJ_CENTER);
   const [loading, setLoading] = useState(false);
@@ -37,6 +38,24 @@ export default function LocationModal({ onClose, onConfirm }) {
         strokeColor: "#1a9e5c",
         strokeOpacity: 0.4,
         strokeWeight: 2,
+      });
+
+      // Search box
+      const searchBox = new window.google.maps.places.SearchBox(searchRef.current);
+      map.addListener("bounds_changed", () => {
+        searchBox.setBounds(map.getBounds());
+      });
+      searchBox.addListener("places_changed", () => {
+        const places = searchBox.getPlaces();
+        if (!places || places.length === 0) return;
+        const place = places[0];
+        if (!place.geometry || !place.geometry.location) return;
+        const lat = place.geometry.location.lat();
+        const lng = place.geometry.location.lng();
+        map.setCenter({ lat, lng });
+        map.setZoom(16);
+        marker.setPosition({ lat, lng });
+        reverseGeocode(lat, lng);
       });
 
       marker.addListener("dragend", () => {
@@ -89,7 +108,7 @@ export default function LocationModal({ onClose, onConfirm }) {
         setLoading(false);
       },
       () => {
-        alert("Location not found. Please set pin manually.");
+        alert("Location not found. Please search or set pin manually.");
         setLoading(false);
       }
     );
@@ -106,6 +125,15 @@ export default function LocationModal({ onClose, onConfirm }) {
         <div className="location-header">
           <h2>Set Delivery Location</h2>
           <button className="close-btn" onClick={onClose}>✕</button>
+        </div>
+        <div className="search-box-wrap">
+          <span className="search-icon">🔍</span>
+          <input
+            ref={searchRef}
+            type="text"
+            placeholder='Search area e.g. "Janpur", "Sirajganj Sadar"'
+            className="search-box-input"
+          />
         </div>
         <div className="map-container" ref={mapRef} />
         <div className="location-footer">

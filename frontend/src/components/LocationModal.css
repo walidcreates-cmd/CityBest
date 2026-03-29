@@ -103,3 +103,29 @@
 .confirm-btn:active {
   background: #158a4e;
 }
+.search-box-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-bottom: 1px solid #eee;
+  background: #fff;
+}
+
+.search-icon {
+  font-size: 16px;
+}
+
+.search-box-input {
+  flex: 1;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+}
+
+.search-box-input:focus {
+  border-color: #1a9e5c;
+}
