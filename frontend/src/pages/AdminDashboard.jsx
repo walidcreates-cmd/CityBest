@@ -1,8 +1,8 @@
 ﻿import { useState, useEffect } from 'react';
+import AIAssistant from './AIAssistant';
 
 const API = import.meta.env.VITE_API_URL || 'https://citybest-1.onrender.com';
 
-const CATEGORIES = ['gas','rice','vegetables','fish','dairy','other'];
 const EMPTY = { emoji:'📦', name:'', nameBn:'', price:'', unit:'', category:'rice', isFast:false, stock:0, isAvailable:true };
 
 export default function AdminDashboard({ token, onLogout }) {
@@ -54,7 +54,7 @@ export default function AdminDashboard({ token, onLogout }) {
   const F = ({ label, field, type='text' }) => (
     <div style={{ marginBottom:'0.75rem' }}>
       <label style={{ fontSize:'0.8rem', color:'#666', display:'block', marginBottom:'0.25rem' }}>{label}</label>
-      <input type={type} value={form[field]} onChange={e => setForm(f => ({ ...f, [field]: type==='checkbox' ? e.target.checked : e.target.value }))}
+      <input type={type} value={form[field]} onChange={e => setForm(f => ({ ...f, [field]: e.target.value }))}
         style={{ width:'100%', padding:'0.5rem', borderRadius:'6px', border:'1px solid #ddd', boxSizing:'border-box' }} />
     </div>
   );
@@ -115,6 +115,8 @@ export default function AdminDashboard({ token, onLogout }) {
           ))}
         </div>
       )}
+
+      <AIAssistant products={products} token={token} onRefresh={loadProducts} />
     </div>
   );
 }
