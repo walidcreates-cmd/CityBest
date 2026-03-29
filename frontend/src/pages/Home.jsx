@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import './Home.css';
-import SIRAJGANJ_AREAS from '../data/sirajganjAreas.js';
+import LocationModal from '../components/LocationModal';
 
 const CATEGORIES = [
   { id:'all',        label:'All',        emoji:'🛒' },
@@ -38,93 +38,6 @@ function saveAddress(addr) {
   try { localStorage.setItem('cb_address', JSON.stringify(addr)); } catch {}
 }
 
-function AddressPicker({ onSave, initialAddress }) {
-  const [query,       setQuery]       = useState(initialAddress?.area || '');
-  const [suggestions, setSuggestions] = useState([]);
-  const [selected,    setSelected]    = useState(initialAddress?.area || '');
-  const [houseNo,     setHouseNo]     = useState(initialAddress?.houseNo || '');
-  const [roadNo,      setRoadNo]      = useState(initialAddress?.roadNo  || '');
-  const [step,        setStep]        = useState(initialAddress ? 2 : 1);
-  const inputRef = useRef();
-
-  useEffect(() => { if (inputRef.current) inputRef.current.focus(); }, []);
-
-  const handleSearch = (val) => {
-    setQuery(val); setSelected('');
-    if (!val.trim()) { setSuggestions([]); return; }
-    const q = val.toLowerCase();
-    setSuggestions(SIRAJGANJ_AREAS.filter(a => a.toLowerCase().includes(q)).slice(0, 6));
-  };
-
-  const handlePick = (area) => {
-    setSelected(area); setQuery(area); setSuggestions([]); setStep(2);
-  };
-
-  const handleSave = () => {
-    if (!selected && !query.trim()) return;
-    const addr = { area: selected || query.trim(), houseNo: houseNo.trim(), roadNo: roadNo.trim() };
-    saveAddress(addr);
-    onSave(addr);
-  };
-
-  return (
-    <div className="cb-modal-overlay">
-      <div className="cb-modal">
-        <div className="cb-modal-header">
-          <div className="cb-modal-icon">📍</div>
-          <div>
-            <div className="cb-modal-title">Where do you live?</div>
-            <div className="cb-modal-sub">আপনি কোথায় থাকেন?</div>
-          </div>
-        </div>
-        <div className="cb-modal-section">
-          <label className="cb-modal-label">Area / Village name</label>
-          <div className="cb-modal-search">
-            <span>🔍</span>
-            <input ref={inputRef} type="text" placeholder='Type area name e.g. "Janpur"'
-              value={query} onChange={e => handleSearch(e.target.value)} className="cb-modal-input" />
-            {query && <button className="cb-modal-clear" onClick={() => { setQuery(''); setSelected(''); setSuggestions([]); setStep(1); }}>✕</button>}
-          </div>
-          {suggestions.length > 0 && (
-            <div className="cb-suggestions">
-              {suggestions.map(area => (
-                <button key={area} className="cb-suggestion-item" onClick={() => handlePick(area)}>
-                  <span className="cb-sug-pin">📍</span>
-                  <div>
-                    <div className="cb-sug-name">{area}</div>
-                    <div className="cb-sug-sub">Sirajganj Sadar</div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
-          {query.trim() && suggestions.length === 0 && !selected && (
-            <div className="cb-no-results">
-              <span>🔎</span> Not found — you can still use "<strong>{query}</strong>"
-              <button className="cb-use-custom" onClick={() => handlePick(query)}>Use this →</button>
-            </div>
-          )}
-        </div>
-        {step === 2 && selected && (
-          <div className="cb-modal-section">
-            <div className="cb-selected-area">✓ <strong>{selected}</strong>, Sirajganj Sadar</div>
-            <label className="cb-modal-label" style={{marginTop:14}}>House / Apartment number <span className="cb-optional">(optional)</span></label>
-            <input type="text" placeholder='e.g. "House 12", "Flat B-3"' value={houseNo}
-              onChange={e => setHouseNo(e.target.value)} className="cb-modal-input cb-detail-input" />
-            <label className="cb-modal-label" style={{marginTop:10}}>Road / Street <span className="cb-optional">(optional)</span></label>
-            <input type="text" placeholder='e.g. "Road 4", "Main Bazar Road"' value={roadNo}
-              onChange={e => setRoadNo(e.target.value)} className="cb-modal-input cb-detail-input" />
-          </div>
-        )}
-        <button className="cb-modal-save" onClick={handleSave} disabled={!selected && !query.trim()}>
-          Confirm Location ✓
-        </button>
-        <div className="cb-modal-note">⚠️ We only deliver within Sirajganj Sadar area</div>
-      </div>
-    </div>
-  );
-}
-
 function QtyControl({ qty, onAdd, onIncrease, onDecrease }) {
   if (qty === 0) return <button className="cb-add-btn" onClick={onAdd}>+</button>;
   return (
@@ -159,13 +72,15 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery,    setSearchQuery]    = useState('');
   const [address,        setAddress]        = useState(getSavedAddress);
-  const [showPicker,     setShowPicker]     = useState(!getSavedAddress());
+  const [showMap,        setShowMap]        = useState(!getSavedAddress());
   const { toast, show: showToast } = useToast();
 
-  const handleAddressSave = (addr) => {
+  const handleAddressSave = (loc) => {
+    const addr = { area: loc.address, coords: loc.coords };
+    saveAddress(addr);
     setAddress(addr);
-    setShowPicker(false);
-    showToast(`📍 Delivering to ${addr.area}!`);
+    setShowMap(false);
+    showToast(`📍 Delivering to ${loc.address}!`);
   };
 
   const handleAdd = (product) => {
@@ -186,12 +101,17 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
   });
 
   const [sectionTitle, sectionSubtitle] = SECTION_TITLES[activeCategory] || SECTION_TITLES.all;
-  const navArea    = address?.area    || 'Set location';
-  const navSubArea = address?.houseNo ? `${address.houseNo}${address.roadNo ? ', '+address.roadNo : ''}` : 'Tap to set ↓';
+  const navArea = address?.area || 'Set location';
+  const navSubArea = address?.area ? 'Tap to change' : 'Tap to set ↓';
 
   return (
     <div className="cb-root">
-      {showPicker && <AddressPicker onSave={handleAddressSave} initialAddress={address} />}
+      {showMap && (
+        <LocationModal
+          onClose={() => setShowMap(false)}
+          onConfirm={handleAddressSave}
+        />
+      )}
       <nav className="cb-nav">
         <div className="cb-nav-logo">
           <div className="cb-logo-icon">🏪</div>
@@ -200,7 +120,7 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
             <div className="cb-logo-tag">Sirajganj Delivery</div>
           </div>
         </div>
-        <button className="cb-nav-location" onClick={() => setShowPicker(true)}>
+        <button className="cb-nav-location" onClick={() => setShowMap(true)}>
           <span>📍</span>
           <div>
             <div className="cb-loc-city">{navArea}</div>
