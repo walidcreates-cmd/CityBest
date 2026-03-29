@@ -50,6 +50,7 @@ app.post('/api/admin/login', (req, res) => {
 });
 
 // Routes
+app.use('/api/ai', require('./routes/ai'));
 app.use('/api/otp',      require('./routes/otp'));
 app.use('/api/products', require('./routes/products'));
 app.use('/api/orders',   require('./routes/orders'));
@@ -68,3 +69,4 @@ mongoose.connect(process.env.MONGODB_URI)
     app.listen(PORT, '0.0.0.0', () => console.log(`CityBest API running on port ${PORT}`));
   })
   .catch(err => { console.error('MongoDB error:', err.message); process.exit(1); });
+
