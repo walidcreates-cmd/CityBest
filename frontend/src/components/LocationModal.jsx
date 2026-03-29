@@ -135,7 +135,7 @@ export default function LocationModal({ onClose, onConfirm }) {
             className="search-box-input"
           />
         </div>
-        <div className="map-container" ref={mapRef} />
+        <div className="map-hint">📌 Click on the map or drag the pin to set your exact location</div>
         <div className="location-footer">
           <div className="address-box">
             <span>📍</span>
