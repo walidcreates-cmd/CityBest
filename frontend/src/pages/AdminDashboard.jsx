@@ -30,8 +30,23 @@ export default function AdminDashboard({ token, onLogout }) {
 
   useEffect(() => { loadProducts(); }, []);
 
-  const handleImageUpload = async (file) => {
-    if (!file) return;
+  const handleImageUpload = async (rawFile) => {
+    if (!rawFile) return;
+    // Compress image before upload
+    const file = await new Promise((resolve) => {
+      const img = new Image();
+      const url = URL.createObjectURL(rawFile);
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX = 800;
+        let w = img.width, h = img.height;
+        if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        canvas.toBlob((blob) => resolve(new File([blob], rawFile.name, { type: 'image/jpeg' })), 'image/jpeg', 0.8);
+      };
+      img.src = url;
+    });
     setUploading(true);
     const formData = new FormData();
     formData.append('file', file);
@@ -167,3 +182,4 @@ export default function AdminDashboard({ token, onLogout }) {
     </div>
   );
 }
+
