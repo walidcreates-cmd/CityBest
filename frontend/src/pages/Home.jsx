@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import './Home.css';
-import LocationModal from '../components/LocationModal';
+import LocationModal from '../components/LocationModal';↵import VariantPicker from '../components/VariantPicker';↵import VariantPicker from '../components/VariantPicker';↵import VariantPicker from '../components/VariantPicker';↵import VariantPicker from '../components/VariantPicker';
 
 const CATEGORIES = [
   { id:'all',        label:'All',        emoji:'🛒' },
@@ -73,7 +73,7 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
   const [searchQuery,    setSearchQuery]    = useState('');
   const [address,        setAddress]        = useState(getSavedAddress);
   const [showMap,        setShowMap]        = useState(!getSavedAddress());
-  const { toast, show: showToast } = useToast();
+  const { toast, show: showToast } = useToast(); const [variantProduct, setVariantProduct] = useState(null); const [variantProduct, setVariantProduct] = useState(null);
 
   const handleAddressSave = (loc) => {
     const addr = { area: loc.address, coords: loc.coords };
@@ -84,6 +84,7 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
   };
 
   const handleAdd = (product) => {
+    if (product.variants && product.variants.length > 0) { setVariantProduct(product); return; }
     onUpdateQty(product.id, 1);
     showToast(`✓ ${product.name} added to cart!`);
   };
