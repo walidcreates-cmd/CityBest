@@ -14,6 +14,7 @@ export default function LocationModal({ onClose, onConfirm }) {
 
   useEffect(() => {
     const initMap = () => {
+      if (!mapRef.current) return;
       const map = new window.google.maps.Map(mapRef.current, {
         center: SIRAJGANJ_CENTER,
         zoom: 14,
@@ -135,7 +136,8 @@ export default function LocationModal({ onClose, onConfirm }) {
             className="search-box-input"
           />
         </div>
-        <div className="map-hint">📌 Click on the map or drag the pin to set your exact location</div>
+        <div ref={mapRef} style={{ width:'100%', height:'300px' }}></div>
+<div className="map-hint">📌 Click on the map or drag the pin to set your exact location</div>
         <div className="location-footer">
           <div className="address-box">
             <span>📍</span>
