@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+﻿import { useState, useRef } from 'react';
 import './Home.css';
-import LocationModal from '../components/LocationModal';↵import VariantPicker from '../components/VariantPicker';↵import VariantPicker from '../components/VariantPicker';↵import VariantPicker from '../components/VariantPicker';↵import VariantPicker from '../components/VariantPicker';
+import LocationModal from '../components/LocationModal';
+import VariantPicker from '../components/VariantPicker';
 
 const CATEGORIES = [
   { id:'all',        label:'All',        emoji:'🛒' },
@@ -52,9 +53,13 @@ function QtyControl({ qty, onAdd, onIncrease, onDecrease }) {
 function ProductCard({ product, onAdd, onIncrease, onDecrease }) {
   return (
     <div className="cb-product-card">
-      {product.isFast     && <div className="cb-badge-fast">⚡ FAST</div>}
-      {product.stock==='low' && <div className="cb-stock-low">⚠️ Low stock</div>}
-      <div className="cb-product-img">{product.emoji}</div>
+      {product.isFast && <div className="cb-badge-fast">⚡ FAST</div>}
+      {product.stock === 'low' && <div className="cb-stock-low">⚠️ Low stock</div>}
+      <div className="cb-product-img">
+        {product.image
+          ? <img src={product.image} alt={product.name} style={{ width:'100%', height:'100%', objectFit:'contain' }} />
+          : product.emoji}
+      </div>
       <div className="cb-product-info">
         <div className="cb-product-name">{product.name}</div>
         <div className="cb-product-name-bn">{product.nameBn}</div>
@@ -73,7 +78,8 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
   const [searchQuery,    setSearchQuery]    = useState('');
   const [address,        setAddress]        = useState(getSavedAddress);
   const [showMap,        setShowMap]        = useState(!getSavedAddress());
-  const { toast, show: showToast } = useToast(); const [variantProduct, setVariantProduct] = useState(null); const [variantProduct, setVariantProduct] = useState(null);
+  const [variantProduct, setVariantProduct] = useState(null);
+  const { toast, show: showToast } = useToast();
 
   const handleAddressSave = (loc) => {
     const addr = { area: loc.address, coords: loc.coords };
@@ -84,7 +90,10 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
   };
 
   const handleAdd = (product) => {
-    if (product.variants && product.variants.length > 0) { setVariantProduct(product); return; }
+    if (product.variants && product.variants.length > 0) {
+      setVariantProduct(product);
+      return;
+    }
     onUpdateQty(product.id, 1);
     showToast(`✓ ${product.name} added to cart!`);
   };
@@ -111,6 +120,17 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
         <LocationModal
           onClose={() => setShowMap(false)}
           onConfirm={handleAddressSave}
+        />
+      )}
+      {variantProduct && (
+        <VariantPicker
+          product={variantProduct}
+          onSelect={(variant) => {
+            onUpdateQty(variantProduct.id, 1, variant);
+            showToast(`✓ ${variant.name} added to cart!`);
+            setVariantProduct(null);
+          }}
+          onClose={() => setVariantProduct(null)}
         />
       )}
       <nav className="cb-nav">
