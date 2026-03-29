@@ -10,6 +10,7 @@ const productSchema = new mongoose.Schema({
   isFast:      { type: Boolean, default: false },
   stock:       { type: Number, default: 0 },
   isAvailable: { type: Boolean, default: true },
+  image:       { type: String, default: '' },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Product', productSchema);
