@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 
-export default function PaymentStep({ total, onSuccess, onBack }) {
+export default function PaymentStep({ total, onSuccess, onBack, savedAddress, cartItems }) {
   const [name, setName] = useState('');
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState(savedAddress || '');
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -13,15 +13,31 @@ export default function PaymentStep({ total, onSuccess, onBack }) {
   }, []);
 
   const API = 'https://citybest-1.onrender.com';
+  const DELIVERY_FEE = 30;
 
   const placeOrder = async () => {
     if (!name || !address || !phone) { setError('সব তথ্য দিন'); return; }
     setLoading(true);
+    const subtotal = total - DELIVERY_FEE;
     try {
       const res = await fetch(`${API}/api/orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, address, phone, total, paymentMethod: 'cod' })
+        body: JSON.stringify({
+          area: address,
+          customerName: name,
+          customerPhone: phone,
+          total,
+          subtotal,
+          deliveryFee: DELIVERY_FEE,
+          paymentMethod: 'Cash on Delivery',
+          items: cartItems.map(i => ({
+            productId: i.id,
+            name: i.name,
+            qty: i.qty,
+            price: i.price,
+          })),
+        })
       });
       const data = await res.json();
       if (data.success || data._id || data.id) {
