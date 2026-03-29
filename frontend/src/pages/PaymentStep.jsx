@@ -16,6 +16,7 @@ export default function PaymentStep({ total, onSuccess, onBack, savedAddress, ca
   const DELIVERY_FEE = 30;
 
   const placeOrder = async () => {
+    console.log('CART:', JSON.stringify(cartItems.map(i => ({n:i.name, v:i.selectedVariantName, p:i.price}))));
     if (!name || !address || !phone) { setError('সব তথ্য দিন'); return; }
     setLoading(true);
     const subtotal = total - DELIVERY_FEE;
@@ -34,8 +35,13 @@ export default function PaymentStep({ total, onSuccess, onBack, savedAddress, ca
           items: cartItems.map(i => ({
             productId: i.id,
             name: i.name,
+            nameBn: i.nameBn || '',
+            emoji: i.emoji || '📦',
+            image: i.selectedVariantImage || i.image || '',
+            variantName: i.selectedVariantName || '',
             qty: i.qty,
             price: i.price,
+            unit: i.unit || '',
           })),
         })
       });

@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Home from './pages/Home';
 import Cart from './pages/Cart';
 import AdminLogin from './pages/AdminLogin';
@@ -30,11 +30,20 @@ export default function App() {
   const cartItems = products.filter(p => p.qty > 0);
   const cartTotal = cartItems.reduce((s, p) => s + p.qty, 0);
 
-  const updateQty = (id, delta) => {
-    setProducts(prev =>
-      prev.map(p => p.id === id ? { ...p, qty: Math.max(0, p.qty + delta) } : p)
-    );
-  };
+  const updateQty = (id, delta, variant = null) => {
+  setProducts(prev =>
+    prev.map(p => {
+      if (p.id !== id) return p;
+      const updated = { ...p, qty: Math.max(0, p.qty + delta) };
+      if (variant && delta > 0) {
+        updated.selectedVariantName = variant.name;
+        updated.selectedVariantImage = variant.image || p.image;
+        updated.price = variant.price;
+      }
+      return updated;
+    })
+  );
+};
 
   const clearCart = () => setProducts(prev => prev.map(p => ({ ...p, qty: 0 })));
 

@@ -18,7 +18,9 @@ const orderSchema = new mongoose.Schema({
     emoji:     String,
     price:     Number,
     qty:       Number,
-    unit:      String,
+    unit:        String,
+  image:       String,
+  variantName: String,
   }],
 
   // Pricing

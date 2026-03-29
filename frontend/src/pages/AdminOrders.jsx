@@ -176,7 +176,7 @@ export default function AdminOrders({ token }) {
                         }
                         <div style={{ flex:1 }}>
                           <div style={{ fontSize:'0.85rem', fontWeight:600 }}>{item.name}</div>
-                          {item.variantName && <div style={{ fontSize:'0.75rem', color:'#2563eb' }}>🔀 {item.variantName}</div>}
+                          <div style={{ fontSize:'0.75rem', color:'#2563eb' }}>🔀 {item.variantName || 'NO VARIANT'}</div>
                           {item.nameBn && <div style={{ fontSize:'0.75rem', color:'#888' }}>{item.nameBn}</div>}
                         </div>
                         <div style={{ fontSize:'0.85rem', color:'#666' }}>x{item.qty}</div>
