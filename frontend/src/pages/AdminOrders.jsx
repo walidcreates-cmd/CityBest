@@ -125,20 +125,19 @@ export default function AdminOrders({ token }) {
         <div style={{ display:'grid', gap:'0.75rem' }}>
           {displayed.map(order => {
             const isExpanded = expanded === order._id;
-            const next = NEXT_STATUS[order.status];
-            const customerName  = order.customer?.name  || order.customerName || 'Unknown';
-            const customerPhone = order.customer?.phone || order.phone        || '-';
-            const address       = order.customer?.address || order.address    || '-';
-            const items  = order.items || order.cartItems || [];
-            const total  = order.total || order.totalAmount || 0;
+            const next  = NEXT_STATUS[order.status];
+            const items = order.items || [];
+            const total = order.total || 0;
+            const addressParts = [order.houseNo, order.roadNo, order.area].filter(Boolean);
+            const address = addressParts.length > 0 ? addressParts.join(', ') : '—';
 
             return (
               <div key={order._id} style={{ background:'#fff', border: order.status==='pending' ? '2px solid #fbbf24' : '1px solid #e2e8f0', borderRadius:'12px', overflow:'hidden' }}>
                 <div style={{ padding:'1rem', display:'flex', alignItems:'center', gap:'1rem', flexWrap:'wrap' }}>
                   <div style={{ flex:1, minWidth:'180px' }}>
-                    <div style={{ fontWeight:700, fontSize:'0.95rem' }}>{customerName}</div>
-                    <div style={{ fontSize:'0.82rem', color:'#666', marginTop:'0.15rem' }}>📞 {customerPhone}</div>
-                    <div style={{ fontSize:'0.78rem', color:'#999', marginTop:'0.1rem' }}>📍 {address}</div>
+                    <div style={{ fontWeight:700, fontSize:'0.95rem' }}>{order.customerName || 'Unknown'}</div>
+                    <div style={{ fontSize:'0.82rem', color:'#555', marginTop:'0.15rem' }}>📞 {order.customerPhone || '—'}</div>
+                    <div style={{ fontSize:'0.78rem', color:'#888', marginTop:'0.1rem' }}>📍 {address}</div>
                   </div>
                   <div style={{ textAlign:'right', minWidth:'80px' }}>
                     <div style={{ fontWeight:700, color:'#2563eb', fontSize:'1rem' }}>৳{total}</div>
@@ -176,11 +175,12 @@ export default function AdminOrders({ token }) {
                           : <div style={{ width:'36px', height:'36px', background:'#f1f5f9', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1.2rem' }}>{item.emoji||'📦'}</div>
                         }
                         <div style={{ flex:1 }}>
-                          <div style={{ fontSize:'0.85rem', fontWeight:600 }}>{item.name || item.productName}</div>
-                          {item.variantName && <div style={{ fontSize:'0.75rem', color:'#888' }}>{item.variantName}</div>}
+                          <div style={{ fontSize:'0.85rem', fontWeight:600 }}>{item.name}</div>
+                          {item.variantName && <div style={{ fontSize:'0.75rem', color:'#2563eb' }}>🔀 {item.variantName}</div>}
+                          {item.nameBn && <div style={{ fontSize:'0.75rem', color:'#888' }}>{item.nameBn}</div>}
                         </div>
-                        <div style={{ fontSize:'0.85rem', color:'#666' }}>x{item.qty || item.quantity}</div>
-                        <div style={{ fontSize:'0.85rem', fontWeight:600, color:'#2563eb' }}>৳{(item.price * (item.qty || item.quantity)).toLocaleString()}</div>
+                        <div style={{ fontSize:'0.85rem', color:'#666' }}>x{item.qty}</div>
+                        <div style={{ fontSize:'0.85rem', fontWeight:600, color:'#2563eb' }}>৳{(item.price * item.qty).toLocaleString()}</div>
                       </div>
                     ))}
                     <div style={{ display:'flex', justifyContent:'flex-end', marginTop:'0.5rem', paddingTop:'0.5rem', borderTop:'1px solid #e2e8f0' }}>
@@ -188,6 +188,9 @@ export default function AdminOrders({ token }) {
                     </div>
                     {order.paymentMethod && (
                       <div style={{ fontSize:'0.78rem', color:'#888', marginTop:'0.4rem', textAlign:'right' }}>Payment: {order.paymentMethod}</div>
+                    )}
+                    {order.notes && (
+                      <div style={{ fontSize:'0.78rem', color:'#888', marginTop:'0.25rem', textAlign:'right' }}>Note: {order.notes}</div>
                     )}
                   </div>
                 )}
