@@ -1,4 +1,4 @@
-﻿import { useState, useRef } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
 import './Home.css';
 import LocationModal from '../components/LocationModal';
 
@@ -52,13 +52,9 @@ function QtyControl({ qty, onAdd, onIncrease, onDecrease }) {
 function ProductCard({ product, onAdd, onIncrease, onDecrease }) {
   return (
     <div className="cb-product-card">
-      {product.isFast && <div className="cb-badge-fast">⚡ FAST</div>}
-      {product.stock === 'low' && <div className="cb-stock-low">⚠️ Low stock</div>}
-      <div className="cb-product-img">
-        {product.image
-          ? <img src={product.image} alt={product.name} style={{ width:'100%', height:'100%', objectFit:'contain' }} />
-          : product.emoji}
-      </div>
+      {product.isFast     && <div className="cb-badge-fast">⚡ FAST</div>}
+      {product.stock==='low' && <div className="cb-stock-low">⚠️ Low stock</div>}
+      <div className="cb-product-img">{product.image ? <img src={product.image} alt={product.name} style={{ width:'100%', height:'100
       <div className="cb-product-info">
         <div className="cb-product-name">{product.name}</div>
         <div className="cb-product-name-bn">{product.nameBn}</div>
@@ -84,17 +80,17 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
     saveAddress(addr);
     setAddress(addr);
     setShowMap(false);
-    showToast(\📍 Delivering to \!\);
+    showToast(`📍 Delivering to ${loc.address}!`);
   };
 
   const handleAdd = (product) => {
     onUpdateQty(product.id, 1);
-    showToast(\✓ \ added to cart!\);
+    showToast(`✓ ${product.name} added to cart!`);
   };
 
   const handleDecrease = (product) => {
     onUpdateQty(product.id, -1);
-    if (product.qty === 1) showToast(\✕ \ removed\);
+    if (product.qty === 1) showToast(`✕ ${product.name} removed`);
   };
 
   const filteredProducts = products.filter(p => {
@@ -145,7 +141,7 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
       </div>
       <div className="cb-hero">
         <div className="cb-hero-text">
-          <h1>Sirajganj best<br />grocery. Delivered. 🚀</h1>
+          <h1>Sirajganj's best<br />grocery. Delivered. 🚀</h1>
           <p className="cb-hero-tagline">Fast delivery across Sirajganj</p>
           <p className="cb-hero-tagline-bn">সিরাজগঞ্জে প্রথম ডেলিভারি</p>
           <button className="cb-hero-cta" onClick={onOpenCart}>Shop Now</button>
@@ -166,7 +162,7 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
       </div>
       <div className="cb-cats-scroll">
         {CATEGORIES.map(cat => (
-          <button key={cat.id} className={\cb-cat-pill \\}
+          <button key={cat.id} className={`cb-cat-pill ${activeCategory===cat.id ? 'active' : ''}`}
             onClick={() => { setActiveCategory(cat.id); setSearchQuery(''); }}>
             <div className="cb-cat-icon-wrap">{cat.emoji}</div>
             <span className="cb-cat-label">{cat.label}</span>
@@ -218,7 +214,7 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
           <span className="cb-nav-label">Profile</span>
         </button>
       </nav>
-      <div className={\cb-toast \\} role="status">{toast.msg}</div>
+      <div className={`cb-toast ${toast.visible ? 'show' : ''}`} role="status">{toast.msg}</div>
     </div>
   );
 }
