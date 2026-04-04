@@ -2,10 +2,8 @@ import { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 
-// ─── API base URL — change this to your deployed backend URL ─────────────────
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
-// ─── Design tokens ────────────────────────────────────────────────────────────
 const C = {
   green:      '#0e8a4a',
   greenLight: '#e6f4ed',
@@ -23,7 +21,6 @@ const C = {
   yellow:     '#fbbf24',
 };
 
-// ─── Fallback products if API is unavailable ──────────────────────────────────
 const FALLBACK_PRODUCTS = [
   { id:1, emoji:'🔵', name:'সিলিন্ডার গ্যাস', nameEn:'Gas Cylinder',    price:1250, unit:'12 কেজি',      category:'gas',   isFast:true,  stock:'low', rating:4.8 },
   { id:2, emoji:'🍚', name:'মিনিকেট চাল',     nameEn:'Miniket Rice',    price:75,   unit:'প্রতি কেজি',   category:'rice',  isFast:true,  stock:'ok',  rating:4.6 },
@@ -45,28 +42,23 @@ const CATEGORIES = [
   { id:'spice', label:'মশলা',    emoji:'🌶️' },
 ];
 
-// ─── Shared helpers ───────────────────────────────────────────────────────────
-
-// Gets a fresh Firebase ID token to send to backend
 async function getAuthHeader(user) {
   const token = await user.getIdToken();
   return { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
 }
 
-// ─── Reusable UI pieces ───────────────────────────────────────────────────────
-
 function QtyControl({ qty, onInc, onDec }) {
   if (qty === 0) {
     return (
       <button onClick={onInc} style={{
-        width: '100%', background: C.green, color: '#fff',
-        border: 'none', borderRadius: 10, padding: '8px',
-        fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+        width:'100%', background:C.green, color:'#fff',
+        border:'none', borderRadius:10, padding:'8px',
+        fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:'inherit',
       }}>+ যোগ করুন</button>
     );
   }
   return (
-    <div style={{ display:'flex', alignItems:'center', background: C.green, borderRadius: 10, overflow:'hidden' }}>
+    <div style={{ display:'flex', alignItems:'center', background:C.green, borderRadius:10, overflow:'hidden' }}>
       <button onClick={onDec} style={{ background:'transparent', border:'none', color:'#fff', width:34, height:34, fontSize:18, cursor:'pointer', fontWeight:700 }}>−</button>
       <span style={{ color:'#fff', fontWeight:800, fontSize:15, flex:1, textAlign:'center' }}>{qty}</span>
       <button onClick={onInc} style={{ background:'transparent', border:'none', color:'#fff', width:34, height:34, fontSize:18, cursor:'pointer', fontWeight:700 }}>+</button>
@@ -76,15 +68,11 @@ function QtyControl({ qty, onInc, onDec }) {
 
 function ProductCard({ product, onInc, onDec }) {
   return (
-    <div style={{ background: C.white, borderRadius:16, border:`1px solid ${C.border}`, padding:14, display:'flex', flexDirection:'column', gap:7 }}>
+    <div style={{ background:C.white, borderRadius:16, border:`1px solid ${C.border}`, padding:14, display:'flex', flexDirection:'column', gap:7 }}>
       <div style={{ fontSize:40, textAlign:'center', lineHeight:1 }}>{product.emoji}</div>
       <div style={{ display:'flex', gap:4, flexWrap:'wrap', minHeight:18 }}>
-        {product.isFast && (
-          <span style={{ background:C.orangeLight, color:C.orange, fontSize:9, fontWeight:700, padding:'2px 6px', borderRadius:50 }}>⚡ দ্রুত</span>
-        )}
-        {product.stock === 'low' && (
-          <span style={{ background:C.redLight, color:C.red, fontSize:9, fontWeight:700, padding:'2px 6px', borderRadius:50 }}>স্বল্প স্টক</span>
-        )}
+        {product.isFast && <span style={{ background:C.orangeLight, color:C.orange, fontSize:9, fontWeight:700, padding:'2px 6px', borderRadius:50 }}>⚡ দ্রুত</span>}
+        {product.stock === 'low' && <span style={{ background:C.redLight, color:C.red, fontSize:9, fontWeight:700, padding:'2px 6px', borderRadius:50 }}>স্বল্প স্টক</span>}
       </div>
       <div style={{ fontWeight:700, fontSize:13, color:C.text, lineHeight:1.3 }}>{product.name}</div>
       <div style={{ fontSize:10, color:C.textLight }}>{product.unit}</div>
@@ -119,7 +107,7 @@ function BottomNav({ active, onTab }) {
           cursor:'pointer', fontFamily:'inherit',
         }}>
           <span style={{ fontSize:20 }}>{t.emoji}</span>
-          <span style={{ fontSize:10, fontWeight: active===t.id ? 700 : 500, color: active===t.id ? C.green : C.textLight }}>{t.label}</span>
+          <span style={{ fontSize:10, fontWeight:active===t.id?700:500, color:active===t.id?C.green:C.textLight }}>{t.label}</span>
           {active===t.id && <div style={{ width:4, height:4, background:C.green, borderRadius:'50%' }} />}
         </button>
       ))}
@@ -127,7 +115,6 @@ function BottomNav({ active, onTab }) {
   );
 }
 
-// ─── Loading screen ───────────────────────────────────────────────────────────
 function LoadingScreen({ message = 'CityBest লোড হচ্ছে...' }) {
   return (
     <div style={{
@@ -141,8 +128,7 @@ function LoadingScreen({ message = 'CityBest লোড হচ্ছে...' }) {
   );
 }
 
-// ─── Home Page ────────────────────────────────────────────────────────────────
-function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, user, onLogout }) {
+function HomePage({ products, onUpdateQty, onCart, onTab, activeTab }) {
   const [search, setSearch]     = useState('');
   const [category, setCategory] = useState('all');
 
@@ -157,8 +143,6 @@ function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, user, onLog
 
   return (
     <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Hind Siliguri', sans-serif", maxWidth:430, margin:'0 auto', paddingBottom:130 }}>
-
-      {/* Top bar */}
       <div style={{ background:C.green, padding:'14px 16px 12px', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100 }}>
         <div>
           <div style={{ color:'#fff', fontWeight:800, fontSize:21, lineHeight:1 }}>CityBest</div>
@@ -168,14 +152,11 @@ function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, user, onLog
           <button onClick={() => onTab('profile')} style={{ background:'rgba(255,255,255,0.15)', border:'none', borderRadius:50, width:38, height:38, fontSize:17, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>👤</button>
           <button onClick={onCart} style={{ background:'rgba(255,255,255,0.15)', border:'none', borderRadius:50, width:38, height:38, fontSize:17, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', position:'relative' }}>
             🛒
-            {cartCount > 0 && (
-              <span style={{ position:'absolute', top:-2, right:-2, background:C.orange, color:'#fff', borderRadius:50, width:17, height:17, fontSize:9, fontWeight:800, display:'flex', alignItems:'center', justifyContent:'center' }}>{cartCount}</span>
-            )}
+            {cartCount > 0 && <span style={{ position:'absolute', top:-2, right:-2, background:C.orange, color:'#fff', borderRadius:50, width:17, height:17, fontSize:9, fontWeight:800, display:'flex', alignItems:'center', justifyContent:'center' }}>{cartCount}</span>}
           </button>
         </div>
       </div>
 
-      {/* Search */}
       <div style={{ padding:'12px 16px 0' }}>
         <div style={{ background:C.white, borderRadius:12, border:`1.5px solid ${C.border}`, display:'flex', alignItems:'center', padding:'10px 14px', gap:10 }}>
           <span style={{ fontSize:14, opacity:0.4 }}>🔍</span>
@@ -184,11 +165,10 @@ function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, user, onLog
         </div>
       </div>
 
-      {/* Hero banner */}
       {!search && (
         <div style={{ padding:'12px 16px 0' }}>
-          <div style={{ background:`linear-gradient(135deg, ${C.green}, ${C.greenMid})`, borderRadius:16, padding:'18px 20px', display:'flex', justifyContent:'space-between', alignItems:'center', overflow:'hidden', position:'relative' }}>
-            <div style={{ zIndex:1 }}>
+          <div style={{ background:`linear-gradient(135deg, ${C.green}, ${C.greenMid})`, borderRadius:16, padding:'18px 20px', display:'flex', justifyContent:'space-between', alignItems:'center', overflow:'hidden' }}>
+            <div>
               <div style={{ color:'#fff', fontWeight:800, fontSize:17, lineHeight:1.3 }}>৩০ মিনিটে<br/>ডেলিভারি! ⚡</div>
               <div style={{ color:'rgba(255,255,255,0.85)', fontSize:11, marginTop:5 }}>প্রথম অর্ডারে ৫০ টাকা ছাড়</div>
               <div style={{ marginTop:9, background:C.orange, borderRadius:8, padding:'5px 12px', color:'#fff', fontSize:11, fontWeight:700, display:'inline-block' }}>অর্ডার করুন →</div>
@@ -198,17 +178,16 @@ function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, user, onLog
         </div>
       )}
 
-      {/* Category pills */}
       {!search && (
         <div style={{ padding:'12px 0 0' }}>
           <div style={{ display:'flex', gap:8, overflowX:'auto', padding:'0 16px 4px', scrollbarWidth:'none' }}>
             {CATEGORIES.map(cat => (
               <button key={cat.id} onClick={() => setCategory(cat.id)} style={{
-                flexShrink:0, background: category===cat.id ? C.green : C.white,
-                color: category===cat.id ? '#fff' : C.textMid,
-                border:`1.5px solid ${category===cat.id ? C.green : C.border}`,
+                flexShrink:0, background:category===cat.id?C.green:C.white,
+                color:category===cat.id?'#fff':C.textMid,
+                border:`1.5px solid ${category===cat.id?C.green:C.border}`,
                 borderRadius:50, padding:'6px 13px', fontSize:12,
-                fontWeight: category===cat.id ? 700 : 500, cursor:'pointer', fontFamily:'inherit',
+                fontWeight:category===cat.id?700:500, cursor:'pointer', fontFamily:'inherit',
                 display:'flex', alignItems:'center', gap:5,
               }}>
                 <span style={{ fontSize:13 }}>{cat.emoji}</span>{cat.label}
@@ -218,14 +197,12 @@ function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, user, onLog
         </div>
       )}
 
-      {/* Section label */}
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'14px 16px 8px' }}>
         <div style={{ fontWeight:800, fontSize:15, color:C.text }}>
           {search ? `"${search}" এর ফলাফল: ${filtered.length} টি` : '🛒 সব পণ্য'}
         </div>
       </div>
 
-      {/* Product grid */}
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, padding:'0 16px' }}>
         {filtered.map(p => (
           <ProductCard key={p.id} product={p}
@@ -235,7 +212,6 @@ function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, user, onLog
         ))}
       </div>
 
-      {/* Floating cart button */}
       {cartCount > 0 && (
         <div style={{ position:'fixed', bottom:70, left:'50%', transform:'translateX(-50%)', width:'calc(100% - 32px)', maxWidth:398, zIndex:200 }}>
           <button onClick={onCart} style={{
@@ -256,7 +232,6 @@ function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, user, onLog
   );
 }
 
-// ─── Cart Page ────────────────────────────────────────────────────────────────
 function CartPage({ items, onUpdateQty, onBack, onCheckout }) {
   const subtotal = items.reduce((s,p) => s + p.price * p.qty, 0);
   const delivery = subtotal > 500 ? 0 : 40;
@@ -264,7 +239,6 @@ function CartPage({ items, onUpdateQty, onBack, onCheckout }) {
 
   return (
     <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Hind Siliguri', sans-serif", maxWidth:430, margin:'0 auto', paddingBottom:20 }}>
-      {/* Header */}
       <div style={{ background:C.white, borderBottom:`1px solid ${C.border}`, padding:'14px 16px', display:'flex', alignItems:'center', gap:12, position:'sticky', top:0, zIndex:100 }}>
         <button onClick={onBack} style={{ background:C.bg, border:'none', borderRadius:50, width:38, height:38, fontSize:18, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>←</button>
         <div style={{ fontWeight:800, fontSize:18, color:C.text }}>আমার কার্ট</div>
@@ -301,10 +275,10 @@ function CartPage({ items, onUpdateQty, onBack, onCheckout }) {
 
           <div style={{ margin:'12px 16px 0', background:C.white, borderRadius:16, border:`1px solid ${C.border}`, padding:16 }}>
             <div style={{ fontWeight:800, fontSize:15, color:C.text, marginBottom:12 }}>অর্ডার সারসংক্ষেপ</div>
-            {[['পণ্যের দাম', `৳${subtotal}`], ['ডেলিভারি চার্জ', delivery===0 ? 'বিনামূল্যে ✅' : `৳${delivery}`]].map(([l,v]) => (
+            {[['পণ্যের দাম', `৳${subtotal}`], ['ডেলিভারি চার্জ', delivery===0?'বিনামূল্যে ✅':`৳${delivery}`]].map(([l,v]) => (
               <div key={l} style={{ display:'flex', justifyContent:'space-between', marginBottom:10 }}>
                 <span style={{ color:C.textMid, fontSize:14 }}>{l}</span>
-                <span style={{ fontWeight:600, fontSize:14, color: l==='ডেলিভারি চার্জ' && delivery===0 ? C.green : C.text }}>{v}</span>
+                <span style={{ fontWeight:600, fontSize:14, color:l==='ডেলিভারি চার্জ'&&delivery===0?C.green:C.text }}>{v}</span>
               </div>
             ))}
             <div style={{ borderTop:`1px solid ${C.border}`, paddingTop:12, display:'flex', justifyContent:'space-between' }}>
@@ -324,13 +298,34 @@ function CartPage({ items, onUpdateQty, onBack, onCheckout }) {
   );
 }
 
-// ─── Checkout Page ────────────────────────────────────────────────────────────
 function CheckoutPage({ cartItems, total, user, onBack, onSuccess }) {
   const [address,    setAddress]    = useState('');
   const [phone,      setPhone]      = useState('');
   const [payMethod,  setPayMethod]  = useState('cod');
   const [loading,    setLoading]    = useState(false);
+  const [locLoading, setLocLoading] = useState(false);
   const [error,      setError]      = useState('');
+
+  const pickLocation = () => {
+    if (!navigator.geolocation) { setError('আপনার ব্রাউজার লোকেশন সাপোর্ট করে না'); return; }
+    setLocLoading(true);
+    setError('');
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        try {
+          const res  = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=bn`);
+          const data = await res.json();
+          setAddress(data.display_name || `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+        } catch {
+          setAddress(`${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
+        }
+        setLocLoading(false);
+      },
+      () => { setError('লোকেশন পাওয়া যায়নি। ঠিকানা নিজে লিখুন।'); setLocLoading(false); },
+      { timeout:10000, enableHighAccuracy:true }
+    );
+  };
 
   const placeOrder = async () => {
     if (!address.trim()) { setError('ঠিকানা দিন'); return; }
@@ -341,12 +336,9 @@ function CheckoutPage({ cartItems, total, user, onBack, onSuccess }) {
       const headers = await getAuthHeader(user);
       const body = {
         items: cartItems.map(p => ({ productId: p.id, name: p.name, price: p.price, qty: p.qty })),
-        total,
-        deliveryAddress: address,
-        phone,
-        paymentMethod: payMethod,
+        total, deliveryAddress: address, phone, paymentMethod: payMethod,
       };
-      const res = await fetch(`${API_BASE}/api/orders`, { method:'POST', headers, body: JSON.stringify(body) });
+      const res = await fetch(`${API_BASE}/api/orders`, { method:'POST', headers, body:JSON.stringify(body) });
       if (!res.ok) throw new Error('Order failed');
       onSuccess();
     } catch (err) {
@@ -366,21 +358,37 @@ function CheckoutPage({ cartItems, total, user, onBack, onSuccess }) {
       </div>
 
       <div style={{ padding:16, display:'flex', flexDirection:'column', gap:14 }}>
-        {/* Address */}
         <div style={{ background:C.white, borderRadius:14, border:`1px solid ${C.border}`, padding:16 }}>
           <div style={{ fontWeight:700, fontSize:15, color:C.text, marginBottom:12 }}>📍 ডেলিভারি ঠিকানা</div>
-          <textarea value={address} onChange={e => setAddress(e.target.value)} placeholder="আপনার সম্পূর্ণ ঠিকানা লিখুন..." rows={3}
+
+          <textarea value={address} onChange={e => setAddress(e.target.value)}
+            placeholder="আপনার সম্পূর্ণ ঠিকানা লিখুন..." rows={3}
             style={{ ...inputStyle, resize:'none', marginBottom:10 }} />
-          <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="ফোন নম্বর" style={inputStyle} />
+
+          <button onClick={pickLocation} disabled={locLoading} style={{
+            width:'100%', background:locLoading?C.bg:C.greenLight, color:C.green,
+            border:`1.5px dashed ${C.green}`, borderRadius:10, padding:'10px 14px',
+            fontSize:14, fontWeight:700, cursor:locLoading?'not-allowed':'pointer',
+            fontFamily:'inherit', display:'flex', alignItems:'center', justifyContent:'center',
+            gap:8, marginBottom:10,
+          }}>
+            {locLoading ? '⏳ লোকেশন খোঁজা হচ্ছে...' : '📍 আমার লোকেশন ব্যবহার করুন'}
+          </button>
+
+          <input value={phone} onChange={e => setPhone(e.target.value)}
+            placeholder="ফোন নম্বর" style={inputStyle} />
         </div>
 
-        {/* Payment method */}
         <div style={{ background:C.white, borderRadius:14, border:`1px solid ${C.border}`, padding:16 }}>
           <div style={{ fontWeight:700, fontSize:15, color:C.text, marginBottom:12 }}>💳 পেমেন্ট পদ্ধতি</div>
-          {[{ id:'cod', label:'ক্যাশ অন ডেলিভারি', emoji:'💵' }, { id:'bkash', label:'বিকাশ', emoji:'📱' }, { id:'nagad', label:'নগদ', emoji:'📱' }].map(m => (
+          {[
+            { id:'cod',   label:'ক্যাশ অন ডেলিভারি', emoji:'💵' },
+            { id:'bkash', label:'বিকাশ',              emoji:'📱' },
+            { id:'nagad', label:'নগদ',                emoji:'📱' },
+          ].map(m => (
             <button key={m.id} onClick={() => setPayMethod(m.id)} style={{
-              width:'100%', background: payMethod===m.id ? C.greenLight : C.bg,
-              border:`2px solid ${payMethod===m.id ? C.green : C.border}`,
+              width:'100%', background:payMethod===m.id?C.greenLight:C.bg,
+              border:`2px solid ${payMethod===m.id?C.green:C.border}`,
               borderRadius:12, padding:'11px 14px', display:'flex', alignItems:'center',
               gap:12, cursor:'pointer', fontFamily:'inherit', marginBottom:8, textAlign:'left',
             }}>
@@ -394,9 +402,9 @@ function CheckoutPage({ cartItems, total, user, onBack, onSuccess }) {
         {error && <div style={{ background:C.redLight, borderRadius:10, padding:'10px 14px', color:C.red, fontSize:14, fontWeight:600 }}>{error}</div>}
 
         <button onClick={placeOrder} disabled={loading} style={{
-          width:'100%', background: loading ? '#9ca3af' : C.green, color:'#fff',
+          width:'100%', background:loading?'#9ca3af':C.green, color:'#fff',
           border:'none', borderRadius:14, padding:16, fontSize:16,
-          fontWeight:800, cursor: loading ? 'not-allowed' : 'pointer', fontFamily:'inherit',
+          fontWeight:800, cursor:loading?'not-allowed':'pointer', fontFamily:'inherit',
         }}>
           {loading ? 'অর্ডার দেওয়া হচ্ছে...' : `অর্ডার নিশ্চিত করুন • ৳${total}`}
         </button>
@@ -405,7 +413,6 @@ function CheckoutPage({ cartItems, total, user, onBack, onSuccess }) {
   );
 }
 
-// ─── Order Success ─────────────────────────────────────────────────────────────
 function OrderSuccess({ onHome }) {
   return (
     <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Hind Siliguri', sans-serif", maxWidth:430, margin:'0 auto', display:'flex', alignItems:'center', justifyContent:'center' }}>
@@ -430,7 +437,6 @@ function OrderSuccess({ onHome }) {
   );
 }
 
-// ─── Orders History Page ──────────────────────────────────────────────────────
 function OrdersPage({ user, onTab }) {
   const [orders,  setOrders]  = useState([]);
   const [loading, setLoading] = useState(true);
@@ -468,10 +474,10 @@ function OrdersPage({ user, onTab }) {
       ) : (
         <div style={{ padding:'12px 16px', display:'flex', flexDirection:'column', gap:10 }}>
           {orders.map((order, i) => (
-            <div key={order._id || i} style={{ background:C.white, borderRadius:14, border:`1px solid ${C.border}`, padding:16 }}>
+            <div key={order.id || i} style={{ background:C.white, borderRadius:14, border:`1px solid ${C.border}`, padding:16 }}>
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:10 }}>
-                <div style={{ fontSize:12, color:C.textLight }}>#{(order._id||'').slice(-6).toUpperCase()}</div>
-                <span style={{ background: `${statusColor[order.status]}20`, color: statusColor[order.status], fontSize:11, fontWeight:700, padding:'3px 10px', borderRadius:50 }}>
+                <div style={{ fontSize:12, color:C.textLight }}>#{(order.id||'').slice(-6).toUpperCase()}</div>
+                <span style={{ background:`${statusColor[order.status]}20`, color:statusColor[order.status], fontSize:11, fontWeight:700, padding:'3px 10px', borderRadius:50 }}>
                   {statusLabel[order.status] || order.status}
                 </span>
               </div>
@@ -493,7 +499,6 @@ function OrdersPage({ user, onTab }) {
   );
 }
 
-// ─── Profile Page ─────────────────────────────────────────────────────────────
 function ProfilePage({ user, onLogout, onTab }) {
   const displayName = user.displayName || user.phoneNumber || user.email || 'ব্যবহারকারী';
   const initials    = displayName.slice(0,2).toUpperCase();
@@ -504,7 +509,6 @@ function ProfilePage({ user, onLogout, onTab }) {
         <div style={{ color:'#fff', fontWeight:800, fontSize:19 }}>প্রোফাইল</div>
       </div>
 
-      {/* User card */}
       <div style={{ margin:'16px', background:C.white, borderRadius:16, border:`1px solid ${C.border}`, padding:20, display:'flex', alignItems:'center', gap:16 }}>
         <div style={{ width:56, height:56, borderRadius:'50%', background:C.greenLight, display:'flex', alignItems:'center', justifyContent:'center', fontWeight:800, fontSize:18, color:C.green }}>
           {user.photoURL ? <img src={user.photoURL} alt="" style={{ width:56, height:56, borderRadius:'50%', objectFit:'cover' }} /> : initials}
@@ -515,18 +519,16 @@ function ProfilePage({ user, onLogout, onTab }) {
         </div>
       </div>
 
-      {/* Menu items */}
       {[
-        { emoji:'📦', label:'আমার অর্ডার', action: () => onTab('orders') },
-        { emoji:'📍', label:'ডেলিভারি ঠিকানা', action: () => {} },
-        { emoji:'🔔', label:'নোটিফিকেশন', action: () => {} },
+        { emoji:'📦', label:'আমার অর্ডার',       action: () => onTab('orders') },
+        { emoji:'📍', label:'ডেলিভারি ঠিকানা',   action: () => {} },
+        { emoji:'🔔', label:'নোটিফিকেশন',        action: () => {} },
         { emoji:'❓', label:'সাহায্য ও সাপোর্ট', action: () => {} },
       ].map(item => (
         <button key={item.label} onClick={item.action} style={{
           width:'calc(100% - 32px)', margin:'0 16px 10px', background:C.white,
           border:`1px solid ${C.border}`, borderRadius:14, padding:'14px 16px',
-          display:'flex', alignItems:'center', gap:14, cursor:'pointer', fontFamily:'inherit',
-          textAlign:'left',
+          display:'flex', alignItems:'center', gap:14, cursor:'pointer', fontFamily:'inherit', textAlign:'left',
         }}>
           <span style={{ fontSize:20 }}>{item.emoji}</span>
           <span style={{ fontWeight:600, fontSize:15, color:C.text, flex:1 }}>{item.label}</span>
@@ -534,7 +536,6 @@ function ProfilePage({ user, onLogout, onTab }) {
         </button>
       ))}
 
-      {/* Logout */}
       <button onClick={onLogout} style={{
         width:'calc(100% - 32px)', margin:'8px 16px 0', background:C.redLight,
         border:`1px solid ${C.red}30`, borderRadius:14, padding:'14px 16px',
@@ -549,16 +550,14 @@ function ProfilePage({ user, onLogout, onTab }) {
   );
 }
 
-// ─── Main App Content (authenticated) ────────────────────────────────────────
 function AppContent() {
   const { user, loading, logout } = useAuth();
-  const [products,  setProducts]  = useState([]);
+  const [products,    setProducts]    = useState([]);
   const [prodLoading, setProdLoading] = useState(true);
-  const [view,      setView]      = useState('home');  // home|cart|checkout|success|orders|profile
-  const [activeTab, setActiveTab] = useState('home');
-  const [orderTotal, setOrderTotal] = useState(0);
+  const [view,        setView]        = useState('home');
+  const [activeTab,   setActiveTab]   = useState('home');
+  const [orderTotal,  setOrderTotal]  = useState(0);
 
-  // Fetch products from API on mount, fallback to static list
   useEffect(() => {
     if (!user) return;
     (async () => {
@@ -566,73 +565,40 @@ function AppContent() {
         const res  = await fetch(`${API_BASE}/api/products`);
         if (res.ok) {
           const data = await res.json();
-          setProducts(data.map(p => ({ ...p, qty: 0 })));
+          setProducts(data.map(p => ({ ...p, qty:0 })));
         } else throw new Error('API unavailable');
       } catch {
-        setProducts(FALLBACK_PRODUCTS.map(p => ({ ...p, qty: 0 })));
+        setProducts(FALLBACK_PRODUCTS.map(p => ({ ...p, qty:0 })));
       }
       setProdLoading(false);
     })();
   }, [user]);
 
   const updateQty = (id, delta) => {
-    setProducts(prev => prev.map(p => p.id===id || p._id===id ? { ...p, qty: Math.max(0, (p.qty||0) + delta) } : p));
+    setProducts(prev => prev.map(p => p.id===id || p._id===id ? { ...p, qty:Math.max(0,(p.qty||0)+delta) } : p));
   };
 
-  const clearCart  = () => setProducts(prev => prev.map(p => ({ ...p, qty: 0 })));
-  const cartItems  = products.filter(p => p.qty > 0);
+  const clearCart = () => setProducts(prev => prev.map(p => ({ ...p, qty:0 })));
+  const cartItems = products.filter(p => p.qty > 0);
 
   const handleTab = (tab) => {
     setActiveTab(tab);
-    setView(tab === 'orders' ? 'orders' : tab === 'profile' ? 'profile' : 'home');
+    setView(tab==='orders'?'orders':tab==='profile'?'profile':'home');
   };
 
-  // ── Auth loading
-  if (loading) return <LoadingScreen />;
-  if (!user)   return <Login />;
-
-  // ── Product loading
+  if (loading)     return <LoadingScreen />;
+  if (!user)       return <Login />;
   if (prodLoading) return <LoadingScreen message="পণ্য লোড হচ্ছে..." />;
 
-  // ── Views
-  if (view === 'success') return <OrderSuccess onHome={() => { clearCart(); setView('home'); setActiveTab('home'); }} />;
+  if (view === 'success')  return <OrderSuccess onHome={() => { clearCart(); setView('home'); setActiveTab('home'); }} />;
+  if (view === 'checkout') return <CheckoutPage cartItems={cartItems} total={orderTotal} user={user} onBack={() => setView('cart')} onSuccess={() => setView('success')} />;
+  if (view === 'cart')     return <CartPage items={cartItems} onUpdateQty={updateQty} onBack={() => setView('home')} onCheckout={(total) => { setOrderTotal(total); setView('checkout'); }} />;
+  if (view === 'orders')   return <OrdersPage user={user} onTab={handleTab} />;
+  if (view === 'profile')  return <ProfilePage user={user} onLogout={logout} onTab={handleTab} />;
 
-  if (view === 'checkout') return (
-    <CheckoutPage
-      cartItems={cartItems}
-      total={orderTotal}
-      user={user}
-      onBack={() => setView('cart')}
-      onSuccess={() => setView('success')}
-    />
-  );
-
-  if (view === 'cart') return (
-    <CartPage
-      items={cartItems}
-      onUpdateQty={updateQty}
-      onBack={() => setView('home')}
-      onCheckout={(total) => { setOrderTotal(total); setView('checkout'); }}
-    />
-  );
-
-  if (view === 'orders') return <OrdersPage user={user} onTab={handleTab} />;
-  if (view === 'profile') return <ProfilePage user={user} onLogout={logout} onTab={handleTab} />;
-
-  return (
-    <HomePage
-      products={products}
-      onUpdateQty={updateQty}
-      onCart={() => setView('cart')}
-      onTab={handleTab}
-      activeTab={activeTab}
-      user={user}
-      onLogout={logout}
-    />
-  );
+  return <HomePage products={products} onUpdateQty={updateQty} onCart={() => setView('cart')} onTab={handleTab} activeTab={activeTab} />;
 }
 
-// ─── Root ─────────────────────────────────────────────────────────────────────
 export default function App() {
   return (
     <AuthProvider>
