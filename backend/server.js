@@ -1,4 +1,5 @@
-﻿const express  = require('express');
+﻿require('dotenv').config();
+const express  = require('express');
 const mongoose = require('mongoose');
 const cors     = require('cors');
 const admin    = require('firebase-admin');
@@ -6,9 +7,9 @@ const jwt      = require('jsonwebtoken');
 
 const app = express();
 
-// Firebase Admin Init
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+// Firebase Admin Init — uncomment when FIREBASE_SERVICE_ACCOUNT is added to .env
+// const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+// admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
 
 // Middleware
 app.use(cors());
@@ -28,14 +29,15 @@ async function verifyToken(req, res, next) {
     const decoded = jwt.verify(token, JWT_SECRET);
     if (decoded.role === 'admin') { req.user = decoded; return next(); }
   } catch {}
-  // Fall back to Firebase token
+  // Fall back to Firebase token (only if Firebase Admin is initialized)
   try {
-    const decoded = await admin.auth().verifyIdToken(token);
-    req.user = decoded;
-    next();
-  } catch {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+    if (admin.apps.length > 0) {
+      const decoded = await admin.auth().verifyIdToken(token);
+      req.user = decoded;
+      return next();
+    }
+  } catch {}
+  return res.status(401).json({ error: 'Unauthorized' });
 }
 
 // Public admin login
@@ -50,7 +52,7 @@ app.post('/api/admin/login', (req, res) => {
 });
 
 // Routes
-app.use('/api/ai', require('./routes/ai'));
+app.use('/api/ai',       require('./routes/ai'));
 app.use('/api/otp',      require('./routes/otp'));
 app.use('/api/products', require('./routes/products'));
 app.use('/api/orders',   require('./routes/orders'));
@@ -64,9 +66,8 @@ app.get('/', (req, res) => {
 // Connect DB & Start
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
-    console.log('MongoDB connected');
+    console.log('✅ MongoDB connected');
     const PORT = process.env.PORT || 5000;
-    app.listen(PORT, '0.0.0.0', () => console.log(`CityBest API running on port ${PORT}`));
+    app.listen(PORT, '0.0.0.0', () => console.log(`✅ CityBest API running on port ${PORT}`));
   })
-  .catch(err => { console.error('MongoDB error:', err.message); process.exit(1); });
-
+  .catch(err => { console.error('❌ MongoDB error:', err.message); process.exit(1); });

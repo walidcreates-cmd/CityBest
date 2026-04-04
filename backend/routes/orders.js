@@ -2,91 +2,49 @@ const express = require('express');
 const router  = express.Router();
 const Order   = require('../models/Order');
 
-// POST — place a new order
+// POST /api/orders — place a new order (protected)
 router.post('/', async (req, res) => {
   try {
-    const {
-      area, houseNo, roadNo,
-      items, subtotal, deliveryFee, total,
-      paymentMethod, transactionId,
-      customerName, customerPhone, notes,
-    } = req.body;
+    const { items, total, deliveryAddress, phone, paymentMethod } = req.body;
 
-    // Basic validation
-    if (!area)          return res.status(400).json({ success: false, message: 'Delivery area is required' });
-    if (!items?.length) return res.status(400).json({ success: false, message: 'No items in order' });
-    if (!paymentMethod) return res.status(400).json({ success: false, message: 'Payment method is required' });
+    if (!items || items.length === 0) return res.status(400).json({ error: 'No items in order' });
+    if (!deliveryAddress)             return res.status(400).json({ error: 'Delivery address required' });
+    if (!phone)                       return res.status(400).json({ error: 'Phone required' });
 
     const order = await Order.create({
-      area, houseNo, roadNo,
-      items, subtotal,
-      deliveryFee: deliveryFee || 30,
+      uid: req.user.uid,
+      phone,
+      deliveryAddress,
+      paymentMethod: paymentMethod || 'cod',
+      items,
       total,
-      paymentMethod,
-      transactionId: transactionId || null,
-      customerName:  customerName  || null,
-      customerPhone: customerPhone || null,
-      notes:         notes         || null,
-      status: 'confirmed',
+      status: 'pending',
     });
 
-    res.status(201).json({
-      success: true,
-      message: '✅ Order placed successfully!',
-      data: order,
-    });
+    res.status(201).json(order);
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
-// GET — all orders (for admin)
+// GET /api/orders — get current user's orders (protected)
 router.get('/', async (req, res) => {
   try {
-    const { status, limit = 50 } = req.query;
-    const query = {};
-    if (status) query.status = status;
-
-    const orders = await Order.find(query)
-      .sort({ createdAt: -1 })
-      .limit(Number(limit));
-
-    res.json({ success: true, data: orders, total: orders.length });
+    const orders = await Order.find({ uid: req.user.uid }).sort({ createdAt: -1 });
+    res.json(orders);
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
-// GET — single order
+// GET /api/orders/:id — get single order (protected, own only)
 router.get('/:id', async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id);
-    if (!order) return res.status(404).json({ success: false, message: 'Order not found' });
-    res.json({ success: true, data: order });
+    const order = await Order.findOne({ _id: req.params.id, uid: req.user.uid });
+    if (!order) return res.status(404).json({ error: 'Order not found' });
+    res.json(order);
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
-  }
-});
-
-// PATCH — update order status
-router.patch('/:id/status', async (req, res) => {
-  try {
-    const { status } = req.body;
-    const validStatuses = ['pending','confirmed','preparing','out_for_delivery','delivered','cancelled'];
-    if (!validStatuses.includes(status)) {
-      return res.status(400).json({ success: false, message: 'Invalid status' });
-    }
-
-    const order = await Order.findByIdAndUpdate(
-      req.params.id,
-      { status },
-      { new: true }
-    );
-    if (!order) return res.status(404).json({ success: false, message: 'Order not found' });
-
-    res.json({ success: true, message: `Order updated to ${status}`, data: order });
-  } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 

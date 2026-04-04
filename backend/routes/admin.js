@@ -1,86 +1,94 @@
 const express = require('express');
 const router  = express.Router();
-const Order   = require('../models/Order');
 const Product = require('../models/Product');
+const Order   = require('../models/Order');
 
-// GET â€” dashboard stats
-router.get('/stats', async (req, res) => {
+// ── Admin check middleware ─────────────────────────────────────────────────────
+// Add your admin UIDs to ADMIN_UIDS in .env as a comma-separated list
+const ADMIN_UIDS = (process.env.ADMIN_UIDS || '').split(',').map(s => s.trim());
+
+function requireAdmin(req, res, next) {
+  if (!ADMIN_UIDS.includes(req.user.uid)) {
+    return res.status(403).json({ error: 'Forbidden: Admins only' });
+  }
+  next();
+}
+
+// ── Products CRUD ─────────────────────────────────────────────────────────────
+
+// POST /api/admin/products — add a product
+router.post('/products', requireAdmin, async (req, res) => {
   try {
-    const [
-      totalOrders,
-      pendingOrders,
-      confirmedOrders,
-      preparingOrders,
-      outForDeliveryOrders,
-      deliveredOrders,
-      cancelledOrders,
-      totalProducts,
-      recentOrders,
-    ] = await Promise.all([
-      Order.countDocuments(),
-      Order.countDocuments({ status: 'pending' }),
-      Order.countDocuments({ status: 'confirmed' }),
-      Order.countDocuments({ status: 'preparing' }),
-      Order.countDocuments({ status: 'out_for_delivery' }),
-      Order.countDocuments({ status: 'delivered' }),
-      Order.countDocuments({ status: 'cancelled' }),
-      Product.countDocuments({ isAvailable: true }),
-      Order.find().sort({ createdAt: -1 }).limit(5),
-    ]);
-
-    // Total revenue from delivered orders
-    const revenueResult = await Order.aggregate([
-      { $match: { status: 'delivered' } },
-      { $group: { _id: null, total: { $sum: '$total' } } },
-    ]);
-    const totalRevenue = revenueResult[0]?.total || 0;
-
-    res.json({
-      success: true,
-      data: {
-        orders: {
-          total:          totalOrders,
-          pending:        pendingOrders,
-          confirmed:      confirmedOrders,
-          preparing:      preparingOrders,
-          outForDelivery: outForDeliveryOrders,
-          delivered:      deliveredOrders,
-          cancelled:      cancelledOrders,
-        },
-        totalProducts,
-        totalRevenue,
-        recentOrders,
-      },
-    });
+    const product = await Product.create(req.body);
+    res.status(201).json(product);
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    res.status(400).json({ error: err.message });
   }
 });
 
-
-// GET all orders with optional status filter
-router.get('/orders', async (req, res) => {
+// PUT /api/admin/products/:id — update a product
+router.put('/products/:id', requireAdmin, async (req, res) => {
   try {
-    const filter = {};
-    if (req.query.status) filter.status = req.query.status;
-    const orders = await Order.find(filter).sort({ createdAt: -1 }).lean();
-    res.json({ success: true, data: orders });
+    const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!product) return res.status(404).json({ error: 'Product not found' });
+    res.json(product);
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    res.status(400).json({ error: err.message });
   }
 });
 
-// PATCH update order status
-router.patch('/orders/:id/status', async (req, res) => {
+// DELETE /api/admin/products/:id — soft delete
+router.delete('/products/:id', requireAdmin, async (req, res) => {
+  try {
+    await Product.findByIdAndUpdate(req.params.id, { isActive: false });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// ── Orders management ─────────────────────────────────────────────────────────
+
+// GET /api/admin/orders — all orders
+router.get('/orders', requireAdmin, async (req, res) => {
+  try {
+    const orders = await Order.find().sort({ createdAt: -1 }).limit(200);
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PATCH /api/admin/orders/:id/status — update order status
+router.patch('/orders/:id/status', requireAdmin, async (req, res) => {
   try {
     const { status } = req.body;
-    const valid = ['pending','confirmed','preparing','out_for_delivery','delivered','cancelled'];
-    if (!valid.includes(status)) return res.status(400).json({ success: false, message: 'Invalid status' });
     const order = await Order.findByIdAndUpdate(req.params.id, { status }, { new: true });
-    if (!order) return res.status(404).json({ success: false, message: 'Order not found' });
-    res.json({ success: true, data: order });
+    if (!order) return res.status(404).json({ error: 'Order not found' });
+    res.json(order);
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// ── Seed products (dev only) ──────────────────────────────────────────────────
+router.post('/seed', requireAdmin, async (req, res) => {
+  const seedProducts = [
+    { emoji:'🔵', name:'সিলিন্ডার গ্যাস', nameEn:'Gas Cylinder',    price:1250, unit:'12 কেজি',     category:'gas',   isFast:true,  stock:'low', rating:4.8 },
+    { emoji:'🍚', name:'মিনিকেট চাল',     nameEn:'Miniket Rice',    price:75,   unit:'প্রতি কেজি',  category:'rice',  isFast:true,  stock:'ok',  rating:4.6 },
+    { emoji:'🫙', name:'সয়াবিন তেল',     nameEn:'Soybean Oil',     price:165,  unit:'প্রতি লিটার', category:'oil',   isFast:false, stock:'ok',  rating:4.5 },
+    { emoji:'🥦', name:'ফুলকপি',          nameEn:'Cauliflower',     price:35,   unit:'প্রতিটি',     category:'veg',   isFast:true,  stock:'ok',  rating:4.3 },
+    { emoji:'🐟', name:'রুই মাছ',         nameEn:'Rohu Fish',       price:220,  unit:'প্রতি কেজি',  category:'fish',  isFast:false, stock:'ok',  rating:4.7 },
+    { emoji:'🌶️', name:'মরিচ গুঁড়া',     nameEn:'Chili Powder',    price:180,  unit:'৫০০ গ্রাম',   category:'spice', isFast:false, stock:'ok',  rating:4.4 },
+    { emoji:'🍚', name:'নাজিরশাইল চাল',   nameEn:'Nazirshail Rice', price:85,   unit:'প্রতি কেজি',  category:'rice',  isFast:false, stock:'ok',  rating:4.5 },
+    { emoji:'🥦', name:'আলু',             nameEn:'Potato',          price:28,   unit:'প্রতি কেজি',  category:'veg',   isFast:true,  stock:'ok',  rating:4.2 },
+  ];
+  try {
+    await Product.deleteMany({});
+    const inserted = await Product.insertMany(seedProducts);
+    res.json({ seeded: inserted.length });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 

@@ -1,55 +1,20 @@
 const mongoose = require('mongoose');
 
+const orderItemSchema = new mongoose.Schema({
+  productId: { type: String, required: true },
+  name:      { type: String, required: true },
+  price:     { type: Number, required: true },
+  qty:       { type: Number, required: true },
+});
+
 const orderSchema = new mongoose.Schema({
-  // Customer info
-  customerName:  { type: String },
-  customerPhone: { type: String },
-
-  // Delivery address
-  area:    { type: String, required: true },
-  houseNo: { type: String },
-  roadNo:  { type: String },
-
-  // Items ordered
-  items: [{
-    productId: String,
-    name:      String,
-    nameBn:    String,
-    emoji:     String,
-    price:     Number,
-    qty:       Number,
-    unit:        String,
-  image:       String,
-  variantName: String,
-  }],
-
-  // Pricing
-  subtotal:    { type: Number, required: true },
-  deliveryFee: { type: Number, default: 30 },
-  total:       { type: Number, required: true },
-
-  // Payment
-  paymentMethod: {
-    type: String,
-    enum: ['bKash', 'Nagad', 'Rocket', 'Upay', 'Other Bank App', 'Cash on Delivery'],
-    required: true,
-  },
-  transactionId: { type: String },
-
-  // Order status
-  status: {
-    type: String,
-    enum: ['pending', 'confirmed', 'preparing', 'out_for_delivery', 'delivered', 'cancelled'],
-    default: 'pending',
-  },
-
-  // Rider assignment (for later)
-  riderId:   { type: String },
-  riderName: { type: String },
-
-  // Notes
-  notes: { type: String },
-
+  uid:             { type: String, required: true },   // Firebase UID
+  phone:           { type: String, required: true },
+  deliveryAddress: { type: String, required: true },
+  paymentMethod:   { type: String, enum: ['cod', 'bkash', 'nagad'], default: 'cod' },
+  items:           [orderItemSchema],
+  total:           { type: Number, required: true },
+  status:          { type: String, enum: ['pending', 'confirmed', 'delivered', 'cancelled'], default: 'pending' },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Order', orderSchema);
