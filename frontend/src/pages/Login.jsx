@@ -150,7 +150,10 @@ const CSS = `
     gap: 10px;
     font-family: 'Hind Siliguri', sans-serif;
     transition: border-color 0.2s, box-shadow 0.2s;
+    white-space: nowrap;
+    flex-wrap: nowrap;
   }
+  .cb-google-btn span { white-space: nowrap; }
   .cb-google-btn:hover:not(:disabled) {
     border-color: #1a9e5c;
     box-shadow: 0 2px 8px rgba(26,158,92,0.12);
@@ -181,8 +184,8 @@ const CSS = `
     border-radius: 8px;
   }
 
-  /* ── Desktop layout (≥ 768px) ── */
-  @media (min-width: 768px) {
+  /* ── Desktop layout (≥ 1024px) ── */
+  @media (min-width: 1024px) {
     .cb-left {
       display: flex;
       flex-direction: column;
@@ -249,6 +252,7 @@ const CSS = `
 
     .cb-card {
       max-width: 420px;
+      min-width: 360px;
       box-shadow: 0 4px 24px rgba(0,0,0,0.07);
     }
 
@@ -408,7 +412,7 @@ export default function Login() {
 
               <button className="cb-google-btn" onClick={signInWithGoogle} disabled={loading}>
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G" style={{ width: 20 }} />
-                Google দিয়ে লগইন করুন
+                <span>Google দিয়ে লগইন করুন</span>
               </button>
             </>
           )}
