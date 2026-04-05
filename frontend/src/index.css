@@ -17,3 +17,9 @@ html, body {
   position: relative;
   box-shadow: 0 0 40px rgba(0,0,0,0.08);
 }
+@media (min-width: 1024px) {
+  #root {
+    max-width: 100%;
+    box-shadow: none;
+  }
+}
