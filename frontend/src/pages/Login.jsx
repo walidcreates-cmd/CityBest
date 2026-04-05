@@ -10,13 +10,14 @@ import {
 const provider = new GoogleAuthProvider();
 
 export default function Login() {
-  const [phone, setPhone]     = useState('');
-  const [otp, setOtp]         = useState('');
-  const [step, setStep]       = useState('phone');
-  const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState('');
-  const confirmRef            = useRef(null);
+  const [phone, setPhone]         = useState('');
+  const [otp, setOtp]             = useState('');
+  const [step, setStep]           = useState('phone'); // 'phone' | 'otp'
+  const [loading, setLoading]     = useState(false);
+  const [error, setError]         = useState('');
+  const confirmRef                = useRef(null);
 
+  // ── Setup invisible reCAPTCHA ──────────────────────────────────────────
   const setupRecaptcha = () => {
     if (!window.recaptchaVerifier) {
       window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
@@ -25,9 +26,13 @@ export default function Login() {
     }
   };
 
+  // ── Send OTP ───────────────────────────────────────────────────────────
   const sendOtp = async () => {
     setError('');
-    if (!phone || phone.length < 10) { setError('সঠিক ফোন নম্বর দিন'); return; }
+    if (!phone || phone.length < 10) {
+      setError('সঠিক ফোন নম্বর দিন');
+      return;
+    }
     setLoading(true);
     try {
       setupRecaptcha();
@@ -38,17 +43,25 @@ export default function Login() {
     } catch (err) {
       setError('OTP পাঠানো যায়নি। আবার চেষ্টা করুন।');
       console.error(err);
-      if (window.recaptchaVerifier) { window.recaptchaVerifier.clear(); window.recaptchaVerifier = null; }
+      if (window.recaptchaVerifier) {
+        window.recaptchaVerifier.clear();
+        window.recaptchaVerifier = null;
+      }
     }
     setLoading(false);
   };
 
+  // ── Verify OTP ─────────────────────────────────────────────────────────
   const verifyOtp = async () => {
     setError('');
-    if (!otp || otp.length !== 6) { setError('৬ সংখ্যার OTP দিন'); return; }
+    if (!otp || otp.length !== 6) {
+      setError('৬ সংখ্যার OTP দিন');
+      return;
+    }
     setLoading(true);
     try {
       await confirmRef.current.confirm(otp);
+      // onAuthStateChanged in AuthContext will pick up the user automatically
     } catch (err) {
       setError('OTP ভুল হয়েছে। আবার চেষ্টা করুন।');
       console.error(err);
@@ -56,6 +69,7 @@ export default function Login() {
     setLoading(false);
   };
 
+  // ── Google Sign-in ─────────────────────────────────────────────────────
   const signInWithGoogle = async () => {
     setError('');
     setLoading(true);
@@ -105,8 +119,8 @@ export default function Login() {
             <div style={styles.divider}><span>অথবা</span></div>
 
             <button style={styles.googleBtn} onClick={signInWithGoogle} disabled={loading}>
-              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G" style={{ width: 20, flexShrink: 0 }} />
-              <span>Google দিয়ে লগইন করুন</span>
+              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G" style={{ width: 20, marginRight: 10 }} />
+              Google দিয়ে লগইন করুন
             </button>
           </>
         )}
@@ -117,7 +131,7 @@ export default function Login() {
             <p style={styles.label}>আপনার ফোনে OTP পাঠানো হয়েছে</p>
             <p style={styles.phoneSent}>+88{phone}</p>
             <input
-              style={{ ...styles.input, width: '100%', textAlign: 'center', fontSize: 24, letterSpacing: 8, border: '2px solid #e0e0e0', borderRadius: 10, padding: 14, boxSizing: 'border-box' }}
+              style={{ ...styles.input, width: '100%', textAlign: 'center', fontSize: 24, letterSpacing: 8 }}
               type="number"
               placeholder="------"
               value={otp}
@@ -137,7 +151,10 @@ export default function Login() {
           </>
         )}
 
+        {/* Error */}
         {error && <p style={styles.error}>{error}</p>}
+
+        {/* Invisible reCAPTCHA container */}
         <div id="recaptcha-container" />
       </div>
     </div>
@@ -147,29 +164,26 @@ export default function Login() {
 const styles = {
   page: {
     minHeight: '100vh',
-    width: '100%',
+    background: 'linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    background: 'linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%)',
     fontFamily: "'Hind Siliguri', sans-serif",
     padding: 16,
-    boxSizing: 'border-box',
   },
   card: {
     background: '#fff',
     borderRadius: 20,
     padding: '36px 32px',
     width: '100%',
-    maxWidth: 420,
+    maxWidth: 380,
     boxShadow: '0 8px 40px rgba(0,0,0,0.10)',
-    boxSizing: 'border-box',
   },
   logoWrap: {
     textAlign: 'center',
     marginBottom: 28,
   },
-  logoIcon: { fontSize: 48, display: 'block' },
+  logoIcon: { fontSize: 48 },
   logoText: {
     margin: '4px 0 0',
     fontSize: 28,
@@ -208,7 +222,6 @@ const styles = {
     fontWeight: 700,
     fontSize: 15,
     borderRight: '1px solid #e0e0e0',
-    whiteSpace: 'nowrap',
   },
   input: {
     flex: 1,
@@ -217,7 +230,6 @@ const styles = {
     padding: '12px 14px',
     fontSize: 16,
     fontFamily: 'inherit',
-    minWidth: 0,
   },
   btn: {
     width: '100%',
@@ -230,12 +242,14 @@ const styles = {
     fontWeight: 700,
     cursor: 'pointer',
     fontFamily: 'inherit',
+    transition: 'background 0.2s',
   },
   divider: {
     textAlign: 'center',
     margin: '18px 0',
     color: '#bbb',
     fontSize: 13,
+    position: 'relative',
   },
   googleBtn: {
     width: '100%',
@@ -250,9 +264,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 10,
     fontFamily: 'inherit',
-    boxSizing: 'border-box',
   },
   backBtn: {
     width: '100%',
