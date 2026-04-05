@@ -1,62 +1,60 @@
-/* ── Desktop Override (min-width: 1024px) ── */
 @media (min-width: 1024px) {
 
-  .cb-root {
-    max-width: 100%;
-    margin: 0;
-    padding-bottom: 0;
+  body {
+    background: #e8f0fe;
   }
 
-  /* Header */
-  .cb-header {
-    max-width: 100%;
-    padding: 0 40px;
-    height: 70px;
+  .cb-root {
+    max-width: 1280px !important;
+    margin: 0 auto !important;
+    padding-bottom: 0 !important;
+    box-shadow: 0 0 40px rgba(0,0,0,0.08);
+  }
+
+  .cb-nav {
+    padding: 0 32px;
+    height: 64px;
     position: sticky;
     top: 0;
     z-index: 200;
   }
 
-  /* Hide bottom nav on desktop */
   .cb-bottom-nav,
   .cb-spacer {
     display: none !important;
   }
 
-  /* Search bar */
   .cb-search-wrap {
-    max-width: 100%;
-    padding: 16px 40px;
+    padding: 12px 32px;
   }
 
-  .cb-search {
-    max-width: 600px;
-    margin: 0 auto;
-  }
-
-  /* Hero banner */
   .cb-hero {
-    margin: 0 40px 24px;
+    margin: 0 32px 20px;
     border-radius: 16px;
   }
 
-  /* Categories */
-  .cb-cats {
-    padding: 0 40px;
+  .cb-cats-scroll {
+    padding: 0 32px;
     gap: 12px;
   }
 
-  /* Products grid - 4 columns on desktop */
   .cb-products-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-    padding: 0 40px;
-    max-width: 100%;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 20px !important;
+    padding: 0 32px 32px !important;
   }
 
-  /* Section title */
-  .cb-section-title {
-    padding: 16px 40px 8px;
+  .cb-section-header {
+    padding: 16px 32px 8px;
+  }
+
+  .cb-promo-strip {
+    margin: 0 32px 16px;
+    border-radius: 12px;
+  }
+
+  .cb-badge-row {
+    padding: 8px 32px;
   }
 
 }
