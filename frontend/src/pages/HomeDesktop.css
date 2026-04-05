@@ -1,0 +1,62 @@
+/* ── Desktop Override (min-width: 1024px) ── */
+@media (min-width: 1024px) {
+
+  .cb-root {
+    max-width: 100%;
+    margin: 0;
+    padding-bottom: 0;
+  }
+
+  /* Header */
+  .cb-header {
+    max-width: 100%;
+    padding: 0 40px;
+    height: 70px;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+  }
+
+  /* Hide bottom nav on desktop */
+  .cb-bottom-nav,
+  .cb-spacer {
+    display: none !important;
+  }
+
+  /* Search bar */
+  .cb-search-wrap {
+    max-width: 100%;
+    padding: 16px 40px;
+  }
+
+  .cb-search {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* Hero banner */
+  .cb-hero {
+    margin: 0 40px 24px;
+    border-radius: 16px;
+  }
+
+  /* Categories */
+  .cb-cats {
+    padding: 0 40px;
+    gap: 12px;
+  }
+
+  /* Products grid - 4 columns on desktop */
+  .cb-products-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 0 40px;
+    max-width: 100%;
+  }
+
+  /* Section title */
+  .cb-section-title {
+    padding: 16px 40px 8px;
+  }
+
+}

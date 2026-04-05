@@ -1,5 +1,6 @@
 ﻿import { useState, useRef } from 'react';
 import './Home.css';
+import './HomeDesktop.css';
 import LocationModal from '../components/LocationModal';
 import VariantPicker from '../components/VariantPicker';
 
