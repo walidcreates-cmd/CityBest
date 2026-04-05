@@ -96,7 +96,7 @@ function BottomNav({ active, onTab }) {
   return (
     <div style={{
       position:'fixed', bottom:0, left:'50%', transform:'translateX(-50%)',
-      width:'100%', maxWidth:430, background:C.white,
+      width:'100%', maxWidth:'100%', background:C.white,
       borderTop:`1px solid ${C.border}`, display:'flex', zIndex:150,
       paddingBottom:'env(safe-area-inset-bottom, 0px)',
     }}>
@@ -142,7 +142,7 @@ function HomePage({ products, onUpdateQty, onCart, onTab, activeTab }) {
   });
 
   return (
-    <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Hind Siliguri', sans-serif", maxWidth:430, margin:'0 auto', paddingBottom:130 }}>
+    <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Hind Siliguri', sans-serif", maxWidth:'100%', margin:'0 auto', paddingBottom:130 }}>
       <div style={{ background:C.green, padding:'14px 16px 12px', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100 }}>
         <div>
           <div style={{ color:'#fff', fontWeight:800, fontSize:21, lineHeight:1 }}>CityBest</div>
@@ -238,7 +238,7 @@ function CartPage({ items, onUpdateQty, onBack, onCheckout }) {
   const total    = subtotal + delivery;
 
   return (
-    <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Hind Siliguri', sans-serif", maxWidth:430, margin:'0 auto', paddingBottom:20 }}>
+    <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Hind Siliguri', sans-serif", maxWidth:'100%', margin:'0 auto', paddingBottom:20 }}>
       <div style={{ background:C.white, borderBottom:`1px solid ${C.border}`, padding:'14px 16px', display:'flex', alignItems:'center', gap:12, position:'sticky', top:0, zIndex:100 }}>
         <button onClick={onBack} style={{ background:C.bg, border:'none', borderRadius:50, width:38, height:38, fontSize:18, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>←</button>
         <div style={{ fontWeight:800, fontSize:18, color:C.text }}>আমার কার্ট</div>
@@ -351,7 +351,7 @@ function CheckoutPage({ cartItems, total, user, onBack, onSuccess }) {
   const inputStyle = { width:'100%', border:`1.5px solid ${C.border}`, borderRadius:10, padding:'10px 12px', fontSize:14, fontFamily:'inherit', outline:'none', boxSizing:'border-box', color:C.text };
 
   return (
-    <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Hind Siliguri', sans-serif", maxWidth:430, margin:'0 auto', paddingBottom:32 }}>
+    <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Hind Siliguri', sans-serif", maxWidth:'100%', margin:'0 auto', paddingBottom:32 }}>
       <div style={{ background:C.white, borderBottom:`1px solid ${C.border}`, padding:'14px 16px', display:'flex', alignItems:'center', gap:12, position:'sticky', top:0, zIndex:100 }}>
         <button onClick={onBack} style={{ background:C.bg, border:'none', borderRadius:50, width:38, height:38, fontSize:18, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>←</button>
         <div style={{ fontWeight:800, fontSize:18, color:C.text }}>ডেলিভারি তথ্য</div>
@@ -415,7 +415,7 @@ function CheckoutPage({ cartItems, total, user, onBack, onSuccess }) {
 
 function OrderSuccess({ onHome }) {
   return (
-    <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Hind Siliguri', sans-serif", maxWidth:430, margin:'0 auto', display:'flex', alignItems:'center', justifyContent:'center' }}>
+    <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Hind Siliguri', sans-serif", maxWidth:'100%', margin:'0 auto', display:'flex', alignItems:'center', justifyContent:'center' }}>
       <div style={{ textAlign:'center', padding:32 }}>
         <div style={{ fontSize:80 }}>✅</div>
         <div style={{ fontWeight:800, fontSize:24, color:C.text, marginTop:20 }}>অর্ডার হয়েছে!</div>
@@ -456,7 +456,7 @@ function OrdersPage({ user, onTab }) {
   const statusLabel = { pending:'অপেক্ষায়', confirmed:'নিশ্চিত', delivered:'ডেলিভারি হয়েছে', cancelled:'বাতিল' };
 
   return (
-    <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Hind Siliguri', sans-serif", maxWidth:430, margin:'0 auto', paddingBottom:80 }}>
+    <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Hind Siliguri', sans-serif", maxWidth:'100%', margin:'0 auto', paddingBottom:80 }}>
       <div style={{ background:C.green, padding:'14px 16px 12px' }}>
         <div style={{ color:'#fff', fontWeight:800, fontSize:19 }}>আমার অর্ডার</div>
         <div style={{ color:'rgba(255,255,255,0.75)', fontSize:10, marginTop:2 }}>CityBest</div>
@@ -504,7 +504,7 @@ function ProfilePage({ user, onLogout, onTab }) {
   const initials    = displayName.slice(0,2).toUpperCase();
 
   return (
-    <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Hind Siliguri', sans-serif", maxWidth:430, margin:'0 auto', paddingBottom:80 }}>
+    <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Hind Siliguri', sans-serif", maxWidth:'100%', margin:'0 auto', paddingBottom:80 }}>
       <div style={{ background:C.green, padding:'14px 16px 12px' }}>
         <div style={{ color:'#fff', fontWeight:800, fontSize:19 }}>প্রোফাইল</div>
       </div>
