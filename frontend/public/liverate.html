@@ -347,6 +347,49 @@ textarea.form-input { resize: none; line-height: 1.5; }
 <script>
 var selected = null;
 var qty = 1;
+var allRates = [];
+
+fetch('https://citybest-1.onrender.com/api/liverate')
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    allRates = data;
+    renderRates(data);
+  })
+  .catch(function(){ console.log('Rate fetch failed'); });
+
+function renderRates(data) {
+  var cylinders = data.filter(function(r){ return r.type === 'cylinder'; });
+  var rices = data.filter(function(r){ return r.type === 'rice'; });
+
+  var gasGrid = document.querySelector('#panel-gas .brand-grid');
+  var riceGrid = document.querySelector('#panel-rice .brand-grid');
+
+  gasGrid.innerHTML = cylinders.map(function(r){
+    var imgHtml = r.img
+      ? '<img src="' + r.img + '" alt="' + r.name + '">'
+      : '<span style="font-size:36px;">🔵</span>';
+    return '<div class="brand-card" id="card-' + r.id + '" onclick="selectBrand(\'' + r.id + '\',\'' + r.name + '\',\'' + r.unit + '\',' + r.price + ',\'cylinder\',\'' + r.img + '\')">'
+      + '<div class="selected-check">✓</div>'
+      + '<div class="brand-img-wrap">' + imgHtml + '</div>'
+      + '<div class="brand-name">' + r.name + '</div>'
+      + '<div class="brand-sub">' + r.unit + '</div>'
+      + '<div class="brand-price">৳' + toBn(r.price.toLocaleString()) + '</div>'
+      + '</div>';
+  }).join('');
+
+  riceGrid.innerHTML = rices.map(function(r){
+    var imgHtml = r.img
+      ? '<img src="' + r.img + '" alt="' + r.name + '">'
+      : '<span style="font-size:36px;">🍚</span>';
+    return '<div class="brand-card" id="card-' + r.id + '" onclick="selectBrand(\'' + r.id + '\',\'' + r.name + '\',\'' + r.unit + '\',' + r.price + ',\'rice\',\'' + r.img + '\')">'
+      + '<div class="selected-check">✓</div>'
+      + '<div class="brand-img-wrap">' + imgHtml + '</div>'
+      + '<div class="brand-name">' + r.name + '</div>'
+      + '<div class="brand-sub">' + r.unit + '</div>'
+      + '<div class="brand-price">৳' + toBn(r.price.toLocaleString()) + '</div>'
+      + '</div>';
+  }).join('');
+}
 
 function toBn(n) {
   return String(n).replace(/[0-9]/g, function(d){ return '০১২৩৪৫৬৭৮৯'[d]; });
