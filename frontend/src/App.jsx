@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/Login';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
@@ -587,7 +589,12 @@ function AppContent() {
   };
 
   if (loading)     return <LoadingScreen />;
-  if (!user)       return <Login />;
+  if (window.location.pathname === '/admin') {
+  const adminToken = localStorage.getItem('adminToken');
+  if (!adminToken) return <AdminLogin onLogin={(t) => { localStorage.setItem('adminToken', t); window.location.reload(); }} />;
+  return <AdminDashboard token={adminToken} onLogout={() => { localStorage.removeItem('adminToken'); window.location.reload(); }} />;
+}
+if (!user) return <Login />;
   if (prodLoading) return <LoadingScreen message="পণ্য লোড হচ্ছে..." />;
 
   if (view === 'success')  return <OrderSuccess onHome={() => { clearCart(); setView('home'); setActiveTab('home'); }} />;
