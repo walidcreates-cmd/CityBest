@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>CityBest — আজকের রেট</title>
+<meta name="description" content="সিরাজগঞ্জে গ্যাস সিলিন্ডার ও চালের আজকের বাজার দর এবং হোম ডেলিভারি।">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Hind Siliguri', sans-serif;
+  background: #f0f4f0;
+  color: #222;
+  min-height: 100vh;
+}
+.page {
+  max-width: 430px;
+  margin: 0 auto;
+  background: #fff;
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+.step { display: none; }
+.step.active { display: block; }
+
+/* ── Header ── */
+.header {
+  background: #1a9e5c;
+  color: #fff;
+  padding: 16px 20px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header-brand h1 { font-size: 20px; font-weight: 700; }
+.header-brand p { font-size: 12px; opacity: 0.85; margin-top: 1px; }
+.header-date {
+  font-size: 11px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 20px;
+  padding: 4px 10px;
+  opacity: 0.95;
+  white-space: nowrap;
+}
+
+/* ── Tab switcher ── */
+.tabs {
+  display: flex;
+  background: #fff;
+  border-bottom: 2px solid #e8f5e9;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.tab-btn {
+  flex: 1;
+  padding: 12px 8px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  color: #888;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: -2px;
+}
+.tab-btn.active {
+  color: #1a9e5c;
+  border-bottom-color: #1a9e5c;
+}
+
+/* ── Section label ── */
+.section-label {
+  font-size: 12px;
+  color: #888;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  padding: 14px 16px 8px;
+  text-transform: uppercase;
+}
+
+/* ── Brand card ── */
+.brand-grid {
+  padding: 0 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.brand-card {
+  border: 2px solid #e8e8e8;
+  border-radius: 14px;
+  padding: 14px 12px 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  position: relative;
+}
+.brand-card.selected {
+  border-color: #1a9e5c;
+  background: #f2fbf6;
+}
+.brand-card.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  background: #1a9e5c;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+.brand-img-wrap {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44px;
+}
+.brand-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.brand-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #222;
+  text-align: center;
+}
+.brand-sub {
+  font-size: 11px;
+  color: #888;
+  text-align: center;
+  margin-top: -6px;
+}
+.brand-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a9e5c;
+}
+
+/* ── Selected banner ── */
+.selected-banner {
+  display: none;
+  margin: 10px 12px 0;
+  background: #e8f5e9;
+  border: 1px solid #a5d6a7;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #2e7d32;
+  align-items: center;
+  gap: 8px;
+}
+.selected-banner.show { display: flex; }
+
+/* ── Bottom nav ── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  background: #fff;
+  border-top: 1px solid #e0e0e0;
+  padding: 10px 16px 14px;
+  display: flex;
+  gap: 10px;
+  z-index: 100;
+}
+.nav-order {
+  flex: 1;
+  background: #1a9e5c;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 13px 10px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.nav-order:active { background: #148048; }
+.nav-call {
+  flex: 1;
+  background: #fff;
+  color: #1a9e5c;
+  border: 2px solid #1a9e5c;
+  border-radius: 10px;
+  padding: 13px 10px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+/* ── Back bar ── */
+.back-bar { padding: 10px 12px 0; }
+.back-btn {
+  background: none; border: none;
+  color: #555; font-size: 14px;
+  font-family: inherit; cursor: pointer;
+  display: flex; align-items: center; gap: 4px; padding: 4px 0;
+}
+
+/* ── Order form ── */
+.form-group { padding: 10px 16px 0; }
+.form-label { font-size: 13px; color: #555; margin-bottom: 6px; display: block; font-weight: 500; }
+.form-input {
+  width: 100%;
+  border: 1.5px solid #ddd;
+  border-radius: 10px;
+  padding: 11px 13px;
+  font-size: 15px;
+  font-family: inherit;
+  background: #fff;
+  color: #222;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.form-input:focus { border-color: #1a9e5c; }
+textarea.form-input { resize: none; line-height: 1.5; }
+
+/* ── Order summary ── */
+.order-summary {
+  margin: 14px 16px 0;
+  background: #f9fdf7;
+  border: 1px solid #c8e6c9;
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.os-row { display: flex; justify-content: space-between; font-size: 14px; padding: 4px 0; }
+.os-label { color: #888; }
+.os-val { color: #222; font-weight: 500; }
+.os-total { display: flex; justify-content: space-between; border-top: 1px solid #c8e6c9; margin-top: 6px; padding-top: 8px; }
+.os-total-l { font-size: 15px; font-weight: 600; }
+.os-total-r { font-size: 17px; font-weight: 700; color: #1a9e5c; }
+
+.cod-badge {
+  margin: 12px 16px 0;
+  background: #e8f5e9; border: 1px solid #a5d6a7;
+  border-radius: 10px; padding: 10px 14px;
+  font-size: 13px; color: #2e7d32;
+}
+.confirm-btn {
+  display: block; margin: 14px 16px;
+  width: calc(100% - 32px);
+  background: #1a9e5c; color: #fff;
+  border: none; border-radius: 10px;
+  padding: 15px; font-size: 16px;
+  font-weight: 600; font-family: inherit; cursor: pointer;
+}
+
+/* ── Qty ── */
+.qty-section { padding: 16px 16px 0; }
+.qty-row { display: flex; align-items: center; justify-content: space-between; }
+.qty-label { font-size: 15px; font-weight: 500; color: #222; }
+.qty-ctrl { display: flex; align-items: center; gap: 14px; }
+.qty-btn {
+  width: 36px; height: 36px;
+  border: 2px solid #1a9e5c; border-radius: 50%;
+  background: none; color: #1a9e5c; font-size: 20px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-family: inherit;
+}
+.qty-num { font-size: 20px; font-weight: 700; min-width: 28px; text-align: center; }
+
+/* ── Success ── */
+.success-wrap { text-align: center; padding: 44px 24px 32px; }
+.success-icon { font-size: 62px; margin-bottom: 14px; }
+.success-title { font-size: 20px; font-weight: 700; color: #222; margin-bottom: 8px; }
+.success-sub { font-size: 14px; color: #666; line-height: 1.7; }
+.success-box {
+  margin: 18px 0;
+  background: #f9fdf7; border: 1px solid #c8e6c9;
+  border-radius: 12px; padding: 14px 16px; text-align: left;
+}
+.sr { display: flex; justify-content: space-between; padding: 5px 0; font-size: 14px; gap: 10px; }
+.sr-l { color: #888; flex-shrink: 0; }
+.sr-r { color: #222; font-weight: 500; text-align: right; }
+.sr-total { display: flex; justify-content: space-between; border-top: 1px solid #c8e6c9; margin-top: 6px; padding-top: 8px; }
+.again-btn {
+  margin-top: 20px; background: none;
+  border: 2px solid #1a9e5c; color: #1a9e5c;
+  border-radius: 10px; padding: 10px 28px;
+  font-size: 14px; font-family: inherit; cursor: pointer;
+}
+.spacer { height: 20px; }
+</style>
+</head>
+<body>
+<div class="page" id="app">
+
+<!-- ══════════════════════════════
+     STEP 0: Rate & Select
+══════════════════════════════ -->
+<div class="step active" id="step-home">
+
+  <div class="header">
+    <div class="header-brand">
+      <h1>CityBest</h1>
+      <p>সিরাজগঞ্জ সদর — হোম ডেলিভারি</p>
+    </div>
+    <div class="header-date" id="hdr-date">আজকের রেট</div>
+  </div>
+
+  <!-- Selected product banner -->
+  <div class="selected-banner" id="sel-banner">
+    <span>✓</span>
+    <span id="sel-banner-text">পণ্য নির্বাচিত হয়েছে</span>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" id="tab-gas" onclick="switchTab('gas')">🔵 সিলিন্ডার গ্যাস</button>
+    <button class="tab-btn" id="tab-rice" onclick="switchTab('rice')">🍚 চাল</button>
+  </div>
+
+  <!-- GAS TAB -->
+  <div id="panel-gas">
+    <div class="section-label">ব্র্যান্ড অনুযায়ী দাম</div>
+    <div class="brand-grid">
+
+      <div class="brand-card" id="card-omera" onclick="selectBrand('omera','ওমেরা','১২ কেজি সিলিন্ডার',1250,'cylinder','🔵')">
+        <div class="brand-img-wrap">🔵</div>
+        <div class="brand-name">ওমেরা</div>
+        <div class="brand-sub">১২ কেজি</div>
+        <div class="brand-price">৳১,২৫০</div>
+      </div>
+
+      <div class="brand-card" id="card-bashundhara" onclick="selectBrand('bashundhara','বসুন্ধরা','১২ কেজি সিলিন্ডার',1260,'cylinder','🟠')">
+        <div class="brand-img-wrap">🟠</div>
+        <div class="brand-name">বসুন্ধরা</div>
+        <div class="brand-sub">১২ কেজি</div>
+        <div class="brand-price">৳১,২৬০</div>
+      </div>
+
+      <div class="brand-card" id="card-jamuna" onclick="selectBrand('jamuna','যমুনা','১২ কেজি সিলিন্ডার',1240,'cylinder','🟡')">
+        <div class="brand-img-wrap">🟡</div>
+        <div class="brand-name">যমুনা</div>
+        <div class="brand-sub">১২ কেজি</div>
+        <div class="brand-price">৳১,২৪০</div>
+      </div>
+
+      <div class="brand-card" id="card-fresh" onclick="selectBrand('fresh','ফ্রেশ','১২ কেজি সিলিন্ডার',1255,'cylinder','🟢')">
+        <div class="brand-img-wrap">🟢</div>
+        <div class="brand-name">ফ্রেশ</div>
+        <div class="brand-sub">১২ কেজি</div>
+        <div class="brand-price">৳১,২৫৫</div>
+      </div>
+
+      <div class="brand-card" id="card-laugfs" onclick="selectBrand('laugfs','লাউগফস','১২ কেজি সিলিন্ডার',1245,'cylinder','🔴')">
+        <div class="brand-img-wrap">🔴</div>
+        <div class="brand-name">লাউগফস</div>
+        <div class="brand-sub">১২ কেজি</div>
+        <div class="brand-price">৳১,২৪৫</div>
+      </div>
+
+      <div class="brand-card" id="card-beximco" onclick="selectBrand('beximco','বেক্সিমকো','১২ কেজি সিলিন্ডার',1250,'cylinder','🟣')">
+        <div class="brand-img-wrap">🟣</div>
+        <div class="brand-name">বেক্সিমকো</div>
+        <div class="brand-sub">১২ কেজি</div>
+        <div class="brand-price">৳১,২৫০</div>
+      </div>
+
+    </div>
+    <div class="spacer"></div>
+  </div>
+
+  <!-- RICE TAB -->
+  <div id="panel-rice" style="display:none;">
+    <div class="section-label">জাত অনুযায়ী দাম</div>
+    <div class="brand-grid">
+
+      <div class="brand-card" id="card-miniket" onclick="selectBrand('miniket','মিনিকেট চাল','প্রতি কেজি',75,'rice','🍚')">
+        <div class="brand-img-wrap">🍚</div>
+        <div class="brand-name">মিনিকেট</div>
+        <div class="brand-sub">প্রতি কেজি</div>
+        <div class="brand-price">৳৭৫</div>
+      </div>
+
+      <div class="brand-card" id="card-nazirshail" onclick="selectBrand('nazirshail','নাজিরশাইল চাল','প্রতি কেজি',85,'rice','🌾')">
+        <div class="brand-img-wrap">🌾</div>
+        <div class="brand-name">নাজিরশাইল</div>
+        <div class="brand-sub">প্রতি কেজি</div>
+        <div class="brand-price">৳৮৫</div>
+      </div>
+
+      <div class="brand-card" id="card-paijam" onclick="selectBrand('paijam','পাইজাম চাল','প্রতি কেজি',65,'rice','🌿')">
+        <div class="brand-img-wrap">🌿</div>
+        <div class="brand-name">পাইজাম</div>
+        <div class="brand-sub">প্রতি কেজি</div>
+        <div class="brand-price">৳৬৫</div>
+      </div>
+
+      <div class="brand-card" id="card-biroi" onclick="selectBrand('biroi','বিরই চাল','প্রতি কেজি',70,'rice','🟤')">
+        <div class="brand-img-wrap">🟤</div>
+        <div class="brand-name">বিরই</div>
+        <div class="brand-sub">প্রতি কেজি</div>
+        <div class="brand-price">৳৭০</div>
+      </div>
+
+      <div class="brand-card" id="card-br28" onclick="selectBrand('br28','BR-28 চাল','প্রতি কেজি',60,'rice','⚪')">
+        <div class="brand-img-wrap">⚪</div>
+        <div class="brand-name">BR-28</div>
+        <div class="brand-sub">প্রতি কেজি</div>
+        <div class="brand-price">৳৬০</div>
+      </div>
+
+      <div class="brand-card" id="card-chinigura" onclick="selectBrand('chinigura','চিনিগুড়া চাল','প্রতি কেজি',110,'rice','✨')">
+        <div class="brand-img-wrap">✨</div>
+        <div class="brand-name">চিনিগুড়া</div>
+        <div class="brand-sub">প্রতি কেজি</div>
+        <div class="brand-price">৳১১০</div>
+      </div>
+
+    </div>
+    <div class="spacer"></div>
+  </div>
+
+</div><!-- end step-home -->
+
+
+<!-- ══════════════════════════════
+     STEP 1: Order Form
+══════════════════════════════ -->
+<div class="step" id="step-order">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goTo('step-home')">← পণ্য পরিবর্তন করুন</button>
+  </div>
+  <div class="header" style="justify-content:center;">
+    <div class="header-brand" style="text-align:center;">
+      <h1>অর্ডার করুন</h1>
+    </div>
+  </div>
+
+  <!-- Mini summary -->
+  <div class="order-summary" id="order-mini-summary"></div>
+
+  <!-- Qty -->
+  <div class="qty-section">
+    <div class="qty-row">
+      <span class="qty-label" id="qty-label-text">পরিমাণ</span>
+      <div class="qty-ctrl">
+        <button class="qty-btn" onclick="changeQty(-1)">−</button>
+        <span class="qty-num" id="qty-disp">১</span>
+        <button class="qty-btn" onclick="changeQty(1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact fields -->
+  <div class="form-group" style="padding-top:16px;">
+    <label class="form-label">মোবাইল নম্বর *</label>
+    <input class="form-input" type="tel" id="input-phone" placeholder="01XXXXXXXXX" maxlength="11">
+  </div>
+  <div class="form-group">
+    <label class="form-label">ডেলিভারি ঠিকানা *</label>
+    <textarea class="form-input" id="input-address" rows="3" placeholder="বাড়ি নং, এলাকা, সিরাজগঞ্জ সদর"></textarea>
+  </div>
+  <div class="form-group">
+    <label class="form-label">বিশেষ নির্দেশনা (ঐচ্ছিক)</label>
+    <input class="form-input" type="text" id="input-note" placeholder="যেমন: গেটের বাইরে রাখুন">
+  </div>
+
+  <div class="cod-badge">🛡️ পেমেন্ট: <strong>ক্যাশ অন ডেলিভারি</strong> — পণ্য পেয়ে টাকা দিন</div>
+  <button class="confirm-btn" onclick="confirmOrder()">অর্ডার নিশ্চিত করুন ✓</button>
+  <div class="spacer"></div>
+</div>
+
+
+<!-- ══════════════════════════════
+     STEP 2: Success
+══════════════════════════════ -->
+<div class="step" id="step-success">
+  <div class="success-wrap">
+    <div class="success-icon">✅</div>
+    <div class="success-title">অর্ডার নিশ্চিত!</div>
+    <div class="success-sub" id="success-msg"></div>
+    <div class="success-box" id="success-summary"></div>
+    <p style="font-size:13px;color:#888;margin-top:4px;">কোনো সমস্যা হলে</p>
+    <a style="display:inline-flex;align-items:center;gap:5px;color:#1a9e5c;font-size:16px;font-weight:600;text-decoration:none;margin-top:4px;" href="tel:01763252759">📞 01763-252759</a>
+    <br>
+    <button class="again-btn" onclick="resetAll()">আবার অর্ডার করুন</button>
+  </div>
+</div>
+
+</div><!-- end .page -->
+
+<!-- ══════════════════════════════
+     BOTTOM NAV (always visible)
+══════════════════════════════ -->
+<div class="bottom-nav" id="bottom-nav">
+  <button class="nav-order" onclick="handleOrder()">🛒 অর্ডার করুন</button>
+  <a class="nav-call" href="tel:01763252759">📞 কল করুন</a>
+</div>
+
+<script>
+var selected = null;
+var qty = 1;
+var currentTab = 'gas';
+
+function toBn(n) {
+  return String(n).replace(/[0-9]/g, function(d){ return '০১২৩৪৫৬৭৮৯'[d]; });
+}
+
+// Set today's date
+(function(){
+  var d = new Date();
+  var months = ['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+  document.getElementById('hdr-date').textContent = toBn(d.getDate()) + ' ' + months[d.getMonth()];
+})();
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('panel-gas').style.display = tab === 'gas' ? 'block' : 'none';
+  document.getElementById('panel-rice').style.display = tab === 'rice' ? 'block' : 'none';
+  document.getElementById('tab-gas').classList.toggle('active', tab === 'gas');
+  document.getElementById('tab-rice').classList.toggle('active', tab === 'rice');
+}
+
+function selectBrand(id, name, unit, price, type, emoji) {
+  // Remove all selections
+  document.querySelectorAll('.brand-card').forEach(function(c){ c.classList.remove('selected'); });
+  document.getElementById('card-' + id).classList.add('selected');
+
+  selected = { id: id, name: name, unit: unit, price: price, type: type, emoji: emoji };
+  qty = 1;
+
+  // Show banner
+  var banner = document.getElementById('sel-banner');
+  var unitLabel = type === 'cylinder' ? 'সিলিন্ডার' : 'কেজি';
+  document.getElementById('sel-banner-text').textContent =
+    emoji + ' ' + name + ' — ৳' + toBn(price) + ' প্রতি ' + unitLabel + ' | নিচে অর্ডার করুন';
+  banner.classList.add('show');
+}
+
+function handleOrder() {
+  if (!selected) {
+    alert('প্রথমে একটি পণ্য বেছে নিন।');
+    return;
+  }
+  updateOrderSummary();
+  goTo('step-order');
+}
+
+function updateOrderSummary() {
+  if (!selected) return;
+  var total = selected.price * qty;
+  var unitLabel = selected.type === 'cylinder' ? 'সিলিন্ডার' : 'কেজি';
+  document.getElementById('qty-label-text').textContent =
+    'পরিমাণ (' + (selected.type === 'cylinder' ? 'সিলিন্ডার সংখ্যা' : 'কেজি পরিমাণ') + ')';
+  document.getElementById('qty-disp').textContent = toBn(qty);
+  document.getElementById('order-mini-summary').innerHTML =
+    '<div class="os-row"><span class="os-label">পণ্য</span><span class="os-val">' + selected.emoji + ' ' + selected.name + '</span></div>' +
+    '<div class="os-row"><span class="os-label">ইউনিট মূল্য</span><span class="os-val">৳' + toBn(selected.price) + ' / ' + unitLabel + '</span></div>' +
+    '<div class="os-total"><span class="os-total-l">মোট</span><span class="os-total-r">৳' + toBn(total.toLocaleString()) + '</span></div>';
+}
+
+function changeQty(delta) {
+  qty = Math.max(1, qty + delta);
+  updateOrderSummary();
+}
+
+function goTo(stepId) {
+  document.querySelectorAll('.step').forEach(function(s){ s.classList.remove('active'); });
+  document.getElementById(stepId).classList.add('active');
+  // Hide bottom nav on order/success steps
+  document.getElementById('bottom-nav').style.display =
+    (stepId === 'step-home') ? 'flex' : 'none';
+  window.scrollTo(0, 0);
+}
+
+function confirmOrder() {
+  var phone = document.getElementById('input-phone').value.trim();
+  var address = document.getElementById('input-address').value.trim();
+  if (!phone || phone.length < 10) { alert('সঠিক মোবাইল নম্বর দিন'); return; }
+  if (!address) { alert('ডেলিভারি ঠিকানা দিন'); return; }
+
+  var note = document.getElementById('input-note').value.trim();
+  var total = selected.price * qty;
+  var unitLabel = selected.type === 'cylinder' ? toBn(qty) + ' সিলিন্ডার' : toBn(qty) + ' কেজি';
+
+  document.getElementById('success-msg').textContent =
+    phone + ' নম্বরে শীঘ্রই কনফার্মেশন কল পাবেন।';
+
+  document.getElementById('success-summary').innerHTML =
+    '<div class="sr"><span class="sr-l">পণ্য</span><span class="sr-r">' + selected.emoji + ' ' + selected.name + '</span></div>' +
+    '<div class="sr"><span class="sr-l">পরিমাণ</span><span class="sr-r">' + unitLabel + '</span></div>' +
+    '<div class="sr"><span class="sr-l">ঠিকানা</span><span class="sr-r">' + address + '</span></div>' +
+    (note ? '<div class="sr"><span class="sr-l">নির্দেশনা</span><span class="sr-r">' + note + '</span></div>' : '') +
+    '<div class="sr-total"><span style="font-size:15px;font-weight:600;">মোট পরিশোধ</span><span style="font-size:17px;font-weight:700;color:#1a9e5c;">৳' + toBn(total.toLocaleString()) + '</span></div>';
+
+  goTo('step-success');
+}
+
+function resetAll() {
+  selected = null; qty = 1;
+  document.querySelectorAll('.brand-card').forEach(function(c){ c.classList.remove('selected'); });
+  document.getElementById('sel-banner').classList.remove('show');
+  document.getElementById('input-phone').value = '';
+  document.getElementById('input-address').value = '';
+  document.getElementById('input-note').value = '';
+  goTo('step-home');
+}
+</script>
+</body>
+</html>
