@@ -18,7 +18,7 @@ export default function AdminLogin({ onLogin }) {
       });
       const data = await res.json();
       if (data.token) {
-        localStorage.setItem('cb_admin_token', data.token);
+        localStorage.setItem('adminToken', data.token);
         onLogin(data.token);
       } else {
         setError('Wrong password. Try again.');
