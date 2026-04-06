@@ -10,339 +10,68 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; -webkit-tap-highlight-color: transparent; }
-body {
-  font-family: 'Hind Siliguri', sans-serif;
-  background: #f5f7f5;
-  color: #1a1a1a;
-  min-height: 100vh;
-}
-.page {
-  max-width: 430px;
-  margin: 0 auto;
-  background: #fff;
-  min-height: 100vh;
-  padding-bottom: 90px;
-  position: relative;
-}
+body { font-family: 'Hind Siliguri', sans-serif; background: #f5f7f5; color: #1a1a1a; min-height: 100vh; }
+.page { max-width: 430px; margin: 0 auto; background: #fff; min-height: 100vh; padding-bottom: 90px; position: relative; }
 .step { display: none; }
 .step.active { display: block; }
 
-/* ── HERO HEADER ── */
-.hero {
-  background: linear-gradient(160deg, #0d7a43 0%, #1a9e5c 60%, #22b96a 100%);
-  padding: 22px 20px 0;
-  position: relative;
-  overflow: hidden;
-}
-.hero::before {
-  content: '';
-  position: absolute;
-  top: -40px; right: -40px;
-  width: 180px; height: 180px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.06);
-}
-.hero::after {
-  content: '';
-  position: absolute;
-  bottom: 10px; left: -30px;
-  width: 120px; height: 120px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.04);
-}
-.hero-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
-  z-index: 1;
-}
-.brand-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.brand-icon {
-  width: 40px; height: 40px;
-  background: rgba(255,255,255,0.2);
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px;
-}
-.brand-name-wrap h1 {
-  font-size: 22px;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: 0.2px;
-}
-.brand-name-wrap p {
-  font-size: 11px;
-  color: rgba(255,255,255,0.75);
-  margin-top: 1px;
-}
-.hero-date-pill {
-  background: rgba(255,255,255,0.18);
-  border: 1px solid rgba(255,255,255,0.25);
-  border-radius: 20px;
-  padding: 5px 12px;
-  font-size: 12px;
-  color: #fff;
-  font-weight: 500;
-}
+.hero { background: linear-gradient(160deg, #0d7a43 0%, #1a9e5c 60%, #22b96a 100%); padding: 22px 20px 0; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; top: -40px; right: -40px; width: 180px; height: 180px; border-radius: 50%; background: rgba(255,255,255,0.06); }
+.hero::after { content: ''; position: absolute; bottom: 10px; left: -30px; width: 120px; height: 120px; border-radius: 50%; background: rgba(255,255,255,0.04); }
+.hero-top { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 1; }
+.brand-logo { display: flex; align-items: center; gap: 10px; }
+.brand-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.brand-name-wrap h1 { font-size: 22px; font-weight: 700; color: #fff; }
+.brand-name-wrap p { font-size: 11px; color: rgba(255,255,255,0.75); margin-top: 1px; }
+.hero-date-pill { background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.25); border-radius: 20px; padding: 5px 12px; font-size: 12px; color: #fff; font-weight: 500; }
+.trust-bar { display: flex; gap: 0; margin-top: 18px; padding-bottom: 18px; position: relative; z-index: 1; }
+.trust-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.trust-icon { font-size: 18px; }
+.trust-label { font-size: 10px; color: rgba(255,255,255,0.85); text-align: center; line-height: 1.3; font-weight: 500; }
+.trust-divider { width: 1px; background: rgba(255,255,255,0.2); margin: 4px 0; }
+.hero-wave { display: block; width: 100%; height: 28px; margin-bottom: -1px; }
 
-/* Trust bar */
-.trust-bar {
-  display: flex;
-  gap: 0;
-  margin-top: 18px;
-  padding-bottom: 18px;
-  position: relative;
-  z-index: 1;
-}
-.trust-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-.trust-icon {
-  font-size: 18px;
-}
-.trust-label {
-  font-size: 10px;
-  color: rgba(255,255,255,0.85);
-  text-align: center;
-  line-height: 1.3;
-  font-weight: 500;
-}
-.trust-divider {
-  width: 1px;
-  background: rgba(255,255,255,0.2);
-  margin: 4px 0;
-}
+.tabs { display: flex; background: #fff; border-bottom: 1.5px solid #eee; position: sticky; top: 0; z-index: 20; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.tab-btn { flex: 1; padding: 13px 8px; background: none; border: none; border-bottom: 3px solid transparent; font-size: 14px; font-weight: 600; font-family: inherit; color: #888; cursor: pointer; transition: all 0.18s; margin-bottom: -1.5px; }
+.tab-btn.active { color: #1a9e5c; border-bottom-color: #1a9e5c; }
 
-/* Wave */
-.hero-wave {
-  display: block;
-  width: 100%;
-  height: 28px;
-  margin-bottom: -1px;
-}
+.section-label { font-size: 11px; color: #999; font-weight: 600; letter-spacing: 0.6px; padding: 16px 16px 10px; text-transform: uppercase; }
 
-/* ── TABS ── */
-.tabs {
-  display: flex;
-  background: #fff;
-  border-bottom: 1.5px solid #eee;
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-}
-.tab-btn {
-  flex: 1;
-  padding: 13px 8px;
-  background: none;
-  border: none;
-  border-bottom: 3px solid transparent;
-  font-size: 14px;
-  font-weight: 600;
-  font-family: inherit;
-  color: #888;
-  cursor: pointer;
-  transition: all 0.18s;
-  margin-bottom: -1.5px;
-  letter-spacing: 0.1px;
-}
-.tab-btn.active {
-  color: #1a9e5c;
-  border-bottom-color: #1a9e5c;
-}
-
-/* ── SECTION LABEL ── */
-.section-label {
-  font-size: 11px;
-  color: #999;
-  font-weight: 600;
-  letter-spacing: 0.6px;
-  padding: 16px 16px 10px;
-  text-transform: uppercase;
-}
-
-/* ── BRAND GRID ── */
-.brand-grid {
-  padding: 0 14px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 6px;
-}
-
-.brand-card {
-  border: 1.5px solid #eee;
-  border-radius: 16px;
-  padding: 16px 12px 14px;
-  cursor: pointer;
-  transition: all 0.18s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  background: #fff;
-  position: relative;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-}
+.brand-grid { padding: 0 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 6px; }
+.brand-card { border: 1.5px solid #eee; border-radius: 16px; padding: 14px 12px 12px; cursor: pointer; transition: all 0.18s; display: flex; flex-direction: column; align-items: center; gap: 8px; background: #fff; position: relative; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
 .brand-card:active { transform: scale(0.97); }
-.brand-card.selected {
-  border-color: #1a9e5c;
-  background: #f2fbf6;
-  box-shadow: 0 0 0 3px rgba(26,158,92,0.12);
-}
-.selected-check {
-  position: absolute;
-  top: 10px; right: 10px;
-  width: 22px; height: 22px;
-  background: #1a9e5c;
-  border-radius: 50%;
-  display: none;
-  align-items: center; justify-content: center;
-  font-size: 13px;
-  color: #fff;
-  font-weight: 700;
-}
+.brand-card.selected { border-color: #1a9e5c; background: #f2fbf6; box-shadow: 0 0 0 3px rgba(26,158,92,0.12); }
+.selected-check { position: absolute; top: 10px; right: 10px; width: 22px; height: 22px; background: #1a9e5c; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 13px; color: #fff; font-weight: 700; }
 .brand-card.selected .selected-check { display: flex; }
-
-.brand-img-wrap {
-  width: 76px; height: 76px;
-  border-radius: 12px;
-  background: #f8f8f8;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 40px;
-  overflow: hidden;
-  border: 1px solid #f0f0f0;
-}
-.brand-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+.brand-img-wrap { width: 80px; height: 80px; border-radius: 12px; background: #f8f8f8; display: flex; align-items: center; justify-content: center; font-size: 40px; overflow: hidden; border: 1px solid #f0f0f0; }
+.brand-img-wrap img { width: 100%; height: 100%; object-fit: contain; }
 .brand-name { font-size: 14px; font-weight: 700; color: #1a1a1a; text-align: center; }
 .brand-sub { font-size: 11px; color: #aaa; text-align: center; margin-top: -6px; }
 .brand-price { font-size: 17px; font-weight: 700; color: #1a9e5c; }
 
-/* ── SELECTED BANNER ── */
-.selected-banner {
-  display: none;
-  margin: 12px 14px 0;
-  background: #e8f5e9;
-  border: 1px solid #a5d6a7;
-  border-radius: 12px;
-  padding: 12px 14px;
-  align-items: center;
-  gap: 10px;
-}
+.selected-banner { display: none; margin: 12px 14px 0; background: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 12px; padding: 12px 14px; align-items: center; gap: 10px; }
 .selected-banner.show { display: flex; }
-.sel-check-circle {
-  width: 28px; height: 28px;
-  background: #1a9e5c;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; font-size: 14px;
-  flex-shrink: 0;
-}
+.sel-check-circle { width: 28px; height: 28px; background: #1a9e5c; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; flex-shrink: 0; }
 .sel-text { font-size: 13px; color: #2e7d32; font-weight: 500; line-height: 1.4; }
 .sel-hint { font-size: 11px; color: #4caf50; margin-top: 2px; }
 
-/* ── DELIVERY BADGE ── */
-.delivery-badge {
-  margin: 14px 14px 0;
-  background: #fff8e1;
-  border: 1px solid #ffe082;
-  border-radius: 12px;
-  padding: 11px 14px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 13px;
-  color: #e65100;
-  font-weight: 500;
-}
+.delivery-badge { margin: 14px 14px 0; background: #fff8e1; border: 1px solid #ffe082; border-radius: 12px; padding: 11px 14px; display: flex; align-items: center; gap: 10px; font-size: 13px; color: #e65100; font-weight: 500; }
 
-/* ── BOTTOM NAV ── */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 430px;
-  background: #fff;
-  border-top: 1px solid #eee;
-  padding: 10px 14px 16px;
-  display: flex;
-  gap: 10px;
-  z-index: 100;
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
-}
-.nav-order {
-  flex: 1;
-  background: #1a9e5c;
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  padding: 14px 10px;
-  font-size: 15px;
-  font-weight: 700;
-  font-family: inherit;
-  cursor: pointer;
-  letter-spacing: 0.2px;
-  transition: background 0.15s;
-}
+.bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; background: #fff; border-top: 1px solid #eee; padding: 10px 14px 16px; display: flex; gap: 10px; z-index: 100; box-shadow: 0 -4px 20px rgba(0,0,0,0.08); }
+.nav-order { flex: 1; background: #1a9e5c; color: #fff; border: none; border-radius: 12px; padding: 14px 10px; font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer; transition: background 0.15s; }
 .nav-order:active { background: #148048; }
-.nav-call {
-  flex: 1;
-  background: #fff;
-  color: #1a9e5c;
-  border: 2px solid #1a9e5c;
-  border-radius: 12px;
-  padding: 14px 10px;
-  font-size: 15px;
-  font-weight: 700;
-  font-family: inherit;
-  cursor: pointer;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  letter-spacing: 0.2px;
-}
+.nav-call { flex: 1; background: #fff; color: #1a9e5c; border: 2px solid #1a9e5c; border-radius: 12px; padding: 14px 10px; font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; }
 
-/* ── BACK BAR ── */
 .back-bar { padding: 12px 14px 0; }
-.back-btn {
-  background: none; border: none;
-  color: #555; font-size: 14px;
-  font-family: inherit; cursor: pointer;
-  display: flex; align-items: center; gap: 5px; padding: 4px 0;
-  font-weight: 500;
-}
+.back-btn { background: none; border: none; color: #555; font-size: 14px; font-family: inherit; cursor: pointer; display: flex; align-items: center; gap: 5px; padding: 4px 0; font-weight: 500; }
 
-/* ── ORDER STEP HEADER ── */
-.order-header {
-  background: linear-gradient(135deg, #0d7a43, #1a9e5c);
-  padding: 18px 20px 16px;
-  text-align: center;
-}
+.order-header { background: linear-gradient(135deg, #0d7a43, #1a9e5c); padding: 18px 20px 16px; text-align: center; }
 .order-header h2 { font-size: 18px; font-weight: 700; color: #fff; }
 .order-header p { font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 3px; }
 
-/* ── ORDER SUMMARY BOX ── */
-.order-summary {
-  margin: 14px 14px 0;
-  background: #f9fdf7;
-  border: 1.5px solid #c8e6c9;
-  border-radius: 14px;
-  padding: 14px;
-}
+.order-summary { margin: 14px 14px 0; background: #f9fdf7; border: 1.5px solid #c8e6c9; border-radius: 14px; padding: 14px; }
 .os-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.os-img { width: 44px; height: 44px; border-radius: 8px; object-fit: contain; background: #f0f0f0; }
 .os-emoji { font-size: 28px; }
 .os-prod-name { font-size: 15px; font-weight: 700; color: #1a1a1a; }
 .os-prod-sub { font-size: 12px; color: #888; margin-top: 1px; }
@@ -354,166 +83,50 @@ body {
 .os-total-l { font-size: 14px; font-weight: 600; color: #1a1a1a; }
 .os-total-r { font-size: 18px; font-weight: 700; color: #1a9e5c; }
 
-/* ── QTY ── */
 .qty-section { padding: 14px 14px 0; }
-.qty-box {
-  background: #f9f9f9;
-  border: 1.5px solid #eee;
-  border-radius: 14px;
-  padding: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+.qty-box { background: #f9f9f9; border: 1.5px solid #eee; border-radius: 14px; padding: 14px; display: flex; align-items: center; justify-content: space-between; }
 .qty-label { font-size: 14px; font-weight: 600; color: #333; }
 .qty-sub { font-size: 11px; color: #aaa; margin-top: 2px; }
 .qty-ctrl { display: flex; align-items: center; gap: 14px; }
-.qty-btn {
-  width: 38px; height: 38px;
-  border: 2px solid #1a9e5c;
-  border-radius: 50%;
-  background: none; color: #1a9e5c; font-size: 22px;
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  font-family: inherit; font-weight: 600;
-  transition: all 0.15s;
-}
+.qty-btn { width: 38px; height: 38px; border: 2px solid #1a9e5c; border-radius: 50%; background: none; color: #1a9e5c; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: inherit; font-weight: 600; transition: all 0.15s; }
 .qty-btn:active { background: #1a9e5c; color: #fff; }
 .qty-num { font-size: 22px; font-weight: 700; min-width: 30px; text-align: center; color: #1a1a1a; }
 
-/* ── FORM ── */
 .form-group { padding: 12px 14px 0; }
 .form-label { font-size: 13px; color: #555; margin-bottom: 6px; display: block; font-weight: 600; }
-.form-input {
-  width: 100%;
-  border: 1.5px solid #e0e0e0;
-  border-radius: 12px;
-  padding: 12px 14px;
-  font-size: 15px;
-  font-family: inherit;
-  background: #fff;
-  color: #1a1a1a;
-  outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
-.form-input:focus {
-  border-color: #1a9e5c;
-  box-shadow: 0 0 0 3px rgba(26,158,92,0.1);
-}
+.form-input { width: 100%; border: 1.5px solid #e0e0e0; border-radius: 12px; padding: 12px 14px; font-size: 15px; font-family: inherit; background: #fff; color: #1a1a1a; outline: none; transition: border-color 0.15s, box-shadow 0.15s; }
+.form-input:focus { border-color: #1a9e5c; box-shadow: 0 0 0 3px rgba(26,158,92,0.1); }
 textarea.form-input { resize: none; line-height: 1.5; }
 
-/* ── COD BADGE ── */
-.cod-badge {
-  margin: 14px 14px 0;
-  background: #e8f5e9;
-  border: 1.5px solid #a5d6a7;
-  border-radius: 12px;
-  padding: 12px 14px;
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-}
+.cod-badge { margin: 14px 14px 0; background: #e8f5e9; border: 1.5px solid #a5d6a7; border-radius: 12px; padding: 12px 14px; display: flex; align-items: flex-start; gap: 10px; }
 .cod-icon { font-size: 20px; flex-shrink: 0; }
 .cod-text { font-size: 13px; color: #2e7d32; line-height: 1.5; }
 .cod-text strong { font-weight: 700; }
 
-/* ── CONFIRM BTN ── */
-.confirm-btn {
-  display: block;
-  margin: 14px 14px;
-  width: calc(100% - 28px);
-  background: #1a9e5c;
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  padding: 16px;
-  font-size: 16px;
-  font-weight: 700;
-  font-family: inherit;
-  cursor: pointer;
-  letter-spacing: 0.2px;
-  transition: background 0.15s;
-}
+.trust-footer { margin: 0 14px 6px; display: flex; gap: 8px; flex-wrap: wrap; }
+.trust-chip { display: flex; align-items: center; gap: 5px; background: #f5f5f5; border-radius: 20px; padding: 5px 10px; font-size: 11px; color: #666; font-weight: 500; }
+
+.confirm-btn { display: block; margin: 14px 14px; width: calc(100% - 28px); background: #1a9e5c; color: #fff; border: none; border-radius: 12px; padding: 16px; font-size: 16px; font-weight: 700; font-family: inherit; cursor: pointer; transition: background 0.15s; }
 .confirm-btn:active { background: #148048; }
 
-/* ── TRUST FOOTER ── */
-.trust-footer {
-  margin: 0 14px 6px;
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.trust-chip {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  background: #f5f5f5;
-  border-radius: 20px;
-  padding: 5px 10px;
-  font-size: 11px;
-  color: #666;
-  font-weight: 500;
-}
-
-/* ── SUCCESS ── */
-.success-wrap {
-  text-align: center;
-  padding: 40px 22px 32px;
-}
-.success-anim {
-  width: 80px; height: 80px;
-  background: #e8f5e9;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 40px;
-  margin: 0 auto 16px;
-}
+.success-wrap { text-align: center; padding: 40px 22px 32px; }
+.success-anim { width: 80px; height: 80px; background: #e8f5e9; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: 0 auto 16px; }
 .success-title { font-size: 22px; font-weight: 700; color: #1a1a1a; margin-bottom: 6px; }
 .success-sub { font-size: 14px; color: #666; line-height: 1.7; }
-.success-box {
-  margin: 18px 0;
-  background: #f9fdf7;
-  border: 1.5px solid #c8e6c9;
-  border-radius: 14px;
-  padding: 14px;
-  text-align: left;
-}
+.success-box { margin: 18px 0; background: #f9fdf7; border: 1.5px solid #c8e6c9; border-radius: 14px; padding: 14px; text-align: left; }
 .sr { display: flex; justify-content: space-between; padding: 5px 0; font-size: 13px; gap: 10px; }
 .sr-l { color: #888; flex-shrink: 0; }
 .sr-r { color: #1a1a1a; font-weight: 600; text-align: right; }
-.sr-total {
-  display: flex; justify-content: space-between;
-  border-top: 1.5px solid #c8e6c9;
-  margin-top: 8px; padding-top: 10px;
-}
-.call-link {
-  display: inline-flex; align-items: center; gap: 6px;
-  color: #1a9e5c; font-size: 16px; font-weight: 700;
-  text-decoration: none; margin-top: 6px;
-}
-.again-btn {
-  margin-top: 20px;
-  background: none;
-  border: 2px solid #1a9e5c;
-  color: #1a9e5c;
-  border-radius: 12px;
-  padding: 11px 30px;
-  font-size: 14px;
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-}
+.sr-total { display: flex; justify-content: space-between; border-top: 1.5px solid #c8e6c9; margin-top: 8px; padding-top: 10px; }
+.call-link { display: inline-flex; align-items: center; gap: 6px; color: #1a9e5c; font-size: 16px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+.again-btn { margin-top: 20px; background: none; border: 2px solid #1a9e5c; color: #1a9e5c; border-radius: 12px; padding: 11px 30px; font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; }
 .spacer { height: 20px; }
 </style>
 </head>
 <body>
 <div class="page" id="app">
 
-<!-- ═══════════════════════════════════
-     STEP 0 — Home / Rate View
-═══════════════════════════════════ -->
 <div class="step active" id="step-home">
-
-  <!-- HERO -->
   <div class="hero">
     <div class="hero-top">
       <div class="brand-logo">
@@ -525,38 +138,21 @@ textarea.form-input { resize: none; line-height: 1.5; }
       </div>
       <div class="hero-date-pill" id="hdr-date">আজকের রেট</div>
     </div>
-
-    <!-- Trust bar -->
     <div class="trust-bar">
-      <div class="trust-item">
-        <div class="trust-icon">⚡</div>
-        <div class="trust-label">দ্রুত<br>ডেলিভারি</div>
-      </div>
+      <div class="trust-item"><div class="trust-icon">⚡</div><div class="trust-label">দ্রুত<br>ডেলিভারি</div></div>
       <div class="trust-divider"></div>
-      <div class="trust-item">
-        <div class="trust-icon">✅</div>
-        <div class="trust-label">বিশ্বস্ত<br>সেবা</div>
-      </div>
+      <div class="trust-item"><div class="trust-icon">✅</div><div class="trust-label">বিশ্বস্ত<br>সেবা</div></div>
       <div class="trust-divider"></div>
-      <div class="trust-item">
-        <div class="trust-icon">💰</div>
-        <div class="trust-label">সেরা<br>দাম</div>
-      </div>
+      <div class="trust-item"><div class="trust-icon">💰</div><div class="trust-label">সেরা<br>দাম</div></div>
       <div class="trust-divider"></div>
-      <div class="trust-item">
-        <div class="trust-icon">📞</div>
-        <div class="trust-label">২৪/৭<br>সাপোর্ট</div>
-      </div>
+      <div class="trust-item"><div class="trust-icon">📞</div><div class="trust-label">২৪/৭<br>সাপোর্ট</div></div>
     </div>
   </div>
-
-  <!-- Wave separator -->
   <svg class="hero-wave" viewBox="0 0 430 28" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
     <path d="M0 0 Q107 28 215 14 Q322 0 430 20 L430 28 L0 28 Z" fill="#1a9e5c"/>
     <path d="M0 0 Q107 28 215 14 Q322 0 430 20 L430 0 Z" fill="#22b96a" opacity="0.3"/>
   </svg>
 
-  <!-- Selected banner -->
   <div class="selected-banner" id="sel-banner">
     <div class="sel-check-circle">✓</div>
     <div>
@@ -565,56 +161,53 @@ textarea.form-input { resize: none; line-height: 1.5; }
     </div>
   </div>
 
-  <!-- Delivery notice -->
   <div class="delivery-badge">
     <span>🚚</span>
     <span>সিরাজগঞ্জ সদরে দ্রুততম সময়ে ডেলিভারি — <strong>ক্যাশ অন ডেলিভারি</strong></span>
   </div>
 
-  <!-- TABS -->
   <div class="tabs">
     <button class="tab-btn active" id="tab-gas" onclick="switchTab('gas')">🔵 সিলিন্ডার গ্যাস</button>
     <button class="tab-btn" id="tab-rice" onclick="switchTab('rice')">🍚 চাল</button>
   </div>
 
-  <!-- GAS PANEL -->
   <div id="panel-gas">
     <div class="section-label">ব্র্যান্ড অনুযায়ী আজকের দাম</div>
     <div class="brand-grid">
 
-      <div class="brand-card" id="card-omera" onclick="selectBrand('omera','ওমেরা','১২ কেজি সিলিন্ডার',1250,'cylinder','🔵')">
+      <div class="brand-card" id="card-omera" onclick="selectBrand('omera','ওমেরা','১২ কেজি সিলিন্ডার',1250,'cylinder','https://res.cloudinary.com/dpzlzcyuj/image/upload/v1774787034/a7nheq7xjpljr9sshn4f.png')">
         <div class="selected-check">✓</div>
-        <div class="brand-img-wrap">🔵</div>
+        <div class="brand-img-wrap"><img src="https://res.cloudinary.com/dpzlzcyuj/image/upload/v1774787034/a7nheq7xjpljr9sshn4f.png" alt="ওমেরা"></div>
         <div class="brand-name">ওমেরা</div>
         <div class="brand-sub">১২ কেজি সিলিন্ডার</div>
         <div class="brand-price">৳১,২৫০</div>
       </div>
 
-      <div class="brand-card" id="card-bashundhara" onclick="selectBrand('bashundhara','বসুন্ধরা','১২ কেজি সিলিন্ডার',1260,'cylinder','🟠')">
+      <div class="brand-card" id="card-bashundhara" onclick="selectBrand('bashundhara','বসুন্ধরা','১২ কেজি সিলিন্ডার',1260,'cylinder','https://res.cloudinary.com/dpzlzcyuj/image/upload/v1774787467/ijav7iuuwfnzwu9n0pfd.png')">
         <div class="selected-check">✓</div>
-        <div class="brand-img-wrap">🟠</div>
+        <div class="brand-img-wrap"><img src="https://res.cloudinary.com/dpzlzcyuj/image/upload/v1774787467/ijav7iuuwfnzwu9n0pfd.png" alt="বসুন্ধরা"></div>
         <div class="brand-name">বসুন্ধরা</div>
         <div class="brand-sub">১২ কেজি সিলিন্ডার</div>
         <div class="brand-price">৳১,২৬০</div>
       </div>
 
-      <div class="brand-card" id="card-jamuna" onclick="selectBrand('jamuna','যমুনা','১২ কেজি সিলিন্ডার',1240,'cylinder','🟡')">
+      <div class="brand-card" id="card-jamuna" onclick="selectBrand('jamuna','যমুনা','১২ কেজি সিলিন্ডার',1240,'cylinder','https://res.cloudinary.com/dpzlzcyuj/image/upload/v1774787626/nsa6ubcgvqyqibrzkwwl.png')">
         <div class="selected-check">✓</div>
-        <div class="brand-img-wrap">🟡</div>
+        <div class="brand-img-wrap"><img src="https://res.cloudinary.com/dpzlzcyuj/image/upload/v1774787626/nsa6ubcgvqyqibrzkwwl.png" alt="যমুনা"></div>
         <div class="brand-name">যমুনা</div>
         <div class="brand-sub">১২ কেজি সিলিন্ডার</div>
         <div class="brand-price">৳১,২৪০</div>
       </div>
 
-      <div class="brand-card" id="card-fresh" onclick="selectBrand('fresh','ফ্রেশ','১২ কেজি সিলিন্ডার',1255,'cylinder','🟢')">
+      <div class="brand-card" id="card-fresh" onclick="selectBrand('fresh','ফ্রেশ','১২ কেজি সিলিন্ডার',1255,'cylinder','https://res.cloudinary.com/dpzlzcyuj/image/upload/v1774786508/o9hi5htwvmcrunb9s2ph.png')">
         <div class="selected-check">✓</div>
-        <div class="brand-img-wrap">🟢</div>
+        <div class="brand-img-wrap"><img src="https://res.cloudinary.com/dpzlzcyuj/image/upload/v1774786508/o9hi5htwvmcrunb9s2ph.png" alt="ফ্রেশ"></div>
         <div class="brand-name">ফ্রেশ</div>
         <div class="brand-sub">১২ কেজি সিলিন্ডার</div>
         <div class="brand-price">৳১,২৫৫</div>
       </div>
 
-      <div class="brand-card" id="card-laugfs" onclick="selectBrand('laugfs','লাউগফস','১২ কেজি সিলিন্ডার',1245,'cylinder','🔴')">
+      <div class="brand-card" id="card-laugfs" onclick="selectBrand('laugfs','লাউগফস','১২ কেজি সিলিন্ডার',1245,'cylinder','')">
         <div class="selected-check">✓</div>
         <div class="brand-img-wrap">🔴</div>
         <div class="brand-name">লাউগফস</div>
@@ -622,7 +215,7 @@ textarea.form-input { resize: none; line-height: 1.5; }
         <div class="brand-price">৳১,২৪৫</div>
       </div>
 
-      <div class="brand-card" id="card-beximco" onclick="selectBrand('beximco','বেক্সিমকো','১২ কেজি সিলিন্ডার',1250,'cylinder','🟣')">
+      <div class="brand-card" id="card-beximco" onclick="selectBrand('beximco','বেক্সিমকো','১২ কেজি সিলিন্ডার',1250,'cylinder','')">
         <div class="selected-check">✓</div>
         <div class="brand-img-wrap">🟣</div>
         <div class="brand-name">বেক্সিমকো</div>
@@ -634,69 +227,56 @@ textarea.form-input { resize: none; line-height: 1.5; }
     <div class="spacer"></div>
   </div>
 
-  <!-- RICE PANEL -->
   <div id="panel-rice" style="display:none;">
     <div class="section-label">জাত অনুযায়ী আজকের দাম</div>
     <div class="brand-grid">
-
-      <div class="brand-card" id="card-miniket" onclick="selectBrand('miniket','মিনিকেট চাল','প্রতি কেজি',75,'rice','🍚')">
+      <div class="brand-card" id="card-miniket" onclick="selectBrand('miniket','মিনিকেট চাল','প্রতি কেজি',75,'rice','')">
         <div class="selected-check">✓</div>
         <div class="brand-img-wrap">🍚</div>
         <div class="brand-name">মিনিকেট</div>
         <div class="brand-sub">প্রতি কেজি</div>
         <div class="brand-price">৳৭৫</div>
       </div>
-
-      <div class="brand-card" id="card-nazirshail" onclick="selectBrand('nazirshail','নাজিরশাইল চাল','প্রতি কেজি',85,'rice','🌾')">
+      <div class="brand-card" id="card-nazirshail" onclick="selectBrand('nazirshail','নাজিরশাইল চাল','প্রতি কেজি',85,'rice','')">
         <div class="selected-check">✓</div>
         <div class="brand-img-wrap">🌾</div>
         <div class="brand-name">নাজিরশাইল</div>
         <div class="brand-sub">প্রতি কেজি</div>
         <div class="brand-price">৳৮৫</div>
       </div>
-
-      <div class="brand-card" id="card-paijam" onclick="selectBrand('paijam','পাইজাম চাল','প্রতি কেজি',65,'rice','🌿')">
+      <div class="brand-card" id="card-paijam" onclick="selectBrand('paijam','পাইজাম চাল','প্রতি কেজি',65,'rice','')">
         <div class="selected-check">✓</div>
         <div class="brand-img-wrap">🌿</div>
         <div class="brand-name">পাইজাম</div>
         <div class="brand-sub">প্রতি কেজি</div>
         <div class="brand-price">৳৬৫</div>
       </div>
-
-      <div class="brand-card" id="card-biroi" onclick="selectBrand('biroi','বিরই চাল','প্রতি কেজি',70,'rice','🟤')">
+      <div class="brand-card" id="card-biroi" onclick="selectBrand('biroi','বিরই চাল','প্রতি কেজি',70,'rice','')">
         <div class="selected-check">✓</div>
         <div class="brand-img-wrap">🟤</div>
         <div class="brand-name">বিরই</div>
         <div class="brand-sub">প্রতি কেজি</div>
         <div class="brand-price">৳৭০</div>
       </div>
-
-      <div class="brand-card" id="card-br28" onclick="selectBrand('br28','BR-28 চাল','প্রতি কেজি',60,'rice','⚪')">
+      <div class="brand-card" id="card-br28" onclick="selectBrand('br28','BR-28 চাল','প্রতি কেজি',60,'rice','')">
         <div class="selected-check">✓</div>
         <div class="brand-img-wrap">⚪</div>
         <div class="brand-name">BR-28</div>
         <div class="brand-sub">প্রতি কেজি</div>
         <div class="brand-price">৳৬০</div>
       </div>
-
-      <div class="brand-card" id="card-chinigura" onclick="selectBrand('chinigura','চিনিগুড়া চাল','প্রতি কেজি',110,'rice','✨')">
+      <div class="brand-card" id="card-chinigura" onclick="selectBrand('chinigura','চিনিগুড়া চাল','প্রতি কেজি',110,'rice','')">
         <div class="selected-check">✓</div>
         <div class="brand-img-wrap">✨</div>
         <div class="brand-name">চিনিগুড়া</div>
         <div class="brand-sub">প্রতি কেজি</div>
         <div class="brand-price">৳১১০</div>
       </div>
-
     </div>
     <div class="spacer"></div>
   </div>
+</div>
 
-</div><!-- end step-home -->
-
-
-<!-- ═══════════════════════════════════
-     STEP 1 — Order Form
-═══════════════════════════════════ -->
 <div class="step" id="step-order">
   <div class="back-bar">
     <button class="back-btn" onclick="goTo('step-home')">← পণ্য পরিবর্তন করুন</button>
@@ -705,14 +285,11 @@ textarea.form-input { resize: none; line-height: 1.5; }
     <h2>অর্ডার করুন</h2>
     <p>নিচের তথ্য পূরণ করুন — আমরা কল দিয়ে নিশ্চিত করব</p>
   </div>
-
   <div class="order-summary" id="order-mini-summary"></div>
-
-  <!-- Qty -->
   <div class="qty-section">
     <div class="qty-box">
       <div>
-        <div class="qty-label" id="qty-label-text">পরিমাণ</div>
+        <div class="qty-label">পরিমাণ</div>
         <div class="qty-sub" id="qty-unit-hint">সিলিন্ডার সংখ্যা</div>
       </div>
       <div class="qty-ctrl">
@@ -722,7 +299,6 @@ textarea.form-input { resize: none; line-height: 1.5; }
       </div>
     </div>
   </div>
-
   <div class="form-group" style="padding-top:16px;">
     <label class="form-label">📱 মোবাইল নম্বর *</label>
     <input class="form-input" type="tel" id="input-phone" placeholder="01XXXXXXXXX" maxlength="11">
@@ -735,46 +311,34 @@ textarea.form-input { resize: none; line-height: 1.5; }
     <label class="form-label">💬 বিশেষ নির্দেশনা (ঐচ্ছিক)</label>
     <input class="form-input" type="text" id="input-note" placeholder="যেমন: গেটের বাইরে রাখুন">
   </div>
-
   <div class="cod-badge">
     <div class="cod-icon">🛡️</div>
-    <div class="cod-text">
-      <strong>ক্যাশ অন ডেলিভারি</strong> — পণ্য হাতে পেয়ে টাকা দিন। আগে কোনো পেমেন্ট লাগবে না।
-    </div>
+    <div class="cod-text"><strong>ক্যাশ অন ডেলিভারি</strong> — পণ্য হাতে পেয়ে টাকা দিন। আগে কোনো পেমেন্ট লাগবে না।</div>
   </div>
-
   <div class="trust-footer" style="margin-top:14px;">
     <div class="trust-chip">⚡ দ্রুত ডেলিভারি</div>
     <div class="trust-chip">✅ যাচাইকৃত দাম</div>
     <div class="trust-chip">📞 কনফার্মেশন কল</div>
   </div>
-
   <button class="confirm-btn" onclick="confirmOrder()">✓ অর্ডার নিশ্চিত করুন</button>
   <div class="spacer"></div>
 </div>
 
-
-<!-- ═══════════════════════════════════
-     STEP 2 — Success
-═══════════════════════════════════ -->
 <div class="step" id="step-success">
   <div class="success-wrap">
     <div class="success-anim">✅</div>
     <div class="success-title">অর্ডার হয়েছে!</div>
     <div class="success-sub" id="success-msg">আপনার অর্ডার পেয়েছি।<br>শীঘ্রই কনফার্মেশন কল পাবেন।</div>
-
     <div class="success-box" id="success-summary"></div>
-
     <p style="font-size:13px;color:#888;margin-top:8px;">যেকোনো প্রয়োজনে কল করুন</p>
-    <a class="call-link" href="tel:01764101555">📞 01763-252759</a>
+    <a class="call-link" href="tel:01764101555">📞 01764-101555</a>
     <br>
     <button class="again-btn" onclick="resetAll()">আবার অর্ডার করুন</button>
   </div>
 </div>
 
-</div><!-- .page -->
+</div>
 
-<!-- BOTTOM NAV -->
 <div class="bottom-nav" id="bottom-nav">
   <button class="nav-order" onclick="handleOrder()">🛒 অর্ডার করুন</button>
   <a class="nav-call" href="tel:01764101555">📞 কল করুন</a>
@@ -801,21 +365,18 @@ function switchTab(tab) {
   document.getElementById('tab-rice').classList.toggle('active', tab === 'rice');
 }
 
-function selectBrand(id, name, unit, price, type, emoji) {
+function selectBrand(id, name, unit, price, type, img) {
   document.querySelectorAll('.brand-card').forEach(function(c){ c.classList.remove('selected'); });
   document.getElementById('card-' + id).classList.add('selected');
-  selected = { id: id, name: name, unit: unit, price: price, type: type, emoji: emoji };
+  selected = { id:id, name:name, unit:unit, price:price, type:type, img:img };
   qty = 1;
   var unitWord = type === 'cylinder' ? 'সিলিন্ডার' : 'কেজি';
-  document.getElementById('sel-banner-text').textContent = emoji + ' ' + name + ' — ৳' + toBn(price) + ' / ' + unitWord;
+  document.getElementById('sel-banner-text').textContent = name + ' — ৳' + toBn(price) + ' / ' + unitWord;
   document.getElementById('sel-banner').classList.add('show');
 }
 
 function handleOrder() {
-  if (!selected) {
-    alert('প্রথমে একটি পণ্য বেছে নিন।');
-    return;
-  }
+  if (!selected) { alert('প্রথমে একটি পণ্য বেছে নিন।'); return; }
   updateOrderSummary();
   goTo('step-order');
 }
@@ -826,8 +387,11 @@ function updateOrderSummary() {
   var unitWord = selected.type === 'cylinder' ? 'সিলিন্ডার' : 'কেজি';
   document.getElementById('qty-unit-hint').textContent = selected.type === 'cylinder' ? 'সিলিন্ডার সংখ্যা' : 'কেজি পরিমাণ';
   document.getElementById('qty-disp').textContent = toBn(qty);
+  var imgHtml = selected.img
+    ? '<img class="os-img" src="' + selected.img + '" alt="' + selected.name + '">'
+    : '<div class="os-emoji">🛒</div>';
   document.getElementById('order-mini-summary').innerHTML =
-    '<div class="os-header"><div class="os-emoji">' + selected.emoji + '</div><div><div class="os-prod-name">' + selected.name + '</div><div class="os-prod-sub">' + selected.unit + '</div></div></div>' +
+    '<div class="os-header">' + imgHtml + '<div><div class="os-prod-name">' + selected.name + '</div><div class="os-prod-sub">' + selected.unit + '</div></div></div>' +
     '<div class="os-divider"></div>' +
     '<div class="os-row"><span class="os-label">একক মূল্য</span><span class="os-val">৳' + toBn(selected.price) + ' / ' + unitWord + '</span></div>' +
     '<div class="os-row"><span class="os-label">পরিমাণ</span><span class="os-val" id="os-qty-val">' + toBn(qty) + ' ' + unitWord + '</span></div>' +
@@ -864,7 +428,7 @@ function confirmOrder() {
   var unitLabel = toBn(qty) + ' ' + unitWord;
   document.getElementById('success-msg').textContent = phone + ' নম্বরে শীঘ্রই কনফার্মেশন কল পাবেন।';
   document.getElementById('success-summary').innerHTML =
-    '<div class="sr"><span class="sr-l">পণ্য</span><span class="sr-r">' + selected.emoji + ' ' + selected.name + '</span></div>' +
+    '<div class="sr"><span class="sr-l">পণ্য</span><span class="sr-r">' + selected.name + '</span></div>' +
     '<div class="sr"><span class="sr-l">পরিমাণ</span><span class="sr-r">' + unitLabel + '</span></div>' +
     '<div class="sr"><span class="sr-l">ঠিকানা</span><span class="sr-r">' + address + '</span></div>' +
     (note ? '<div class="sr"><span class="sr-l">নির্দেশনা</span><span class="sr-r">' + note + '</span></div>' : '') +
