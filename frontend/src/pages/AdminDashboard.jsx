@@ -19,11 +19,19 @@ export default function AdminDashboard({ token, onLogout }) {
   const [msg,          setMsg]         = useState('');
   const [uploading,    setUploading]   = useState(false);
   const [varUploading, setVarUploading]= useState(null);
+
+  // Live Rate state
+  const [rates,        setRates]       = useState([]);
+  const [rateLoading,  setRateLoading] = useState(false);
+  const [rateMsg,      setRateMsg]     = useState('');
+  const [editingRates, setEditingRates]= useState({});
+
   const imgRef     = useRef();
   const varImgRefs = useRef({});
 
   const headers = { 'Content-Type':'application/json', Authorization:`Bearer ${token}` };
   const flash = (m) => { setMsg(m); setTimeout(() => setMsg(''), 3000); };
+  const flashRate = (m) => { setRateMsg(m); setTimeout(() => setRateMsg(''), 3000); };
 
   const loadProducts = async () => {
     setLoading(true);
@@ -33,7 +41,35 @@ export default function AdminDashboard({ token, onLogout }) {
     setLoading(false);
   };
 
+  const loadRates = async () => {
+    setRateLoading(true);
+    try {
+      const res  = await fetch(`${API}/api/admin/liverate`, { headers });
+      const data = await res.json();
+      setRates(data);
+      const init = {};
+      data.forEach(r => { init[r.id] = r.price; });
+      setEditingRates(init);
+    } catch { flashRate('❌ Rate load failed'); }
+    setRateLoading(false);
+  };
+
   useEffect(() => { loadProducts(); }, []);
+  useEffect(() => { if (tab === 'liverate') loadRates(); }, [tab]);
+
+  const updateRate = async (id) => {
+    try {
+      const res = await fetch(`${API}/api/admin/liverate/update`, {
+        method: 'POST', headers,
+        body: JSON.stringify({ id, price: Number(editingRates[id]) })
+      });
+      const data = await res.json();
+      if (data._id) {
+        flashRate('✅ ' + data.name + ' — ৳' + data.price + ' আপডেট হয়েছে!');
+        loadRates();
+      } else flashRate('❌ Update failed');
+    } catch { flashRate('❌ Error'); }
+  };
 
   const uploadImage = async (file, onDone, onLoading) => {
     if (!file) return;
@@ -94,6 +130,9 @@ export default function AdminDashboard({ token, onLogout }) {
     </div>
   );
 
+  const cylinders = rates.filter(r => r.type === 'cylinder');
+  const rices     = rates.filter(r => r.type === 'rice');
+
   return (
     <div style={{ maxWidth:'900px', margin:'0 auto', padding:'1rem', fontFamily:'sans-serif' }}>
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'1.5rem' }}>
@@ -101,8 +140,9 @@ export default function AdminDashboard({ token, onLogout }) {
         <button onClick={onLogout} style={{ padding:'0.5rem 1rem', background:'#fee2e2', color:'#dc2626', border:'none', borderRadius:'8px', cursor:'pointer' }}>Logout</button>
       </div>
 
+      {/* TABS */}
       <div style={{ display:'flex', gap:'0', marginBottom:'1.5rem', borderBottom:'2px solid #e2e8f0' }}>
-        {[['products','📦 Products'],['orders','🧾 Orders']].map(([key,label]) => (
+        {[['products','📦 Products'],['orders','🧾 Orders'],['liverate','📊 Live Rate']].map(([key,label]) => (
           <button key={key} onClick={() => setTab(key)}
             style={{ padding:'0.6rem 1.4rem', border:'none', borderBottom: tab===key ? '2px solid #2563eb' : '2px solid transparent', background:'none', cursor:'pointer', fontWeight: tab===key ? 700 : 400, color: tab===key ? '#2563eb' : '#666', fontSize:'0.95rem', marginBottom:'-2px' }}>
             {label}
@@ -112,8 +152,86 @@ export default function AdminDashboard({ token, onLogout }) {
 
       {msg && <div style={{ background:'#f0fdf4', border:'1px solid #86efac', padding:'0.75rem', borderRadius:'8px', marginBottom:'1rem' }}>{msg}</div>}
 
+      {/* ORDERS TAB */}
       {tab === 'orders' && <AdminOrders token={token} />}
 
+      {/* LIVE RATE TAB */}
+      {tab === 'liverate' && (
+        <div>
+          {rateMsg && <div style={{ background:'#f0fdf4', border:'1px solid #86efac', padding:'0.75rem', borderRadius:'8px', marginBottom:'1rem' }}>{rateMsg}</div>}
+
+          {rateLoading ? <div style={{ textAlign:'center', padding:'2rem' }}>Loading...</div> : (
+            <>
+              {/* Cylinders */}
+              <div style={{ marginBottom:'1.5rem' }}>
+                <h3 style={{ margin:'0 0 1rem', color:'#1a9e5c', fontSize:'1rem' }}>🔵 সিলিন্ডার গ্যাস</h3>
+                <div style={{ display:'grid', gap:'0.6rem' }}>
+                  {cylinders.map(r => (
+                    <div key={r.id} style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:'10px', padding:'0.85rem 1rem', display:'flex', alignItems:'center', gap:'1rem' }}>
+                      {r.img
+                        ? <img src={r.img} alt={r.name} style={{ width:'44px', height:'44px', objectFit:'contain', borderRadius:'8px' }} />
+                        : <div style={{ width:'44px', height:'44px', background:'#f1f5f9', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1.5rem' }}>🔵</div>
+                      }
+                      <div style={{ flex:1 }}>
+                        <div style={{ fontWeight:600, fontSize:'0.95rem' }}>{r.name}</div>
+                        <div style={{ fontSize:'0.8rem', color:'#888' }}>{r.unit}</div>
+                      </div>
+                      <div style={{ display:'flex', alignItems:'center', gap:'0.5rem' }}>
+                        <span style={{ fontSize:'0.85rem', color:'#666' }}>৳</span>
+                        <input
+                          type="number"
+                          value={editingRates[r.id] ?? r.price}
+                          onChange={e => setEditingRates(prev => ({ ...prev, [r.id]: e.target.value }))}
+                          style={{ width:'80px', padding:'0.4rem 0.5rem', borderRadius:'6px', border:'1px solid #ddd', fontSize:'1rem', fontWeight:600, color:'#1a9e5c', textAlign:'center' }}
+                        />
+                        <button onClick={() => updateRate(r.id)}
+                          style={{ padding:'0.4rem 0.9rem', background:'#1a9e5c', color:'#fff', border:'none', borderRadius:'6px', cursor:'pointer', fontSize:'0.85rem', fontWeight:600 }}>
+                          Save
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Rice */}
+              <div>
+                <h3 style={{ margin:'0 0 1rem', color:'#1a9e5c', fontSize:'1rem' }}>🍚 চাল</h3>
+                <div style={{ display:'grid', gap:'0.6rem' }}>
+                  {rices.map(r => (
+                    <div key={r.id} style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:'10px', padding:'0.85rem 1rem', display:'flex', alignItems:'center', gap:'1rem' }}>
+                      <div style={{ width:'44px', height:'44px', background:'#f1f5f9', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1.5rem' }}>🍚</div>
+                      <div style={{ flex:1 }}>
+                        <div style={{ fontWeight:600, fontSize:'0.95rem' }}>{r.name}</div>
+                        <div style={{ fontSize:'0.8rem', color:'#888' }}>{r.unit}</div>
+                      </div>
+                      <div style={{ display:'flex', alignItems:'center', gap:'0.5rem' }}>
+                        <span style={{ fontSize:'0.85rem', color:'#666' }}>৳</span>
+                        <input
+                          type="number"
+                          value={editingRates[r.id] ?? r.price}
+                          onChange={e => setEditingRates(prev => ({ ...prev, [r.id]: e.target.value }))}
+                          style={{ width:'80px', padding:'0.4rem 0.5rem', borderRadius:'6px', border:'1px solid #ddd', fontSize:'1rem', fontWeight:600, color:'#1a9e5c', textAlign:'center' }}
+                        />
+                        <button onClick={() => updateRate(r.id)}
+                          style={{ padding:'0.4rem 0.9rem', background:'#1a9e5c', color:'#fff', border:'none', borderRadius:'6px', cursor:'pointer', fontSize:'0.85rem', fontWeight:600 }}>
+                          Save
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ marginTop:'1rem', padding:'0.75rem', background:'#f0fdf4', borderRadius:'8px', fontSize:'0.85rem', color:'#166534' }}>
+                💡 দাম পরিবর্তন করে <strong>Save</strong> চাপলে সাথে সাথে <strong>citybest.com.bd/liverate</strong> এ update হবে।
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* PRODUCTS TAB */}
       {tab === 'products' && (
         <>
           <button onClick={() => { setAdding(true); setEditing(null); setForm(EMPTY); }}
@@ -155,13 +273,13 @@ export default function AdminDashboard({ token, onLogout }) {
 
               <div style={{ marginBottom:'1rem' }}>
                 <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'0.5rem' }}>
-                  <label style={{ fontSize:'0.8rem', fontWeight:600, color:'#444' }}>Variants (optional — e.g. gas brands, rice types)</label>
+                  <label style={{ fontSize:'0.8rem', fontWeight:600, color:'#444' }}>Variants (optional)</label>
                   <button onClick={addVariant} style={{ padding:'0.3rem 0.7rem', background:'#2563eb', color:'#fff', border:'none', borderRadius:'6px', cursor:'pointer', fontSize:'0.75rem' }}>+ Add Variant</button>
                 </div>
                 {form.variants.map((v, i) => (
                   <div key={i} style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:'8px', padding:'0.75rem', marginBottom:'0.5rem' }}>
                     <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 80px', gap:'0.5rem', marginBottom:'0.5rem' }}>
-                      <input placeholder="Name (e.g. Fresh LP Gas)" value={v.name} onChange={e => updateVariant(i, 'name', e.target.value)}
+                      <input placeholder="Name" value={v.name} onChange={e => updateVariant(i, 'name', e.target.value)}
                         style={{ padding:'0.4rem', borderRadius:'6px', border:'1px solid #ddd', fontSize:'0.85rem' }} />
                       <input placeholder="Bangla name" value={v.nameBn} onChange={e => updateVariant(i, 'nameBn', e.target.value)}
                         style={{ padding:'0.4rem', borderRadius:'6px', border:'1px solid #ddd', fontSize:'0.85rem' }} />
