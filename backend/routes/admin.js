@@ -2,9 +2,9 @@ const express = require('express');
 const router  = express.Router();
 const Product = require('../models/Product');
 const Order   = require('../models/Order');
+const LiveRate = require('../models/LiveRate');
 
 // ── Admin check middleware ─────────────────────────────────────────────────────
-// Add your admin UIDs to ADMIN_UIDS in .env as a comma-separated list
 const ADMIN_UIDS = (process.env.ADMIN_UIDS || '').split(',').map(s => s.trim());
 
 function requireAdmin(req, res, next) {
@@ -16,7 +16,6 @@ function requireAdmin(req, res, next) {
 
 // ── Products CRUD ─────────────────────────────────────────────────────────────
 
-// POST /api/admin/products — add a product
 router.post('/products', requireAdmin, async (req, res) => {
   try {
     const product = await Product.create(req.body);
@@ -26,7 +25,6 @@ router.post('/products', requireAdmin, async (req, res) => {
   }
 });
 
-// PUT /api/admin/products/:id — update a product
 router.put('/products/:id', requireAdmin, async (req, res) => {
   try {
     const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -37,7 +35,6 @@ router.put('/products/:id', requireAdmin, async (req, res) => {
   }
 });
 
-// DELETE /api/admin/products/:id — soft delete
 router.delete('/products/:id', requireAdmin, async (req, res) => {
   try {
     await Product.findByIdAndUpdate(req.params.id, { isActive: false });
@@ -49,7 +46,6 @@ router.delete('/products/:id', requireAdmin, async (req, res) => {
 
 // ── Orders management ─────────────────────────────────────────────────────────
 
-// GET /api/admin/orders — all orders
 router.get('/orders', requireAdmin, async (req, res) => {
   try {
     const orders = await Order.find().sort({ createdAt: -1 }).limit(200);
@@ -59,7 +55,6 @@ router.get('/orders', requireAdmin, async (req, res) => {
   }
 });
 
-// PATCH /api/admin/orders/:id/status — update order status
 router.patch('/orders/:id/status', requireAdmin, async (req, res) => {
   try {
     const { status } = req.body;
@@ -71,7 +66,8 @@ router.patch('/orders/:id/status', requireAdmin, async (req, res) => {
   }
 });
 
-// ── Seed products (dev only) ──────────────────────────────────────────────────
+// ── Seed products ─────────────────────────────────────────────────────────────
+
 router.post('/seed', requireAdmin, async (req, res) => {
   const seedProducts = [
     { emoji:'🔵', name:'সিলিন্ডার গ্যাস', nameEn:'Gas Cylinder',    price:1250, unit:'12 কেজি',     category:'gas',   isFast:true,  stock:'low', rating:4.8 },
@@ -87,6 +83,31 @@ router.post('/seed', requireAdmin, async (req, res) => {
     await Product.deleteMany({});
     const inserted = await Product.insertMany(seedProducts);
     res.json({ seeded: inserted.length });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── Live Rate management ──────────────────────────────────────────────────────
+
+router.get('/liverate', requireAdmin, async (req, res) => {
+  try {
+    const rates = await LiveRate.find({ active: true }).sort({ type: 1, name: 1 });
+    res.json(rates);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post('/liverate/update', requireAdmin, async (req, res) => {
+  try {
+    const { id, price } = req.body;
+    const updated = await LiveRate.findOneAndUpdate(
+      { id },
+      { price: Number(price) },
+      { new: true }
+    );
+    res.json(updated);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
