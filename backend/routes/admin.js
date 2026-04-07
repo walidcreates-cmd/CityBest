@@ -4,7 +4,6 @@ const Product = require('../models/Product');
 const Order   = require('../models/Order');
 const LiveRate = require('../models/LiveRate');
 
-// ── Admin check middleware ─────────────────────────────────────────────────────
 const ADMIN_UIDS = (process.env.ADMIN_UIDS || '').split(',').map(s => s.trim());
 
 function requireAdmin(req, res, next) {
@@ -13,8 +12,6 @@ function requireAdmin(req, res, next) {
   }
   next();
 }
-
-// ── Products CRUD ─────────────────────────────────────────────────────────────
 
 router.post('/products', requireAdmin, async (req, res) => {
   try {
@@ -44,8 +41,6 @@ router.delete('/products/:id', requireAdmin, async (req, res) => {
   }
 });
 
-// ── Orders management ─────────────────────────────────────────────────────────
-
 router.get('/orders', requireAdmin, async (req, res) => {
   try {
     const orders = await Order.find().sort({ createdAt: -1 }).limit(200);
@@ -66,8 +61,6 @@ router.patch('/orders/:id/status', requireAdmin, async (req, res) => {
   }
 });
 
-// ── Seed products ─────────────────────────────────────────────────────────────
-
 router.post('/seed', requireAdmin, async (req, res) => {
   const seedProducts = [
     { emoji:'🔵', name:'সিলিন্ডার গ্যাস', nameEn:'Gas Cylinder',    price:1250, unit:'12 কেজি',     category:'gas',   isFast:true,  stock:'low', rating:4.8 },
@@ -87,8 +80,6 @@ router.post('/seed', requireAdmin, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-// ── Live Rate management ──────────────────────────────────────────────────────
 
 router.get('/liverate', async (req, res) => {
   try {
@@ -113,8 +104,10 @@ router.post('/liverate/toggle', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+router.post('/liverate/update', async (req, res) => {
   try {
-    const { id, price } = req.body;
+    const { id, price, img } = req.body;
     const updateData = { price: Number(price) };
     if (img !== undefined) updateData.img = img;
     const updated = await LiveRate.findOneAndUpdate(
