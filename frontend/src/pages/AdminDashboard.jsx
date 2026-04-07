@@ -20,13 +20,14 @@ export default function AdminDashboard({ token, onLogout }) {
   const [uploading,    setUploading]   = useState(false);
   const [varUploading, setVarUploading]= useState(null);
 
-  // Live Rate state
   const [rates,        setRates]       = useState([]);
   const [rateLoading,  setRateLoading] = useState(false);
   const [rateMsg,      setRateMsg]     = useState('');
   const [editingRates, setEditingRates]= useState({});
   const [editingImgs,  setEditingImgs] = useState({});
   const [imgUploading, setImgUploading]= useState(null);
+  const [showAddForm,  setShowAddForm] = useState(false);
+  const [newRate,      setNewRate]     = useState({ type:'cylinder', id:'', name:'', price:'', unit:'১২ কেজি সিলিন্ডার', img:'' });
 
   const imgRef     = useRef();
   const varImgRefs = useRef({});
@@ -46,11 +47,11 @@ export default function AdminDashboard({ token, onLogout }) {
   const loadRates = async () => {
     setRateLoading(true);
     try {
-      const res  = await fetch(`${API}/api/admin/liverate`, { headers });
+      const res  = await fetch(`${API}/api/liverate/all`, { headers });
       const data = await res.json();
-      setRates(data);
+      setRates(Array.isArray(data) ? data : []);
       const init = {};
-      data.forEach(r => { init[r.id] = r.price; });
+      if (Array.isArray(data)) data.forEach(r => { init[r.id] = r.price; });
       setEditingRates(init);
     } catch { flashRate('❌ Rate load failed'); }
     setRateLoading(false);
@@ -59,6 +60,34 @@ export default function AdminDashboard({ token, onLogout }) {
   useEffect(() => { loadProducts(); }, []);
   useEffect(() => { if (tab === 'liverate') loadRates(); }, [tab]);
 
+  const toggleRate = async (id, name, active) => {
+    try {
+      await fetch(`${API}/api/liverate/toggle`, {
+        method:'POST', headers,
+        body: JSON.stringify({ id })
+      });
+      flashRate(active ? '⛔ ' + name + ' hide করা হয়েছে' : '✅ ' + name + ' show করা হয়েছে');
+      loadRates();
+    } catch { flashRate('❌ Error'); }
+  };
+
+  const addRate = async () => {
+    if (!newRate.id || !newRate.name || !newRate.price) { flashRate('❌ সব তথ্য দিন'); return; }
+    try {
+      const res = await fetch(`${API}/api/liverate/add`, {
+        method:'POST', headers,
+        body: JSON.stringify({ ...newRate, price: Number(newRate.price), active: true })
+      });
+      const data = await res.json();
+      if (data._id) {
+        flashRate('✅ ' + data.name + ' যোগ হয়েছে!');
+        setShowAddForm(false);
+        setNewRate({ type:'cylinder', id:'', name:'', price:'', unit:'১২ কেজি সিলিন্ডার', img:'' });
+        loadRates();
+      }
+    } catch { flashRate('❌ Error'); }
+  };
+
   const updateAllRates = async () => {
     try {
       let updated = 0;
@@ -66,7 +95,7 @@ export default function AdminDashboard({ token, onLogout }) {
       for (const id of allIds) {
         const body = { id, price: Number(editingRates[id]) };
         if (editingImgs[id] !== undefined) body.img = editingImgs[id];
-        const res = await fetch(`${API}/api/admin/liverate/update`, {
+        const res = await fetch(`${API}/api/liverate/update`, {
           method: 'POST', headers,
           body: JSON.stringify(body)
         });
@@ -94,20 +123,6 @@ export default function AdminDashboard({ token, onLogout }) {
       }
     } catch { flashRate('❌ Upload failed'); }
     setImgUploading(null);
-  };
-
-  const updateRate = async (id) => {
-    try {
-      const res = await fetch(`${API}/api/admin/liverate/update`, {
-        method: 'POST', headers,
-        body: JSON.stringify({ id, price: Number(editingRates[id]) })
-      });
-      const data = await res.json();
-      if (data._id) {
-        flashRate('✅ ' + data.name + ' — ৳' + data.price + ' আপডেট হয়েছে!');
-        loadRates();
-      } else flashRate('❌ Update failed');
-    } catch { flashRate('❌ Error'); }
   };
 
   const uploadImage = async (file, onDone, onLoading) => {
@@ -169,6 +184,40 @@ export default function AdminDashboard({ token, onLogout }) {
     </div>
   );
 
+  const RateCard = ({ r }) => (
+    <div key={r.id} style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:'10px', padding:'0.85rem 1rem', display:'flex', alignItems:'center', gap:'1rem', opacity: r.active ? 1 : 0.45 }}>
+      <div style={{ position:'relative', cursor:'pointer' }} onClick={() => document.getElementById('img-upload-'+r.id).click()}>
+        {editingImgs[r.id] || r.img
+          ? <img src={editingImgs[r.id] || r.img} alt={r.name} style={{ width:'44px', height:'44px', objectFit:'contain', borderRadius:'8px', border:'1px solid #e2e8f0' }} />
+          : <div style={{ width:'44px', height:'44px', background:'#f1f5f9', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1.5rem' }}>{r.type==='cylinder' ? '🔵' : '🍚'}</div>
+        }
+        <div style={{ position:'absolute', bottom:0, right:0, background:'#1a9e5c', borderRadius:'50%', width:'16px', height:'16px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'10px', color:'#fff' }}>
+          {imgUploading===r.id ? '⏳' : '📷'}
+        </div>
+        <input id={'img-upload-'+r.id} type="file" accept="image/*" style={{ display:'none' }}
+          onChange={e => uploadRateImage(r.id, e.target.files[0])} />
+      </div>
+      <div style={{ flex:1 }}>
+        <div style={{ fontWeight:600, fontSize:'0.95rem' }}>{r.name}</div>
+        <div style={{ fontSize:'0.8rem', color:'#888' }}>{r.unit}</div>
+      </div>
+      <div style={{ display:'flex', alignItems:'center', gap:'0.5rem' }}>
+        <span style={{ fontSize:'0.85rem', color:'#666' }}>৳</span>
+        <input
+          type="number"
+          value={editingRates[r.id] ?? r.price}
+          onChange={e => setEditingRates(prev => ({ ...prev, [r.id]: e.target.value }))}
+          style={{ width:'90px', padding:'0.4rem 0.5rem', borderRadius:'6px', border:'1px solid #ddd', fontSize:'1rem', fontWeight:600, color:'#1a9e5c', textAlign:'center' }}
+        />
+        <button onClick={() => toggleRate(r.id, r.name, r.active)}
+          title={r.active ? 'Customer থেকে লুকাও' : 'Customer কে দেখাও'}
+          style={{ padding:'0.4rem 0.6rem', background: r.active ? '#fef9c3' : '#f0fdf4', border:'1px solid #e2e8f0', borderRadius:'6px', cursor:'pointer', fontSize:'0.9rem' }}>
+          {r.active ? '👁️' : '🙈'}
+        </button>
+      </div>
+    </div>
+  );
+
   const cylinders = rates.filter(r => r.type === 'cylinder');
   const rices     = rates.filter(r => r.type === 'rice');
 
@@ -179,7 +228,6 @@ export default function AdminDashboard({ token, onLogout }) {
         <button onClick={onLogout} style={{ padding:'0.5rem 1rem', background:'#fee2e2', color:'#dc2626', border:'none', borderRadius:'8px', cursor:'pointer' }}>Logout</button>
       </div>
 
-      {/* TABS */}
       <div style={{ display:'flex', gap:'0', marginBottom:'1.5rem', borderBottom:'2px solid #e2e8f0' }}>
         {[['products','📦 Products'],['orders','🧾 Orders'],['liverate','📊 Live Rate']].map(([key,label]) => (
           <button key={key} onClick={() => setTab(key)}
@@ -191,101 +239,70 @@ export default function AdminDashboard({ token, onLogout }) {
 
       {msg && <div style={{ background:'#f0fdf4', border:'1px solid #86efac', padding:'0.75rem', borderRadius:'8px', marginBottom:'1rem' }}>{msg}</div>}
 
-      {/* ORDERS TAB */}
       {tab === 'orders' && <AdminOrders token={token} />}
 
-      {/* LIVE RATE TAB */}
       {tab === 'liverate' && (
         <div>
           {rateMsg && <div style={{ background:'#f0fdf4', border:'1px solid #86efac', padding:'0.75rem', borderRadius:'8px', marginBottom:'1rem' }}>{rateMsg}</div>}
 
           {rateLoading ? <div style={{ textAlign:'center', padding:'2rem' }}>Loading...</div> : (
             <>
-              {/* Cylinders */}
               <div style={{ marginBottom:'1.5rem' }}>
                 <h3 style={{ margin:'0 0 1rem', color:'#1a9e5c', fontSize:'1rem' }}>🔵 সিলিন্ডার গ্যাস</h3>
                 <div style={{ display:'grid', gap:'0.6rem' }}>
-                  {cylinders.map(r => (
-                    <div key={r.id} style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:'10px', padding:'0.85rem 1rem', display:'flex', alignItems:'center', gap:'1rem' }}>
-                      <div style={{ position:'relative', cursor:'pointer' }} onClick={() => document.getElementById('img-upload-'+r.id).click()}>
-                        {editingImgs[r.id] || r.img
-                          ? <img src={editingImgs[r.id] || r.img} alt={r.name} style={{ width:'44px', height:'44px', objectFit:'contain', borderRadius:'8px', border:'1px solid #e2e8f0' }} />
-                          : <div style={{ width:'44px', height:'44px', background:'#f1f5f9', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1.5rem' }}>🔵</div>
-                        }
-                        <div style={{ position:'absolute', bottom:0, right:0, background:'#1a9e5c', borderRadius:'50%', width:'16px', height:'16px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'10px', color:'#fff' }}>
-                          {imgUploading===r.id ? '⏳' : '📷'}
-                        </div>
-                        <input id={'img-upload-'+r.id} type="file" accept="image/*" style={{ display:'none' }}
-                          onChange={e => uploadRateImage(r.id, e.target.files[0])} />
-                      </div>
-                      <div style={{ flex:1 }}>
-                        <div style={{ fontWeight:600, fontSize:'0.95rem' }}>{r.name}</div>
-                        <div style={{ fontSize:'0.8rem', color:'#888' }}>{r.unit}</div>
-                      </div>
-                      <div style={{ display:'flex', alignItems:'center', gap:'0.5rem' }}>
-                        <span style={{ fontSize:'0.85rem', color:'#666' }}>৳</span>
-                        <input
-                          type="number"
-                          value={editingRates[r.id] ?? r.price}
-                          onChange={e => setEditingRates(prev => ({ ...prev, [r.id]: e.target.value }))}
-                          style={{ width:'90px', padding:'0.4rem 0.5rem', borderRadius:'6px', border:'1px solid #ddd', fontSize:'1rem', fontWeight:600, color:'#1a9e5c', textAlign:'center' }}
-                        />
-                      </div>
-                    </div>
-                  ))}
+                  {cylinders.map(r => <RateCard key={r.id} r={r} />)}
                 </div>
               </div>
 
-              {/* Rice */}
-              <div>
+              <div style={{ marginBottom:'1rem' }}>
                 <h3 style={{ margin:'0 0 1rem', color:'#1a9e5c', fontSize:'1rem' }}>🍚 চাল</h3>
                 <div style={{ display:'grid', gap:'0.6rem' }}>
-                  {rices.map(r => (
-                    <div key={r.id} style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:'10px', padding:'0.85rem 1rem', display:'flex', alignItems:'center', gap:'1rem' }}>
-                      <div style={{ position:'relative', cursor:'pointer' }} onClick={() => document.getElementById('img-upload-'+r.id).click()}>
-                        {editingImgs[r.id] || r.img
-                          ? <img src={editingImgs[r.id] || r.img} alt={r.name} style={{ width:'44px', height:'44px', objectFit:'contain', borderRadius:'8px', border:'1px solid #e2e8f0' }} />
-                          : <div style={{ width:'44px', height:'44px', background:'#f1f5f9', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1.5rem' }}>🍚</div>
-                        }
-                        <div style={{ position:'absolute', bottom:0, right:0, background:'#1a9e5c', borderRadius:'50%', width:'16px', height:'16px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'10px', color:'#fff' }}>
-                          {imgUploading===r.id ? '⏳' : '📷'}
-                        </div>
-                        <input id={'img-upload-'+r.id} type="file" accept="image/*" style={{ display:'none' }}
-                          onChange={e => uploadRateImage(r.id, e.target.files[0])} />
-                      </div>
-                      <div style={{ flex:1 }}>
-                        <div style={{ fontWeight:600, fontSize:'0.95rem' }}>{r.name}</div>
-                        <div style={{ fontSize:'0.8rem', color:'#888' }}>{r.unit}</div>
-                      </div>
-                      <div style={{ display:'flex', alignItems:'center', gap:'0.5rem' }}>
-                        <span style={{ fontSize:'0.85rem', color:'#666' }}>৳</span>
-                        <input
-                          type="number"
-                          value={editingRates[r.id] ?? r.price}
-                          onChange={e => setEditingRates(prev => ({ ...prev, [r.id]: e.target.value }))}
-                          style={{ width:'90px', padding:'0.4rem 0.5rem', borderRadius:'6px', border:'1px solid #ddd', fontSize:'1rem', fontWeight:600, color:'#1a9e5c', textAlign:'center' }}
-                        />
-                      </div>
-                    </div>
-                  ))}
+                  {rices.map(r => <RateCard key={r.id} r={r} />)}
                 </div>
               </div>
 
-              <div style={{ margin:'1.5rem 0 0.75rem' }}>
+              {showAddForm && (
+                <div style={{ background:'#f8fafc', border:'1px solid #e2e8f0', borderRadius:'12px', padding:'1rem', margin:'1rem 0' }}>
+                  <h4 style={{ margin:'0 0 0.75rem', fontSize:'0.95rem' }}>নতুন পণ্য যোগ করুন</h4>
+                  <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.5rem', marginBottom:'0.75rem' }}>
+                    <select value={newRate.type} onChange={e => setNewRate(p => ({ ...p, type:e.target.value, unit: e.target.value==='cylinder' ? '১২ কেজি সিলিন্ডার' : 'প্রতি কেজি' }))}
+                      style={{ padding:'0.5rem', borderRadius:'6px', border:'1px solid #ddd', fontSize:'0.9rem' }}>
+                      <option value="cylinder">সিলিন্ডার গ্যাস</option>
+                      <option value="rice">চাল</option>
+                    </select>
+                    <input placeholder="ID (e.g. titas)" value={newRate.id} onChange={e => setNewRate(p => ({ ...p, id:e.target.value.toLowerCase().replace(/\s/g,'') }))}
+                      style={{ padding:'0.5rem', borderRadius:'6px', border:'1px solid #ddd', fontSize:'0.9rem' }} />
+                    <input placeholder="নাম (বাংলায়, e.g. তিতাস গ্যাস)" value={newRate.name} onChange={e => setNewRate(p => ({ ...p, name:e.target.value }))}
+                      style={{ padding:'0.5rem', borderRadius:'6px', border:'1px solid #ddd', fontSize:'0.9rem' }} />
+                    <input placeholder="দাম (৳)" type="number" value={newRate.price} onChange={e => setNewRate(p => ({ ...p, price:e.target.value }))}
+                      style={{ padding:'0.5rem', borderRadius:'6px', border:'1px solid #ddd', fontSize:'0.9rem' }} />
+                  </div>
+                  <div style={{ display:'flex', gap:'0.5rem' }}>
+                    <button onClick={addRate} style={{ padding:'0.5rem 1.2rem', background:'#1a9e5c', color:'#fff', border:'none', borderRadius:'6px', cursor:'pointer', fontSize:'0.9rem', fontWeight:600 }}>✓ যোগ করুন</button>
+                    <button onClick={() => setShowAddForm(false)} style={{ padding:'0.5rem 1rem', background:'#f1f5f9', border:'none', borderRadius:'6px', cursor:'pointer', fontSize:'0.9rem' }}>বাতিল</button>
+                  </div>
+                </div>
+              )}
+
+              <div style={{ display:'flex', gap:'0.75rem', margin:'1rem 0 0.75rem' }}>
+                <button onClick={() => setShowAddForm(s => !s)}
+                  style={{ padding:'0.7rem 1.2rem', background:'#fff', color:'#1a9e5c', border:'1.5px solid #1a9e5c', borderRadius:'8px', cursor:'pointer', fontSize:'0.9rem', fontWeight:600 }}>
+                  + নতুন পণ্য যোগ করুন
+                </button>
                 <button onClick={updateAllRates}
-                  style={{ width:'100%', padding:'0.9rem', background:'#1a9e5c', color:'#fff', border:'none', borderRadius:'10px', cursor:'pointer', fontSize:'16px', fontWeight:700 }}>
+                  style={{ flex:1, padding:'0.7rem', background:'#1a9e5c', color:'#fff', border:'none', borderRadius:'8px', cursor:'pointer', fontSize:'15px', fontWeight:700 }}>
                   ✓ সব দাম Save করুন
                 </button>
               </div>
+
               <div style={{ padding:'0.75rem', background:'#f0fdf4', borderRadius:'8px', fontSize:'0.85rem', color:'#166534' }}>
-                💡 দাম পরিবর্তন করে Save চাপলে সাথে সাথে <strong>citybest.com.bd/liverate</strong> এ update হবে।
+                💡 👁️ = customer দেখতে পাবে &nbsp;|&nbsp; 🙈 = customer দেখতে পাবে না &nbsp;|&nbsp; 📷 = ছবি পরিবর্তন করুন
               </div>
             </>
           )}
         </div>
       )}
 
-      {/* PRODUCTS TAB */}
       {tab === 'products' && (
         <>
           <button onClick={() => { setAdding(true); setEditing(null); setForm(EMPTY); }}

@@ -99,7 +99,20 @@ router.get('/liverate', async (req, res) => {
   }
 });
 
-router.post('/liverate/update', async (req, res) => {
+router.post('/liverate/toggle', async (req, res) => {
+  try {
+    const { id } = req.body;
+    const rate = await LiveRate.findOne({ id });
+    const updated = await LiveRate.findOneAndUpdate(
+      { id },
+      { active: !rate.active },
+      { new: true }
+    );
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
   try {
     const { id, price } = req.body;
     const updateData = { price: Number(price) };
