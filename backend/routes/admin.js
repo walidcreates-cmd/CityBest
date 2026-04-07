@@ -102,9 +102,11 @@ router.get('/liverate', async (req, res) => {
 router.post('/liverate/update', async (req, res) => {
   try {
     const { id, price } = req.body;
+    const updateData = { price: Number(price) };
+    if (img !== undefined) updateData.img = img;
     const updated = await LiveRate.findOneAndUpdate(
       { id },
-      { price: Number(price) },
+      updateData,
       { new: true }
     );
     res.json(updated);

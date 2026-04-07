@@ -25,6 +25,8 @@ export default function AdminDashboard({ token, onLogout }) {
   const [rateLoading,  setRateLoading] = useState(false);
   const [rateMsg,      setRateMsg]     = useState('');
   const [editingRates, setEditingRates]= useState({});
+  const [editingImgs,  setEditingImgs] = useState({});
+  const [imgUploading, setImgUploading]= useState(null);
 
   const imgRef     = useRef();
   const varImgRefs = useRef({});
@@ -60,17 +62,38 @@ export default function AdminDashboard({ token, onLogout }) {
   const updateAllRates = async () => {
     try {
       let updated = 0;
-      for (const id of Object.keys(editingRates)) {
+      const allIds = new Set([...Object.keys(editingRates), ...Object.keys(editingImgs)]);
+      for (const id of allIds) {
+        const body = { id, price: Number(editingRates[id]) };
+        if (editingImgs[id] !== undefined) body.img = editingImgs[id];
         const res = await fetch(`${API}/api/admin/liverate/update`, {
           method: 'POST', headers,
-          body: JSON.stringify({ id, price: Number(editingRates[id]) })
+          body: JSON.stringify(body)
         });
         const data = await res.json();
         if (data._id) updated++;
       }
-      flashRate('✅ ' + updated + 'টি পণ্যের দাম আপডেট হয়েছে!');
+      flashRate('✅ ' + updated + 'টি পণ্যের তথ্য আপডেট হয়েছে!');
+      setEditingImgs({});
       loadRates();
     } catch { flashRate('❌ Error'); }
+  };
+
+  const uploadRateImage = async (id, file) => {
+    if (!file) return;
+    setImgUploading(id);
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', UPLOAD_PRESET);
+    try {
+      const res  = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method:'POST', body: formData });
+      const data = await res.json();
+      if (data.secure_url) {
+        setEditingImgs(prev => ({ ...prev, [id]: data.secure_url }));
+        flashRate('✅ ছবি upload হয়েছে! Save করুন।');
+      }
+    } catch { flashRate('❌ Upload failed'); }
+    setImgUploading(null);
   };
 
   const updateRate = async (id) => {
@@ -184,10 +207,17 @@ export default function AdminDashboard({ token, onLogout }) {
                 <div style={{ display:'grid', gap:'0.6rem' }}>
                   {cylinders.map(r => (
                     <div key={r.id} style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:'10px', padding:'0.85rem 1rem', display:'flex', alignItems:'center', gap:'1rem' }}>
-                      {r.img
-                        ? <img src={r.img} alt={r.name} style={{ width:'44px', height:'44px', objectFit:'contain', borderRadius:'8px' }} />
-                        : <div style={{ width:'44px', height:'44px', background:'#f1f5f9', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1.5rem' }}>🔵</div>
-                      }
+                      <div style={{ position:'relative', cursor:'pointer' }} onClick={() => document.getElementById('img-upload-'+r.id).click()}>
+                        {editingImgs[r.id] || r.img
+                          ? <img src={editingImgs[r.id] || r.img} alt={r.name} style={{ width:'44px', height:'44px', objectFit:'contain', borderRadius:'8px', border:'1px solid #e2e8f0' }} />
+                          : <div style={{ width:'44px', height:'44px', background:'#f1f5f9', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1.5rem' }}>🔵</div>
+                        }
+                        <div style={{ position:'absolute', bottom:0, right:0, background:'#1a9e5c', borderRadius:'50%', width:'16px', height:'16px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'10px', color:'#fff' }}>
+                          {imgUploading===r.id ? '⏳' : '📷'}
+                        </div>
+                        <input id={'img-upload-'+r.id} type="file" accept="image/*" style={{ display:'none' }}
+                          onChange={e => uploadRateImage(r.id, e.target.files[0])} />
+                      </div>
                       <div style={{ flex:1 }}>
                         <div style={{ fontWeight:600, fontSize:'0.95rem' }}>{r.name}</div>
                         <div style={{ fontSize:'0.8rem', color:'#888' }}>{r.unit}</div>
@@ -212,7 +242,17 @@ export default function AdminDashboard({ token, onLogout }) {
                 <div style={{ display:'grid', gap:'0.6rem' }}>
                   {rices.map(r => (
                     <div key={r.id} style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:'10px', padding:'0.85rem 1rem', display:'flex', alignItems:'center', gap:'1rem' }}>
-                      <div style={{ width:'44px', height:'44px', background:'#f1f5f9', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1.5rem' }}>🍚</div>
+                      <div style={{ position:'relative', cursor:'pointer' }} onClick={() => document.getElementById('img-upload-'+r.id).click()}>
+                        {editingImgs[r.id] || r.img
+                          ? <img src={editingImgs[r.id] || r.img} alt={r.name} style={{ width:'44px', height:'44px', objectFit:'contain', borderRadius:'8px', border:'1px solid #e2e8f0' }} />
+                          : <div style={{ width:'44px', height:'44px', background:'#f1f5f9', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1.5rem' }}>🍚</div>
+                        }
+                        <div style={{ position:'absolute', bottom:0, right:0, background:'#1a9e5c', borderRadius:'50%', width:'16px', height:'16px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'10px', color:'#fff' }}>
+                          {imgUploading===r.id ? '⏳' : '📷'}
+                        </div>
+                        <input id={'img-upload-'+r.id} type="file" accept="image/*" style={{ display:'none' }}
+                          onChange={e => uploadRateImage(r.id, e.target.files[0])} />
+                      </div>
                       <div style={{ flex:1 }}>
                         <div style={{ fontWeight:600, fontSize:'0.95rem' }}>{r.name}</div>
                         <div style={{ fontSize:'0.8rem', color:'#888' }}>{r.unit}</div>
