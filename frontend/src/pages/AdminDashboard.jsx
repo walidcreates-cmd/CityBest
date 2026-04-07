@@ -57,17 +57,19 @@ export default function AdminDashboard({ token, onLogout }) {
   useEffect(() => { loadProducts(); }, []);
   useEffect(() => { if (tab === 'liverate') loadRates(); }, [tab]);
 
-  const updateRate = async (id) => {
+  const updateAllRates = async () => {
     try {
-      const res = await fetch(`${API}/api/admin/liverate/update`, {
-        method: 'POST', headers,
-        body: JSON.stringify({ id, price: Number(editingRates[id]) })
-      });
-      const data = await res.json();
-      if (data._id) {
-        flashRate('✅ ' + data.name + ' — ৳' + data.price + ' আপডেট হয়েছে!');
-        loadRates();
-      } else flashRate('❌ Update failed');
+      let updated = 0;
+      for (const id of Object.keys(editingRates)) {
+        const res = await fetch(`${API}/api/admin/liverate/update`, {
+          method: 'POST', headers,
+          body: JSON.stringify({ id, price: Number(editingRates[id]) })
+        });
+        const data = await res.json();
+        if (data._id) updated++;
+      }
+      flashRate('✅ ' + updated + 'টি পণ্যের দাম আপডেট হয়েছে!');
+      loadRates();
     } catch { flashRate('❌ Error'); }
   };
 
@@ -223,7 +225,13 @@ export default function AdminDashboard({ token, onLogout }) {
                 </div>
               </div>
 
-              <div style={{ marginTop:'1rem', padding:'0.75rem', background:'#f0fdf4', borderRadius:'8px', fontSize:'0.85rem', color:'#166534' }}>
+              <div style={{ margin:'1.5rem 0 0.75rem', display:'flex', justifyContent:'center' }}>
+                <button onClick={updateAllRates}
+                  style={{ padding:'0.8rem 2.5rem', background:'#1a9e5c', color:'#fff', border:'none', borderRadius:'10px', cursor:'pointer', fontSize:'16px', fontWeight:700, width:'100%' }}>
+                  ✓ সব দাম Save করুন
+                </button>
+              </div>
+              <div style={{ marginTop:'0.5rem', padding:'0.75rem', background:'#f0fdf4', borderRadius:'8px', fontSize:'0.85rem', color:'#166534' }}>
                 💡 দাম পরিবর্তন করে <strong>Save</strong> চাপলে সাথে সাথে <strong>citybest.com.bd/liverate</strong> এ update হবে।
               </div>
             </>
