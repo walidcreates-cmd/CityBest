@@ -90,7 +90,7 @@ router.post('/seed', requireAdmin, async (req, res) => {
 
 // ── Live Rate management ──────────────────────────────────────────────────────
 
-router.get('/liverate', requireAdmin, async (req, res) => {
+router.get('/liverate', async (req, res) => {
   try {
     const rates = await LiveRate.find({ active: true }).sort({ type: 1, name: 1 });
     res.json(rates);
@@ -99,7 +99,7 @@ router.get('/liverate', requireAdmin, async (req, res) => {
   }
 });
 
-router.post('/liverate/update', requireAdmin, async (req, res) => {
+router.post('/liverate/update', async (req, res) => {
   try {
     const { id, price } = req.body;
     const updated = await LiveRate.findOneAndUpdate(
