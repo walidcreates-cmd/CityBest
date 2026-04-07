@@ -476,6 +476,34 @@ function confirmOrder() {
     '<div class="sr"><span class="sr-l">ঠিকানা</span><span class="sr-r">' + address + '</span></div>' +
     (note ? '<div class="sr"><span class="sr-l">নির্দেশনা</span><span class="sr-r">' + note + '</span></div>' : '') +
     '<div class="sr-total"><span style="font-size:15px;font-weight:700;">মোট পরিশোধ</span><span style="font-size:18px;font-weight:700;color:#1a9e5c;">৳' + toBn(total.toLocaleString()) + '</span></div>';
+  // Save order to backend
+  fetch('https://citybest-1.onrender.com/api/orders', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      items: [{ productId: selected.id, name: selected.name, qty: qty, price: selected.price }],
+      total: total,
+      address: address,
+      phone: phone,
+      note: note,
+      paymentMethod: 'cod'
+    })
+  }).catch(function(e){ console.log('Order save error:', e); });
+
+  // Save order to backend
+  fetch('https://citybest-1.onrender.com/api/orders', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      items: [{ productId: selected.id, name: selected.name, qty: qty, price: selected.price }],
+      total: total,
+      address: address,
+      phone: phone,
+      note: note,
+      paymentMethod: 'cod'
+    })
+  }).catch(function(e){ console.log('Order save error:', e); });
+
   goTo('step-success');
 }
 
