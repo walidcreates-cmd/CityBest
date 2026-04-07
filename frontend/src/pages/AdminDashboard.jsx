@@ -57,6 +57,22 @@ export default function AdminDashboard({ token, onLogout }) {
   useEffect(() => { loadProducts(); }, []);
   useEffect(() => { if (tab === 'liverate') loadRates(); }, [tab]);
 
+  const updateAllRates = async () => {
+    try {
+      let updated = 0;
+      for (const id of Object.keys(editingRates)) {
+        const res = await fetch(`${API}/api/admin/liverate/update`, {
+          method: 'POST', headers,
+          body: JSON.stringify({ id, price: Number(editingRates[id]) })
+        });
+        const data = await res.json();
+        if (data._id) updated++;
+      }
+      flashRate('✅ ' + updated + 'টি পণ্যের দাম আপডেট হয়েছে!');
+      loadRates();
+    } catch { flashRate('❌ Error'); }
+  };
+
   const updateRate = async (id) => {
     try {
       const res = await fetch(`${API}/api/admin/liverate/update`, {
