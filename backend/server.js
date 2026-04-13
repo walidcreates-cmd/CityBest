@@ -7,40 +7,54 @@ const jwt      = require('jsonwebtoken');
 
 const app = express();
 
-// Firebase Admin Init — uncomment when FIREBASE_SERVICE_ACCOUNT is added to .env
-// const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-// admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+// ── Firebase Admin Init ────────────────────────────────────────────────────
+try {
+  const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+  admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+} catch(e) {
+  console.warn('Firebase Admin not initialized:', e.message);
+}
 
-// Middleware
+// ── Middleware ─────────────────────────────────────────────────────────────
 app.use(cors());
 app.use(express.json());
 
 const JWT_SECRET = process.env.JWT_SECRET || 'citybest-admin-secret';
 
-// Auth Middleware
+// ── verifyAdmin — checks JWT password-based token ─────────────────────────
+function verifyAdmin(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  const token = authHeader.split(' ')[1];
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    if (decoded.role !== 'admin') return res.status(403).json({ error: 'Admin only' });
+    req.user = decoded;
+    next();
+  } catch {
+    return res.status(401).json({ error: 'Invalid token' });
+  }
+}
+
+// ── verifyToken — checks Firebase token (for customer orders) ──────────────
 async function verifyToken(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
   const token = authHeader.split(' ')[1];
-  // Check if it is our admin JWT first
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    if (decoded.role === 'admin') { req.user = decoded; return next(); }
-  } catch {}
-  // Fall back to Firebase token (only if Firebase Admin is initialized)
-  try {
-    if (admin.apps.length > 0) {
-      const decoded = await admin.auth().verifyIdToken(token);
-      req.user = decoded;
-      return next();
-    }
-  } catch {}
-  return res.status(401).json({ error: 'Unauthorized' });
+    const decoded = await admin.auth().verifyIdToken(token);
+    req.user = decoded;
+    return next();
+  } catch {
+    return res.status(401).json({ error: 'Invalid token' });
+  }
 }
 
-// Public admin login
+// ── Public admin login ─────────────────────────────────────────────────────
 app.post('/api/admin/login', (req, res) => {
   const { password } = req.body;
   const correct = process.env.ADMIN_PASSWORD || 'citybest2024';
@@ -51,20 +65,20 @@ app.post('/api/admin/login', (req, res) => {
   res.json({ success: true, token });
 });
 
-// Routes
+// ── Routes ─────────────────────────────────────────────────────────────────
 app.use('/api/ai',       require('./routes/ai'));
 app.use('/api/otp',      require('./routes/otp'));
 app.use('/api/products', require('./routes/products'));
 app.use('/api/liverate', require('./routes/liverate'));
-app.use('/api/orders',   require('./routes/orders'));
-app.use('/api/admin',    verifyToken, require('./routes/admin'));
+app.use('/api/orders',   verifyToken, require('./routes/orders'));
+app.use('/api/admin',    verifyAdmin, require('./routes/admin'));
 
-// Health check
+// ── Health check ───────────────────────────────────────────────────────────
 app.get('/', (req, res) => {
   res.json({ status: 'CityBest API running', version: '1.1.0', city: 'Sirajganj, Bangladesh' });
 });
 
-// Connect DB & Start
+// ── Connect DB & Start ─────────────────────────────────────────────────────
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('✅ MongoDB connected');
