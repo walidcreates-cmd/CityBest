@@ -128,7 +128,7 @@ export default function AdminOrders({ token }) {
             const next  = NEXT_STATUS[order.status];
             const items = order.items || [];
             const total = order.total || 0;
-            const addressParts = [order.houseNo, order.roadNo, order.area].filter(Boolean);
+            const addressParts = [order.houseNo, order.roadNo, order.area, order.deliveryAddress, order.address].filter(Boolean);
             const address = addressParts.length > 0 ? addressParts.join(', ') : '—';
 
             return (
@@ -136,7 +136,7 @@ export default function AdminOrders({ token }) {
                 <div style={{ padding:'1rem', display:'flex', alignItems:'center', gap:'1rem', flexWrap:'wrap' }}>
                   <div style={{ flex:1, minWidth:'180px' }}>
                     <div style={{ fontWeight:700, fontSize:'0.95rem' }}>{order.customerName || 'Unknown'}</div>
-                    <div style={{ fontSize:'0.82rem', color:'#555', marginTop:'0.15rem' }}>📞 {order.customerPhone || '—'}</div>
+                    <div style={{ fontSize:'0.82rem', color:'#555', marginTop:'0.15rem' }}>📞 {order.customerPhone || order.phone || '—'}</div>
                     <div style={{ fontSize:'0.78rem', color:'#888', marginTop:'0.1rem' }}>📍 {address}</div>
                   </div>
                   <div style={{ textAlign:'right', minWidth:'80px' }}>
