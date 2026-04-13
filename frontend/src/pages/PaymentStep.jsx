@@ -22,7 +22,7 @@ export default function PaymentStep({ total, onSuccess, onBack, savedAddress, ca
     try {
       const res = await fetch(`${API}/api/orders`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${await import('../firebase').then(m => m.auth.currentUser?.getIdToken())}` },
         body: JSON.stringify({
           area: address,
           customerName: name,

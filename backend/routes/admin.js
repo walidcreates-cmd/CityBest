@@ -5,6 +5,41 @@ const Order   = require('../models/Order');
 const LiveRate = require('../models/LiveRate');
 
 const ADMIN_UIDS = (process.env.ADMIN_UIDS || '').split(',').map(s => s.trim());
+// ── GET /api/admin/orders ── fetch all orders for admin dashboard
+router.get('/orders', async (req, res) => {
+  try {
+    if (!ADMIN_UIDS.includes(req.user.uid)) {
+      return res.status(403).json({ error: 'Admin only' });
+    }
+    const { status, limit = 50, skip = 0 } = req.query;
+    const filter = status && status !== 'all' ? { status } : {};
+    const [orders, total] = await Promise.all([
+      Order.find(filter).sort({ createdAt: -1 }).limit(Number(limit)).skip(Number(skip)),
+      Order.countDocuments(filter),
+    ]);
+    res.json({ success: true, total, orders });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── PATCH /api/admin/orders/:id/status ── update order status
+router.patch('/orders/:id/status', async (req, res) => {
+  try {
+    if (!ADMIN_UIDS.includes(req.user.uid)) {
+      return res.status(403).json({ error: 'Admin only' });
+    }
+    const { status } = req.body;
+    const valid = ['pending','confirmed','out_for_delivery','delivered','cancelled'];
+    if (!valid.includes(status)) return res.status(400).json({ error: 'Invalid status' });
+    const order = await Order.findByIdAndUpdate(req.params.id, { status }, { new: true });
+    if (!order) return res.status(404).json({ error: 'Not found' });
+    res.json({ success: true, order });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 function requireAdmin(req, res, next) {
   if (!ADMIN_UIDS.includes(req.user.uid)) {
