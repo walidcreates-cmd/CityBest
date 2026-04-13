@@ -44,7 +44,7 @@ export default function AdminDashboard({ token, onLogout }) {
       if (permission !== 'granted') { alert('Notification permission denied'); return; }
       const sub = await reg.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: 'BBF-OHqm_oPq0E45ZgZmyetIi5cL_CC0WYDkomEU6kB7fRaoW9kR5Y4pThhUugu1w1sVIMoEUlZ2J3Z7HGVciSM'
+        applicationServerKey: import.meta.env.VITE_VAPID_PUBLIC_KEY
       });
       await fetch(`${API}/api/push/subscribe`, {
         method: 'POST',
