@@ -55,7 +55,7 @@ export default function AdminOrders({ token }) {
       const res  = await fetch(`${API}/api/admin/orders`, { headers });
       const data = await res.json();
       if (data.success) {
-        const fresh = data.data;
+        const fresh = data.orders;
         if (prevCountRef.current !== null && fresh.length > prevCountRef.current) {
           setAlert(true);
           try { audioRef.current && audioRef.current.play(); } catch {}
