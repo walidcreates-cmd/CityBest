@@ -37,6 +37,15 @@ export default function AdminDashboard({ token, onLogout }) {
   const flash = (m) => { setMsg(m); setTimeout(() => setMsg(''), 3000); };
   const flashRate = (m) => { setRateMsg(m); setTimeout(() => setRateMsg(''), 3000); };
 
+  const urlBase64ToUint8Array = (base64String) => {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) outputArray[i] = rawData.charCodeAt(i);
+    return outputArray;
+  };
+
   const enableNotifications = async () => {
     try {
       const reg = await navigator.serviceWorker.register('/sw.js');
@@ -44,7 +53,7 @@ export default function AdminDashboard({ token, onLogout }) {
       if (permission !== 'granted') { alert('Notification permission denied'); return; }
       const sub = await reg.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: import.meta.env.VITE_VAPID_PUBLIC_KEY
+        applicationServerKey: urlBase64ToUint8Array('BBF-OHqm_oPq0E45ZgZmyetIi5cL_CC0WYDkomEU6kB7fRaoW9kR5Y4pThhUugu1w1sVIMoEUlZ2J3Z7HGVciSM')
       });
       await fetch(`${API}/api/push/subscribe`, {
         method: 'POST',
