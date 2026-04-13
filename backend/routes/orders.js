@@ -1,6 +1,7 @@
 ﻿const express = require('express');
 const router  = express.Router();
-const Order   = require('../models/Order');
+const Order     = require('../models/Order');
+const { sendPush } = require('./push');
 
 router.post('/', async (req, res) => {
   try {
@@ -16,7 +17,8 @@ router.post('/', async (req, res) => {
       paymentMethod: paymentMethod || 'cod', items, total: finalTotal,
       totalAmount: finalTotal, notes: notes || '', status: 'pending',
     });
-    res.status(201).json({ success: true, order });
+    sendPush('🛒 New Order!', (customerName || 'Customer') + ' — BDT ' + finalTotal);
+res.status(201).json({ success: true, order });
   } catch (err) {
     console.error('POST /api/orders error:', err.message);
     res.status(500).json({ error: err.message });

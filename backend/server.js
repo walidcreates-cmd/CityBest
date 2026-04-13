@@ -72,6 +72,7 @@ app.use('/api/products', require('./routes/products'));
 app.use('/api/liverate', require('./routes/liverate'));
 app.use('/api/orders',   require('./routes/orders'));
 app.use('/api/admin',    verifyAdmin, require('./routes/admin'));
+app.use('/api/push',     require('./routes/push').router);
 
 // ── Health check ───────────────────────────────────────────────────────────
 app.get('/', (req, res) => {
