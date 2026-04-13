@@ -300,6 +300,10 @@ textarea.form-input { resize: none; line-height: 1.5; }
     </div>
   </div>
   <div class="form-group" style="padding-top:16px;">
+    <label class="form-label">👤 Customer Name *</label>
+    <input class="form-input" type="text" id="input-name" placeholder="Your full name">
+  </div>
+  <div class="form-group">
     <label class="form-label">📱 মোবাইল নম্বর *</label>
     <input class="form-input" type="tel" id="input-phone" placeholder="01XXXXXXXXX" maxlength="11">
   </div>
@@ -461,8 +465,10 @@ function goTo(stepId) {
 }
 
 function confirmOrder() {
+  var customerName = document.getElementById('input-name').value.trim();
   var phone = document.getElementById('input-phone').value.trim();
   var address = document.getElementById('input-address').value.trim();
+  if (!customerName) { alert('নাম দিন'); return; }
   if (!phone || phone.length < 10) { alert('সঠিক মোবাইল নম্বর দিন'); return; }
   if (!address) { alert('ডেলিভারি ঠিকানা দিন'); return; }
   var note = document.getElementById('input-note').value.trim();
@@ -481,28 +487,11 @@ function confirmOrder() {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
+      uid: 'guest',
       items: [{ productId: selected.id, name: selected.name, qty: qty, price: selected.price }],
-        customerName: phone,
+      customerName: customerName,
       total: total,
       address: address,
-      customerName: name,
-      customerName: phone,
-      phone: phone,
-      note: note,
-      paymentMethod: 'cod'
-    })
-  }).catch(function(e){ console.log('Order save error:', e); });
-
-  // Save order to backend
-  fetch('https://citybest-1.onrender.com/api/orders', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      items: [{ productId: selected.id, name: selected.name, qty: qty, price: selected.price }],
-        customerName: phone,
-      total: total,
-      address: address,
-      customerName: phone,
       phone: phone,
       note: note,
       paymentMethod: 'cod'
@@ -516,6 +505,7 @@ function resetAll() {
   selected = null; qty = 1;
   document.querySelectorAll('.brand-card').forEach(function(c){ c.classList.remove('selected'); });
   document.getElementById('sel-banner').classList.remove('show');
+  document.getElementById('input-name').value = '';
   document.getElementById('input-phone').value = '';
   document.getElementById('input-address').value = '';
   document.getElementById('input-note').value = '';
