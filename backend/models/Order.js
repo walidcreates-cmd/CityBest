@@ -1,20 +1,31 @@
 const mongoose = require('mongoose');
 
 const orderItemSchema = new mongoose.Schema({
-  productId: { type: String, required: true },
+  productId: { type: String },
   name:      { type: String, required: true },
   price:     { type: Number, required: true },
   qty:       { type: Number, required: true },
+  nameBn:    { type: String },
+  emoji:     { type: String },
+  image:     { type: String },
+  unit:      { type: String },
+  variantName: { type: String },
 });
 
 const orderSchema = new mongoose.Schema({
-  uid:             { type: String, required: true },   // Firebase UID
-  phone:           { type: String, required: true },
-  deliveryAddress: { type: String, required: true },
-  paymentMethod:   { type: String, enum: ['cod', 'bkash', 'nagad'], default: 'cod' },
+  uid:             { type: String, default: 'guest' },
+  phone:           { type: String, default: '' },
+  customerName:    { type: String, default: '' },
+  deliveryAddress: { type: String, default: '' },
+  address:         { type: String, default: '' },
+  paymentMethod:   { type: String, default: 'cod' },
   items:           [orderItemSchema],
   total:           { type: Number, required: true },
-  status:          { type: String, enum: ['pending', 'confirmed', 'delivered', 'cancelled'], default: 'pending' },
+  totalAmount:     { type: Number },
+  subtotal:        { type: Number },
+  deliveryFee:     { type: Number },
+  status:          { type: String, enum: ['pending','confirmed','out_for_delivery','delivered','cancelled'], default: 'pending' },
+  notes:           { type: String, default: '' },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Order', orderSchema);
