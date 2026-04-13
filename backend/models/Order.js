@@ -1,14 +1,14 @@
-const mongoose = require('mongoose');
+﻿const mongoose = require('mongoose');
 
 const orderItemSchema = new mongoose.Schema({
-  productId: { type: String },
-  name:      { type: String, required: true },
-  price:     { type: Number, required: true },
-  qty:       { type: Number, required: true },
-  nameBn:    { type: String },
-  emoji:     { type: String },
-  image:     { type: String },
-  unit:      { type: String },
+  productId:   { type: String },
+  name:        { type: String, required: true },
+  price:       { type: Number, required: true },
+  qty:         { type: Number, required: true },
+  nameBn:      { type: String },
+  emoji:       { type: String },
+  image:       { type: String },
+  unit:        { type: String },
   variantName: { type: String },
 });
 
