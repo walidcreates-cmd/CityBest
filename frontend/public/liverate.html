@@ -461,7 +461,8 @@ function goTo(stepId) {
 }
 
 function confirmOrder() {
-  var phone = document.getElementById('input-phone').value.trim();
+  var name = document.getElementById('input-name').value.trim();
+    var phone = document.getElementById('input-phone').value.trim();
   var address = document.getElementById('input-address').value.trim();
   if (!phone || phone.length < 10) { alert('সঠিক মোবাইল নম্বর দিন'); return; }
   if (!address) { alert('ডেলিভারি ঠিকানা দিন'); return; }
@@ -482,8 +483,11 @@ function confirmOrder() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       items: [{ productId: selected.id, name: selected.name, qty: qty, price: selected.price }],
+        customerName: phone,
       total: total,
       address: address,
+      customerName: name,
+      customerName: name,
       phone: phone,
       note: note,
       paymentMethod: 'cod'
@@ -496,8 +500,10 @@ function confirmOrder() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       items: [{ productId: selected.id, name: selected.name, qty: qty, price: selected.price }],
+        customerName: phone,
       total: total,
       address: address,
+      customerName: name,
       phone: phone,
       note: note,
       paymentMethod: 'cod'
