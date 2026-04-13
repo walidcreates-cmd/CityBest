@@ -70,7 +70,7 @@ app.use('/api/ai',       require('./routes/ai'));
 app.use('/api/otp',      require('./routes/otp'));
 app.use('/api/products', require('./routes/products'));
 app.use('/api/liverate', require('./routes/liverate'));
-app.use('/api/orders',   verifyToken, require('./routes/orders'));
+app.use('/api/orders',   require('./routes/orders'));
 app.use('/api/admin',    verifyAdmin, require('./routes/admin'));
 
 // ── Health check ───────────────────────────────────────────────────────────
