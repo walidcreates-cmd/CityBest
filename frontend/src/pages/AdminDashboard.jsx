@@ -11,6 +11,7 @@ const EMPTY_VARIANT = { name:'', nameBn:'', price:'', image:'', emoji:'' };
 
 export default function AdminDashboard({ token, onLogout }) {
   const [tab,          setTab]         = useState('products');
+  const [notifEnabled, setNotifEnabled] = useState(false);
   const [products,     setProducts]    = useState([]);
   const [loading,      setLoading]     = useState(true);
   const [editing,      setEditing]     = useState(null);
@@ -35,6 +36,26 @@ export default function AdminDashboard({ token, onLogout }) {
   const headers = { 'Content-Type':'application/json', Authorization:`Bearer ${token}` };
   const flash = (m) => { setMsg(m); setTimeout(() => setMsg(''), 3000); };
   const flashRate = (m) => { setRateMsg(m); setTimeout(() => setRateMsg(''), 3000); };
+
+  const enableNotifications = async () => {
+    try {
+      const reg = await navigator.serviceWorker.register('/sw.js');
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') { alert('Notification permission denied'); return; }
+      const sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: 'BBF-OHqm_oPq0E45ZgZmyetIi5cL_CC0WYDkomEU6kB7fRaoW9kR5Y4pThhUugu1w1sVIMoEUlZ2J3Z7HGVciSM'
+      });
+      await fetch(`${API}/api/push/subscribe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subscription: sub })
+      });
+      alert('✅ Notifications enabled!');
+    } catch (e) {
+      alert('Error: ' + e.message);
+    }
+  };
 
   const loadProducts = async () => {
     setLoading(true);
@@ -229,7 +250,12 @@ export default function AdminDashboard({ token, onLogout }) {
       </div>
 
       <div style={{ display:'flex', gap:'0', marginBottom:'1.5rem', borderBottom:'2px solid #e2e8f0' }}>
-        {[['products','📦 Products'],['orders','🧾 Orders'],['liverate','📊 Live Rate']].map(([key,label]) => (
+        <div style={{ display:'flex', justifyContent:'flex-end', padding:'0.5rem 1rem' }}>
+  <button onClick={enableNotifications} style={{ background:'#1a9e5c', color:'#fff', border:'none', borderRadius:'8px', padding:'0.4rem 1rem', fontSize:'0.85rem', cursor:'pointer' }}>
+    🔔 Enable Notifications
+  </button>
+</div>
+{[['products','📦 Products'],['orders','🧾 Orders'],['liverate','📊 Live Rate']].map(([key,label]) => (
           <button key={key} onClick={() => setTab(key)}
             style={{ padding:'0.6rem 1.4rem', border:'none', borderBottom: tab===key ? '2px solid #2563eb' : '2px solid transparent', background:'none', cursor:'pointer', fontWeight: tab===key ? 700 : 400, color: tab===key ? '#2563eb' : '#666', fontSize:'0.95rem', marginBottom:'-2px' }}>
             {label}
