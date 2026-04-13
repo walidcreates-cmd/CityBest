@@ -45,7 +45,7 @@ async function sendPush(title, body) {
     const payload = JSON.stringify({ title, body });
     await Promise.all(subs.map(s => webpush.sendNotification(s.subscription, payload)));
   } catch (e) {
-    console.log('Push error:', e.message);
+    console.log('Push error:', e.message, e.statusCode, e.body);
   }
 }
 
