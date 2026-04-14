@@ -593,10 +593,10 @@ function AppContent() {
   if (!adminToken) return <AdminLogin onLogin={(t) => { localStorage.setItem('adminToken', t); window.location.reload(); }} />;
   return <AdminDashboard token={adminToken} onLogout={() => { localStorage.removeItem('adminToken'); window.location.reload(); }} />;
 }
-if (!user) return <Login />;
-  if (prodLoading) return <LoadingScreen message="পণ্য লোড হচ্ছে..." />;
+if (prodLoading) return <LoadingScreen message="পণ্য লোড হচ্ছে..." />;
 
   if (view === 'success')  return <OrderSuccess onHome={() => { clearCart(); setView('home'); setActiveTab('home'); }} />;
+  if (view === 'checkout' && !user) return <Login />;
   if (view === 'checkout') return <CheckoutPage cartItems={cartItems} total={orderTotal} user={user} onBack={() => setView('cart')} onSuccess={() => setView('success')} />;
   if (view === 'cart')     return <CartPage items={cartItems} onUpdateQty={updateQty} onBack={() => setView('home')} onCheckout={(total) => { setOrderTotal(total); setView('checkout'); }} />;
   if (view === 'orders')   return <OrdersPage user={user} onTab={handleTab} />;
@@ -612,4 +612,6 @@ export default function App() {
     </AuthProvider>
   );
 }
+
+
 
