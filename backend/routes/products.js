@@ -2,14 +2,14 @@ const express = require('express');
 const router  = express.Router();
 const Product = require('../models/Product');
 
-// GET /api/products — public, returns all active products
+// GET /api/products — public, returns all available products
 router.get('/', async (req, res) => {
   try {
     const { category } = req.query;
-    const filter = { isActive: true };
+    const filter = { isAvailable: true };
     if (category && category !== 'all') filter.category = category;
     const products = await Product.find(filter).sort({ createdAt: -1 });
-    res.json(products);
+    res.json({ success: true, data: products });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
