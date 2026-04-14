@@ -28,15 +28,9 @@
   background: var(--cb-gray-50);
   color: var(--cb-gray-900);
   min-height: 100vh;
-  max-width: 480px;
+  max-width: 1200px;
   margin: 0 auto;
   position: relative;
-}
-@media (min-width: 1024px) {
-  .cb-root {
-    max-width: 100%;
-    margin: 0;
-  }
 }
 
 /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
@@ -391,8 +385,18 @@
 /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    BOTTOM NAV
 â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
-.cb-spacer { display:none; }
-.cb-bottom-nav { display:none !important; }
+.cb-spacer { height:74px; }
+.cb-bottom-nav {
+  position:fixed; bottom:0; left:50%; transform:translateX(-50%);
+  width:100%; max-width:480px; background:var(--cb-white);
+  border-top:1.5px solid var(--cb-gray-200); display:flex; height:62px;
+  z-index:100; box-shadow:0 -2px 14px rgba(0,0,0,0.07);
+}
+.cb-nav-item { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; cursor:pointer; transition:0.2s; border:none; background:transparent; font-family:'Nunito',sans-serif; }
+.cb-nav-item:hover .cb-nav-icon { transform:scale(1.2); }
+.cb-nav-icon  { font-size:22px; line-height:1; transition:0.2s; }
+.cb-nav-label { font-size:10px; font-weight:700; color:var(--cb-gray-500); }
+.cb-nav-item.active .cb-nav-label { color:var(--cb-green); font-weight:800; }
 
 /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    TOAST
@@ -434,51 +438,6 @@
   left: 50%;
   transform: translateX(-50%);
 }
-/* -- Width constraint & centering -- */
-.cb-root {
-  max-width: 480px;
-  width: 100%;
-  margin: 0 auto;
-  min-height: 100dvh;
-  position: relative;
-  box-sizing: border-box;
-}
 
-.cb-nav,
-.cb-bottom-nav {
-  max-width: 480px;
-  width: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-}
 
-/* -- Fix nav width -- */
-.cb-nav { max-width: 480px; margin: 0 auto; }
 
-/* -- Fix sticky nav centering -- */
-.cb-root { overflow-x: hidden; }
-.cb-nav { position: sticky; left: 0; right: 0; margin-left: auto; margin-right: auto; }
-
-/* -- Fix nav clip -- */
-.cb-root { overflow-x: visible; }
-
-/* ── Layout fix ── */
-.cb-root {
-  max-width: 480px;
-  width: 100%;
-  margin: 0 auto;
-  min-height: 100dvh;
-  position: relative;
-  box-sizing: border-box;
-}
-.cb-nav {
-  width: 100%;
-  box-sizing: border-box;
-}
-.cb-bottom-nav {
-  width: 100%;
-  box-sizing: border-box;
-}
-/* -- Final nav fix -- */
-.cb-root { overflow: visible; }
-.cb-nav { position: sticky; top: 0; width: 100%; max-width: 480px; left: auto; right: auto; transform: none; margin: 0; }

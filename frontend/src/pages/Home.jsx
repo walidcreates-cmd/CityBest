@@ -218,6 +218,25 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
         }
       </div>
 
+      <div className="cb-spacer" />
+      <nav className="cb-bottom-nav">
+        <button className="cb-nav-item active">
+          <span className="cb-nav-icon">🏠</span>
+          <span className="cb-nav-label">হোম</span>
+        </button>
+        <button className="cb-nav-item" onClick={() => showToast('🔍 শীঘ্রই আসছে!')}>
+          <span className="cb-nav-icon">🔍</span>
+          <span className="cb-nav-label">খুঁজুন</span>
+        </button>
+        <button className="cb-nav-item" onClick={onOpenCart}>
+          <span className="cb-nav-icon">📦</span>
+          <span className="cb-nav-label">অর্ডার</span>
+        </button>
+        <button className="cb-nav-item" onClick={() => showToast('👤 শীঘ্রই আসছে!')}>
+          <span className="cb-nav-icon">👤</span>
+          <span className="cb-nav-label">প্রোফাইল</span>
+        </button>
+      </nav>
       <div className={`cb-toast ${toast.visible ? 'show' : ''}`} role="status">{toast.msg}</div>
     </div>
   );
