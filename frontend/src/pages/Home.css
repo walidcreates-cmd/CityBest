@@ -409,35 +409,3 @@
 }
 .cb-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
-@media (min-width: 480px) { .cb-root { box-shadow:0 0 40px rgba(0,0,0,0.1); } }
-/* â”€â”€ Layout constraint â”€â”€ */
-.cb-wrap {
-  max-width: 480px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 0 16px;
-  box-sizing: border-box;
-}
-
-/* â”€â”€ Width constraint & centering â”€â”€ */
-.cb-root {
-  max-width: 480px;
-  width: 100%;
-  margin: 0 auto;
-  min-height: 100dvh;
-  position: relative;
-  box-sizing: border-box;
-  background: var(--bg, #f8f9fa);
-}
-
-/* Lock nav + bottom-nav to same 480px column */
-.cb-nav,
-.cb-bottom-nav {
-  max-width: 480px;
-  width: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-
-
