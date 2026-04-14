@@ -561,7 +561,6 @@ function AppContent() {
   const [orderTotal,  setOrderTotal]  = useState(0);
 
   useEffect(() => {
-    if (!user) return;
     (async () => {
       try {
         const res  = await fetch(`${API_BASE}/api/products`);
