@@ -9,6 +9,17 @@ const UPLOAD_PRESET = 'citybest_products';
 const EMPTY = { emoji:'📦', name:'', nameBn:'', price:'', unit:'', category:'rice', isFast:false, stock:0, isAvailable:true, image:'', variants:[] };
 const EMPTY_VARIANT = { name:'', nameBn:'', price:'', image:'', emoji:'' };
 
+// ── Moved outside component to prevent focus loss on re-render ─────────────
+function F({ label, field, type='text', form, setForm }) {
+  return (
+    <div style={{ marginBottom:'0.75rem' }}>
+      <label style={{ fontSize:'0.8rem', color:'#666', display:'block', marginBottom:'0.25rem' }}>{label}</label>
+      <input type={type} value={form[field]} onChange={e => setForm(f => ({ ...f, [field]: e.target.value }))}
+        style={{ width:'100%', padding:'0.5rem', borderRadius:'6px', border:'1px solid #ddd', boxSizing:'border-box' }} />
+    </div>
+  );
+}
+
 export default function AdminDashboard({ token, onLogout }) {
   const [tab,          setTab]         = useState('products');
   const [notifEnabled, setNotifEnabled] = useState(false);
@@ -206,14 +217,6 @@ export default function AdminDashboard({ token, onLogout }) {
     ...f, variants: f.variants.map((v, idx) => idx === i ? { ...v, [field]: val } : v)
   }));
 
-  const F = ({ label, field, type='text' }) => (
-    <div style={{ marginBottom:'0.75rem' }}>
-      <label style={{ fontSize:'0.8rem', color:'#666', display:'block', marginBottom:'0.25rem' }}>{label}</label>
-      <input type={type} value={form[field]} onChange={e => setForm(f => ({ ...f, [field]: e.target.value }))}
-        style={{ width:'100%', padding:'0.5rem', borderRadius:'6px', border:'1px solid #ddd', boxSizing:'border-box' }} />
-    </div>
-  );
-
   const RateCard = ({ r }) => (
     <div key={r.id} style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:'10px', padding:'0.85rem 1rem', display:'flex', alignItems:'center', gap:'1rem', opacity: r.active ? 1 : 0.45 }}>
       <div style={{ position:'relative', cursor:'pointer' }} onClick={() => document.getElementById('img-upload-'+r.id).click()}>
@@ -349,13 +352,13 @@ export default function AdminDashboard({ token, onLogout }) {
             <div style={{ background:'#f8fafc', border:'1px solid #e2e8f0', borderRadius:'12px', padding:'1.5rem', marginBottom:'1.5rem' }}>
               <h3 style={{ margin:'0 0 1rem' }}>{editing ? 'Edit Product' : 'New Product'}</h3>
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0 1rem' }}>
-                <F label="Emoji (fallback)" field="emoji" />
-                <F label="Category" field="category" />
-                <F label="Name (English)" field="name" />
-                <F label="Name (Bangla)" field="nameBn" />
-                <F label="Price (৳)" field="price" type="number" />
-                <F label="Unit" field="unit" />
-                <F label="Stock quantity" field="stock" type="number" />
+                <F label="Emoji (fallback)" field="emoji"        form={form} setForm={setForm} />
+                <F label="Category"         field="category"     form={form} setForm={setForm} />
+                <F label="Name (English)"   field="name"         form={form} setForm={setForm} />
+                <F label="Name (Bangla)"    field="nameBn"       form={form} setForm={setForm} />
+                <F label="Price (৳)"        field="price"        type="number" form={form} setForm={setForm} />
+                <F label="Unit"             field="unit"         form={form} setForm={setForm} />
+                <F label="Stock quantity"   field="stock"        type="number" form={form} setForm={setForm} />
               </div>
 
               <div style={{ marginBottom:'1rem' }}>
