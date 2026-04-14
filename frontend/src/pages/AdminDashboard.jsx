@@ -79,9 +79,9 @@ export default function AdminDashboard({ token, onLogout }) {
 
   const loadProducts = async () => {
     setLoading(true);
-    const res  = await fetch(`${API}/api/products`);
+    const res  = await fetch(`${API}/api/admin/products`, { headers });
     const data = await res.json();
-    setProducts(data.success ? data.data : []);
+    setProducts(Array.isArray(data) ? data : (data.success ? data.data : []));
     setLoading(false);
   };
 
@@ -181,27 +181,27 @@ export default function AdminDashboard({ token, onLogout }) {
   };
 
   const handleSave = async () => {
-    const url    = editing ? `${API}/api/products/${editing}` : `${API}/api/products`;
+    const url    = editing ? `${API}/api/admin/products/${editing}` : `${API}/api/admin/products`;
     const method = editing ? 'PUT' : 'POST';
     const payload = { ...form, price: Number(form.price), stock: Number(form.stock),
       variants: form.variants.map(v => ({ ...v, price: Number(v.price) })) };
     const res  = await fetch(url, { method, headers, body: JSON.stringify(payload) });
     const data = await res.json();
-    if (data.success) { flash(editing ? '✅ Updated!' : '✅ Added!'); setEditing(null); setAdding(false); setForm(EMPTY); loadProducts(); }
-    else flash('❌ Error: ' + data.message);
+    if (data._id || data.success) { flash(editing ? '✅ Updated!' : '✅ Added!'); setEditing(null); setAdding(false); setForm(EMPTY); loadProducts(); }
+    else flash('❌ Error: ' + (data.error || data.message || 'Unknown error'));
   };
 
   const handleDelete = async (id, name) => {
     if (!window.confirm(`Delete "${name}"?`)) return;
-    const res  = await fetch(`${API}/api/products/${id}`, { method:'DELETE', headers });
+    const res  = await fetch(`${API}/api/admin/products/${id}`, { method:'DELETE', headers });
     const data = await res.json();
     if (data.success) { flash('🗑️ Deleted'); loadProducts(); }
   };
 
   const handleToggle = async (p) => {
-    const res  = await fetch(`${API}/api/products/${p._id}`, { method:'PUT', headers, body: JSON.stringify({ isAvailable: !p.isAvailable }) });
+    const res  = await fetch(`${API}/api/admin/products/${p._id}`, { method:'PUT', headers, body: JSON.stringify({ isAvailable: !p.isAvailable }) });
     const data = await res.json();
-    if (data.success) { flash(`${!p.isAvailable ? '✅ Enabled' : '⛔ Disabled'}: ${p.name}`); loadProducts(); }
+    if (data._id || data.success) { flash(`${!p.isAvailable ? '✅ Enabled' : '⛔ Disabled'}: ${p.name}`); loadProducts(); }
   };
 
   const startEdit = (p) => {

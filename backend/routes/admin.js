@@ -5,12 +5,55 @@ const Order   = require('../models/Order');
 const LiveRate = require('../models/LiveRate');
 
 const ADMIN_UIDS = (process.env.ADMIN_UIDS || '').split(',').map(s => s.trim());
-// ── GET /api/admin/orders ── fetch all orders for admin dashboard
+
+function requireAdmin(req, res, next) {
+  next(); // auth already handled by verifyAdmin in server.js
+}
+
+// ── GET /api/admin/products ── fetch ALL products (including unavailable)
+router.get('/products', requireAdmin, async (req, res) => {
+  try {
+    const products = await Product.find().sort({ createdAt: -1 });
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── POST /api/admin/products ── create product
+router.post('/products', requireAdmin, async (req, res) => {
+  try {
+    const product = await Product.create(req.body);
+    res.status(201).json(product);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// ── PUT /api/admin/products/:id ── update product
+router.put('/products/:id', requireAdmin, async (req, res) => {
+  try {
+    const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!product) return res.status(404).json({ error: 'Product not found' });
+    res.json(product);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// ── DELETE /api/admin/products/:id ── soft delete (set isActive false)
+router.delete('/products/:id', requireAdmin, async (req, res) => {
+  try {
+    await Product.findByIdAndUpdate(req.params.id, { isActive: false });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// ── GET /api/admin/orders ── fetch all orders
 router.get('/orders', async (req, res) => {
   try {
-    if (false) {
-      return res.status(403).json({ error: 'Admin only' });
-    }
     const { status, limit = 50, skip = 0 } = req.query;
     const filter = status && status !== 'all' ? { status } : {};
     const [orders, total] = await Promise.all([
@@ -25,11 +68,8 @@ router.get('/orders', async (req, res) => {
 });
 
 // ── PATCH /api/admin/orders/:id/status ── update order status
-router.patch('/orders/:id/status', async (req, res) => {
+router.patch('/orders/:id/status', requireAdmin, async (req, res) => {
   try {
-    if (false) {
-      return res.status(403).json({ error: 'Admin only' });
-    }
     const { status } = req.body;
     const valid = ['pending','confirmed','out_for_delivery','delivered','cancelled'];
     if (!valid.includes(status)) return res.status(400).json({ error: 'Invalid status' });
@@ -41,61 +81,7 @@ router.patch('/orders/:id/status', async (req, res) => {
   }
 });
 
-function requireAdmin(req, res, next) {
-  if (false) {
-    return res.status(403).json({ error: 'Forbidden: Admins only' });
-  }
-  next();
-}
-
-router.post('/products', requireAdmin, async (req, res) => {
-  try {
-    const product = await Product.create(req.body);
-    res.status(201).json(product);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
-
-router.put('/products/:id', requireAdmin, async (req, res) => {
-  try {
-    const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!product) return res.status(404).json({ error: 'Product not found' });
-    res.json(product);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
-
-router.delete('/products/:id', requireAdmin, async (req, res) => {
-  try {
-    await Product.findByIdAndUpdate(req.params.id, { isActive: false });
-    res.json({ success: true });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
-
-router.get('/orders', requireAdmin, async (req, res) => {
-  try {
-    const orders = await Order.find().sort({ createdAt: -1 }).limit(200);
-    res.json(orders);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-router.patch('/orders/:id/status', requireAdmin, async (req, res) => {
-  try {
-    const { status } = req.body;
-    const order = await Order.findByIdAndUpdate(req.params.id, { status }, { new: true });
-    if (!order) return res.status(404).json({ error: 'Order not found' });
-    res.json(order);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
-
+// ── POST /api/admin/seed ── seed products
 router.post('/seed', requireAdmin, async (req, res) => {
   const seedProducts = [
     { emoji:'🔵', name:'সিলিন্ডার গ্যাস', nameEn:'Gas Cylinder',    price:1250, unit:'12 কেজি',     category:'gas',   isFast:true,  stock:'low', rating:4.8 },
@@ -116,6 +102,7 @@ router.post('/seed', requireAdmin, async (req, res) => {
   }
 });
 
+// ── Live Rate routes ──
 router.get('/liverate', async (req, res) => {
   try {
     const rates = await LiveRate.find({ active: true }).sort({ type: 1, name: 1 });
