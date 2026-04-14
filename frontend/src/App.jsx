@@ -452,7 +452,7 @@ function OrdersPage({ user, onTab }) {
       } catch (e) { console.error(e); }
       setLoading(false);
     })();
-  }, [user]);
+  }, []);
 
   const statusColor = { pending:'#f97316', confirmed:'#0e8a4a', delivered:'#4b5563', cancelled:'#ef4444' };
   const statusLabel = { pending:'অপেক্ষায়', confirmed:'নিশ্চিত', delivered:'ডেলিভারি হয়েছে', cancelled:'বাতিল' };
@@ -573,7 +573,7 @@ function AppContent() {
       }
       setProdLoading(false);
     })();
-  }, [user]);
+  }, []);
 
   const updateQty = (id, delta) => {
     setProducts(prev => prev.map(p => p.id===id || p._id===id ? { ...p, qty:Math.max(0,(p.qty||0)+delta) } : p));
@@ -612,3 +612,4 @@ export default function App() {
     </AuthProvider>
   );
 }
+
