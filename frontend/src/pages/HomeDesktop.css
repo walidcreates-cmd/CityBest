@@ -41,7 +41,7 @@
   .cb-products-grid {
     grid-template-columns: repeat(4, 1fr) !important;
     gap: 20px !important;
-    padding: 0 32px 32px !important;
+    padding: 0 48px 48px !important;
   }
 
   .cb-section-header {
