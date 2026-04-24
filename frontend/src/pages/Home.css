@@ -408,4 +408,9 @@
   white-space:nowrap; z-index:300; font-family:'Nunito',sans-serif;
 }
 .cb-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-
+@media (min-width: 768px) {
+  .cb-bottom-nav,
+  .cb-spacer {
+    display: none !important;
+  }
+}
