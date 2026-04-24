@@ -518,11 +518,9 @@ function getGPS() {
     fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json&accept-language=bn')
       .then(function(r){ return r.json(); })
       .then(function(data){
-        document.getElementById('input-address').value = data.display_name || (lat+', '+lng);
         btn.textContent = '✅ লোকেশন পাওয়া গেছে';
         btn.style.background = '#c8e6c9';
       }).catch(function(){
-        document.getElementById('input-address').value = lat+', '+lng;
         btn.textContent = '✅ লোকেশন পাওয়া গেছে';
       });
   }, function(){
@@ -543,11 +541,9 @@ function getGPS() {
     fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json&accept-language=bn')
       .then(function(r){ return r.json(); })
       .then(function(data){
-        document.getElementById('input-address').value = data.display_name || (lat+', '+lng);
         btn.textContent = '✅ লোকেশন পাওয়া গেছে';
         btn.style.background = '#c8e6c9';
       }).catch(function(){
-        document.getElementById('input-address').value = lat+', '+lng;
         btn.textContent = '✅ লোকেশন পাওয়া গেছে';
       });
   }, function(){
