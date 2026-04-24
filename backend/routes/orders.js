@@ -17,7 +17,9 @@ router.post('/', async (req, res) => {
       paymentMethod: paymentMethod || 'cod', items, total: finalTotal,
       totalAmount: finalTotal, notes: notes || '', status: 'pending',
     });
-    sendPush('🛒 New Order!', (customerName || 'Customer') + ' — BDT ' + finalTotal);
+    const itemList = items.map(i => `  • ${i.name} × ${i.qty} = ৳${i.price * i.qty}`).join('\n');
+const msg = `🛒 নতুন অর্ডার!\n\n👤 নাম: ${customerName || 'অজানা'}\n📞 ফোন: ${phone || 'নেই'}\n📍 ঠিকানা: ${finalAddress || 'নেই'}\n💳 পেমেন্ট: ${paymentMethod || 'cod'}\n\n🧺 পণ্য:\n${itemList}\n\n💰 মোট: ৳${finalTotal}`;
+sendPush('🛒 নতুন অর্ডার!', msg);
 res.status(201).json({ success: true, order });
   } catch (err) {
     console.error('POST /api/orders error:', err.message);
