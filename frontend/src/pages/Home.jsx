@@ -153,7 +153,8 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
         <button className="cb-cart-btn" onClick={onOpenCart} aria-label="Open cart">
           🛒 <span className="cb-cart-count">{cartTotal}</span>
         </button>
-      </nav>}
+      </nav>
+    )}
       <div className="cb-search-wrap">
         <div className="cb-search-bar">
           <span className="cb-search-icon">🔍</span>
@@ -220,7 +221,8 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
       </div>
 
       <div className="cb-spacer" />
-      {!isDesktop && <nav className="cb-bottom-nav">
+      {!isDesktop && (
+      <nav className="cb-bottom-nav">
         <button className="cb-nav-item active">
           <span className="cb-nav-icon">🏠</span>
           <span className="cb-nav-label">হোম</span>
@@ -237,7 +239,8 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
           <span className="cb-nav-icon">👤</span>
           <span className="cb-nav-label">প্রোফাইল</span>
         </button>
-      </nav>}
+      </nav>
+    )}
       <div className={`cb-toast ${toast.visible ? 'show' : ''}`} role="status">{toast.msg}</div>
     </div>
   );
