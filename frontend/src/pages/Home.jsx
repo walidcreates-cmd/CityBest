@@ -80,6 +80,7 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
   const [address,        setAddress]        = useState(getSavedAddress);
   const [showMap,        setShowMap]        = useState(!getSavedAddress());
   const [variantProduct, setVariantProduct] = useState(null);
+  const [isDesktop] = useState(() => window.innerWidth >= 768);
   const { toast, show: showToast } = useToast();
 
   const handleAddressSave = (loc) => {
@@ -219,7 +220,7 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
       </div>
 
       <div className="cb-spacer" />
-      {window.innerWidth < 768 && <nav className="cb-bottom-nav">
+      {!isDesktop && <nav className="cb-bottom-nav">
         <button className="cb-nav-item active">
           <span className="cb-nav-icon">🏠</span>
           <span className="cb-nav-label">হোম</span>
