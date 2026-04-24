@@ -150,4 +150,8 @@
   .cb-toast {
     bottom: 32px !important;
   }
+.cb-bottom-nav,
+  .cb-spacer {
+    display: none !important;
+  }
 }
