@@ -6,5 +6,12 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   build: {
     charset: 'utf8',
-  },
+    rollupOptions: {
+      output: {
+        entryFileNames: `assets/[name]-[hash]-v2.js`,
+        chunkFileNames: `assets/[name]-[hash]-v2.js`,
+        assetFileNames: `assets/[name]-[hash]-v2.[ext]`,
+      }
+    }
+  }
 })
