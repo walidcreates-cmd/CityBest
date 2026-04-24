@@ -219,7 +219,7 @@ export default function Home({ products, cartTotal, onUpdateQty, onOpenCart }) {
       </div>
 
       <div className="cb-spacer" />
-      <nav className="cb-bottom-nav">
+      <nav className="cb-bottom-nav" style={{ display: window.innerWidth >= 768 ? 'none' : 'flex' }}>
         <button className="cb-nav-item active">
           <span className="cb-nav-icon">🏠</span>
           <span className="cb-nav-label">হোম</span>
