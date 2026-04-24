@@ -205,7 +205,7 @@ function HomePage({ products, onUpdateQty, onCart, onTab, activeTab }) {
         </div>
       </div>
 
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, padding:'0 16px' }}>
+      <div style={{ display:'grid', gridTemplateColumns: window.innerWidth >= 768 ? 'repeat(4, 1fr)' : '1fr 1fr', gap:12, padding:'0 16px' }}>
         {filtered.map(p => (
           <ProductCard key={p.id} product={p}
             onInc={() => onUpdateQty(p.id, 1)}
