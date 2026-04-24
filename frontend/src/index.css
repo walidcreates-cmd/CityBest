@@ -24,3 +24,8 @@ html, body {
     box-shadow: none;
   }
 }
+@media (min-width: 768px) {
+  .app-bottom-nav {
+    display: none !important;
+  }
+}

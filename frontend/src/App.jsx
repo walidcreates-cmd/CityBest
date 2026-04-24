@@ -96,7 +96,7 @@ function BottomNav({ active, onTab }) {
     { id:'profile', label:'প্রোফাইল', emoji:'👤' },
   ];
   return (
-    <div style={{
+    <div className="app-bottom-nav" style={{
       position:'fixed', bottom:0, left:'50%', transform:'translateX(-50%)',
       width:'100%', maxWidth:'100%', background:C.white,
       borderTop:`1px solid ${C.border}`, display:'flex', zIndex:150,
