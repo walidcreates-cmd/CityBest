@@ -310,7 +310,10 @@ textarea.form-input { resize: none; line-height: 1.5; }
   <div class="form-group">
     <label class="form-label">📍 ডেলিভারি ঠিকানা *</label>
     <textarea class="form-input" id="input-address" rows="3" placeholder="বাড়ি নং, মহল্লা, সিরাজগঞ্জ সদর"></textarea>
+    <button type="button" onclick="getGPS()" id="gps-btn" style="margin-top:8px;width:100%;background:#e8f5e9;color:#1a9e5c;border:1.5px dashed #1a9e5c;border-radius:10px;padding:10px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;">📍 আমার লোকেশন ব্যবহার করুন</button>
   </div>
+  <input type="hidden" id="input-lat">
+  <input type="hidden" id="input-lng">
   <div class="form-group">
     <label class="form-label">💬 বিশেষ নির্দেশনা (ঐচ্ছিক)</label>
     <input class="form-input" type="text" id="input-note" placeholder="যেমন: গেটের বাইরে রাখুন">
@@ -494,11 +497,63 @@ function confirmOrder() {
       address: address,
       phone: phone,
       note: note,
+      lat: document.getElementById('input-lat').value,
+      lng: document.getElementById('input-lng').value,
       paymentMethod: 'cod'
     })
   }).catch(function(e){ console.log('Order save error:', e); });
 
   goTo('step-success');
+}
+
+function getGPS() {
+  var btn = document.getElementById('gps-btn');
+  btn.textContent = '⏳ লোকেশন খোঁজা হচ্ছে...';
+  btn.disabled = true;
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    var lat = pos.coords.latitude;
+    var lng = pos.coords.longitude;
+    document.getElementById('input-lat').value = lat;
+    document.getElementById('input-lng').value = lng;
+    fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json&accept-language=bn')
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        document.getElementById('input-address').value = data.display_name || (lat+', '+lng);
+        btn.textContent = '✅ লোকেশন পাওয়া গেছে';
+        btn.style.background = '#c8e6c9';
+      }).catch(function(){
+        document.getElementById('input-address').value = lat+', '+lng;
+        btn.textContent = '✅ লোকেশন পাওয়া গেছে';
+      });
+  }, function(){
+    btn.textContent = '❌ লোকেশন পাওয়া যায়নি';
+    btn.disabled = false;
+  }, {timeout:10000, enableHighAccuracy:true});
+}
+
+function getGPS() {
+  var btn = document.getElementById('gps-btn');
+  btn.textContent = '⏳ লোকেশন খোঁজা হচ্ছে...';
+  btn.disabled = true;
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    var lat = pos.coords.latitude;
+    var lng = pos.coords.longitude;
+    document.getElementById('input-lat').value = lat;
+    document.getElementById('input-lng').value = lng;
+    fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json&accept-language=bn')
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        document.getElementById('input-address').value = data.display_name || (lat+', '+lng);
+        btn.textContent = '✅ লোকেশন পাওয়া গেছে';
+        btn.style.background = '#c8e6c9';
+      }).catch(function(){
+        document.getElementById('input-address').value = lat+', '+lng;
+        btn.textContent = '✅ লোকেশন পাওয়া গেছে';
+      });
+  }, function(){
+    btn.textContent = '❌ লোকেশন পাওয়া যায়নি';
+    btn.disabled = false;
+  }, {timeout:10000, enableHighAccuracy:true});
 }
 
 function resetAll() {
