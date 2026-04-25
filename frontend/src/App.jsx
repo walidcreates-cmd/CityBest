@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 import AdminLogin from './pages/AdminLogin';
@@ -24,24 +24,24 @@ const C = {
 };
 
 const FALLBACK_PRODUCTS = [
-  { id:1, emoji:'🔵', name:'সিলিন্ডার গ্যাস', nameEn:'Gas Cylinder',    price:1250, unit:'12 কেজি',      category:'gas',   isFast:true,  stock:'low', rating:4.8 },
-  { id:2, emoji:'🍚', name:'মিনিকেট চাল',     nameEn:'Miniket Rice',    price:75,   unit:'প্রতি কেজি',   category:'rice',  isFast:true,  stock:'ok',  rating:4.6 },
-  { id:3, emoji:'🫙', name:'সয়াবিন তেল',     nameEn:'Soybean Oil',     price:165,  unit:'প্রতি লিটার',  category:'oil',   isFast:false, stock:'ok',  rating:4.5 },
-  { id:4, emoji:'🥦', name:'ফুলকপি',          nameEn:'Cauliflower',     price:35,   unit:'প্রতিটি',      category:'veg',   isFast:true,  stock:'ok',  rating:4.3 },
-  { id:5, emoji:'🐟', name:'রুই মাছ',         nameEn:'Rohu Fish',       price:220,  unit:'প্রতি কেজি',   category:'fish',  isFast:false, stock:'ok',  rating:4.7 },
-  { id:6, emoji:'🌶️', name:'মরিচ গুঁড়া',     nameEn:'Chili Powder',    price:180,  unit:'৫০০ গ্রাম',    category:'spice', isFast:false, stock:'ok',  rating:4.4 },
-  { id:7, emoji:'🍚', name:'নাজিরশাইল চাল',   nameEn:'Nazirshail Rice', price:85,   unit:'প্রতি কেজি',   category:'rice',  isFast:false, stock:'ok',  rating:4.5 },
-  { id:8, emoji:'🥦', name:'আলু',             nameEn:'Potato',          price:28,   unit:'প্রতি কেজি',   category:'veg',   isFast:true,  stock:'ok',  rating:4.2 },
+  { id:1, emoji:'ðŸ”µ', name:'à¦¸à¦¿à¦²à¦¿à¦¨à§à¦¡à¦¾à¦° à¦—à§à¦¯à¦¾à¦¸', nameEn:'Gas Cylinder',    price:1250, unit:'12 à¦•à§‡à¦œà¦¿',      category:'gas',   isFast:true,  stock:'low', rating:4.8 },
+  { id:2, emoji:'ðŸš', name:'à¦®à¦¿à¦¨à¦¿à¦•à§‡à¦Ÿ à¦šà¦¾à¦²',     nameEn:'Miniket Rice',    price:75,   unit:'à¦ªà§à¦°à¦¤à¦¿ à¦•à§‡à¦œà¦¿',   category:'rice',  isFast:true,  stock:'ok',  rating:4.6 },
+  { id:3, emoji:'ðŸ«™', name:'à¦¸à¦¯à¦¼à¦¾à¦¬à¦¿à¦¨ à¦¤à§‡à¦²',     nameEn:'Soybean Oil',     price:165,  unit:'à¦ªà§à¦°à¦¤à¦¿ à¦²à¦¿à¦Ÿà¦¾à¦°',  category:'oil',   isFast:false, stock:'ok',  rating:4.5 },
+  { id:4, emoji:'ðŸ¥¦', name:'à¦«à§à¦²à¦•à¦ªà¦¿',          nameEn:'Cauliflower',     price:35,   unit:'à¦ªà§à¦°à¦¤à¦¿à¦Ÿà¦¿',      category:'veg',   isFast:true,  stock:'ok',  rating:4.3 },
+  { id:5, emoji:'ðŸŸ', name:'à¦°à§à¦‡ à¦®à¦¾à¦›',         nameEn:'Rohu Fish',       price:220,  unit:'à¦ªà§à¦°à¦¤à¦¿ à¦•à§‡à¦œà¦¿',   category:'fish',  isFast:false, stock:'ok',  rating:4.7 },
+  { id:6, emoji:'ðŸŒ¶ï¸', name:'à¦®à¦°à¦¿à¦š à¦—à§à¦à¦¡à¦¼à¦¾',     nameEn:'Chili Powder',    price:180,  unit:'à§«à§¦à§¦ à¦—à§à¦°à¦¾à¦®',    category:'spice', isFast:false, stock:'ok',  rating:4.4 },
+  { id:7, emoji:'ðŸš', name:'à¦¨à¦¾à¦œà¦¿à¦°à¦¶à¦¾à¦‡à¦² à¦šà¦¾à¦²',   nameEn:'Nazirshail Rice', price:85,   unit:'à¦ªà§à¦°à¦¤à¦¿ à¦•à§‡à¦œà¦¿',   category:'rice',  isFast:false, stock:'ok',  rating:4.5 },
+  { id:8, emoji:'ðŸ¥¦', name:'à¦†à¦²à§',             nameEn:'Potato',          price:28,   unit:'à¦ªà§à¦°à¦¤à¦¿ à¦•à§‡à¦œà¦¿',   category:'veg',   isFast:true,  stock:'ok',  rating:4.2 },
 ];
 
 const CATEGORIES = [
-  { id:'all',   label:'সব',      emoji:'🏪', bg:'#f0fdf4', accent:'#16a34a' },
-  { id:'gas',   label:'গ্যাস',   emoji:'🔵', bg:'#eff6ff', accent:'#2563eb' },
-  { id:'rice',  label:'চাল',     emoji:'🍚', bg:'#fefce8', accent:'#ca8a04' },
-  { id:'oil',   label:'তেল',     emoji:'🫙', bg:'#fff7ed', accent:'#ea580c' },
-  { id:'veg',   label:'সবজি',    emoji:'🥦', bg:'#f0fdf4', accent:'#15803d' },
-  { id:'fish',  label:'মাছ',     emoji:'🐟', bg:'#f0f9ff', accent:'#0284c7' },
-  { id:'spice', label:'মশলা',    emoji:'🌶️', bg:'#fff1f2', accent:'#e11d48' },
+  { id:'all',   label:'à¦¸à¦¬',      emoji:'ðŸª', bg:'#f0fdf4', accent:'#16a34a' },
+  { id:'gas',   label:'à¦—à§à¦¯à¦¾à¦¸',   emoji:'ðŸ”µ', bg:'#eff6ff', accent:'#2563eb' },
+  { id:'rice',  label:'à¦šà¦¾à¦²',     emoji:'ðŸš', bg:'#fefce8', accent:'#ca8a04' },
+  { id:'oil',   label:'à¦¤à§‡à¦²',     emoji:'ðŸ«™', bg:'#fff7ed', accent:'#ea580c' },
+  { id:'veg',   label:'à¦¸à¦¬à¦œà¦¿',    emoji:'ðŸ¥¦', bg:'#f0fdf4', accent:'#15803d' },
+  { id:'fish',  label:'à¦®à¦¾à¦›',     emoji:'ðŸŸ', bg:'#f0f9ff', accent:'#0284c7' },
+  { id:'spice', label:'à¦®à¦¶à¦²à¦¾',    emoji:'ðŸŒ¶ï¸', bg:'#fff1f2', accent:'#e11d48' },
 ];
 
 async function getAuthHeader(user) {
@@ -56,12 +56,12 @@ function QtyControl({ qty, onInc, onDec }) {
         width:'100%', background:C.green, color:'#fff',
         border:'none', borderRadius:10, padding:'8px',
         fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:'inherit',
-      }}>+ যোগ করুন</button>
+      }}>+ à¦¯à§‹à¦— à¦•à¦°à§à¦¨</button>
     );
   }
   return (
     <div style={{ display:'flex', alignItems:'center', background:C.green, borderRadius:10, overflow:'hidden' }}>
-      <button onClick={onDec} style={{ background:'transparent', border:'none', color:'#fff', width:34, height:34, fontSize:18, cursor:'pointer', fontWeight:700 }}>−</button>
+      <button onClick={onDec} style={{ background:'transparent', border:'none', color:'#fff', width:34, height:34, fontSize:18, cursor:'pointer', fontWeight:700 }}>âˆ’</button>
       <span style={{ color:'#fff', fontWeight:800, fontSize:15, flex:1, textAlign:'center' }}>{qty}</span>
       <button onClick={onInc} style={{ background:'transparent', border:'none', color:'#fff', width:34, height:34, fontSize:18, cursor:'pointer', fontWeight:700 }}>+</button>
     </div>
@@ -73,16 +73,16 @@ function ProductCard({ product, onInc, onDec }) {
     <div style={{ background:C.white, borderRadius:16, border:`1px solid ${C.border}`, padding:14, display:'flex', flexDirection:'column', gap:7 }}>
       <div style={{ fontSize:40, textAlign:'center', lineHeight:1 }}>{product.emoji}</div>
       <div style={{ display:'flex', gap:4, flexWrap:'wrap', minHeight:18 }}>
-        {product.isFast && <span style={{ background:C.orangeLight, color:C.orange, fontSize:9, fontWeight:700, padding:'2px 6px', borderRadius:50 }}>⚡ দ্রুত</span>}
-        {product.stock === 'low' && <span style={{ background:C.redLight, color:C.red, fontSize:9, fontWeight:700, padding:'2px 6px', borderRadius:50 }}>স্বল্প স্টক</span>}
+        {product.isFast && <span style={{ background:C.orangeLight, color:C.orange, fontSize:9, fontWeight:700, padding:'2px 6px', borderRadius:50 }}>âš¡ à¦¦à§à¦°à§à¦¤</span>}
+        {product.stock === 'low' && <span style={{ background:C.redLight, color:C.red, fontSize:9, fontWeight:700, padding:'2px 6px', borderRadius:50 }}>à¦¸à§à¦¬à¦²à§à¦ª à¦¸à§à¦Ÿà¦•</span>}
       </div>
       <div style={{ fontWeight:700, fontSize:13, color:C.text, lineHeight:1.3 }}>{product.name}</div>
       <div style={{ fontSize:10, color:C.textLight }}>{product.unit}</div>
       <div style={{ display:'flex', alignItems:'center', gap:3 }}>
-        <span style={{ color:C.yellow, fontSize:11 }}>★</span>
+        <span style={{ color:C.yellow, fontSize:11 }}>â˜…</span>
         <span style={{ fontSize:10, color:C.textMid, fontWeight:600 }}>{product.rating || '4.5'}</span>
       </div>
-      <div style={{ fontWeight:800, fontSize:16, color:C.green }}>৳{product.price}</div>
+      <div style={{ fontWeight:800, fontSize:16, color:C.green }}>à§³{product.price}</div>
       <QtyControl qty={product.qty || 0} onInc={onInc} onDec={onDec} />
     </div>
   );
@@ -90,10 +90,10 @@ function ProductCard({ product, onInc, onDec }) {
 
 function BottomNav({ active, onTab }) {
   const tabs = [
-    { id:'home',    label:'হোম',      emoji:'🏠' },
-    { id:'search',  label:'খোঁজুন',   emoji:'🔍' },
-    { id:'orders',  label:'অর্ডার',   emoji:'📦' },
-    { id:'profile', label:'প্রোফাইল', emoji:'👤' },
+    { id:'home',    label:'à¦¹à§‹à¦®',      emoji:'ðŸ ' },
+    { id:'search',  label:'à¦–à§‹à¦à¦œà§à¦¨',   emoji:'ðŸ”' },
+    { id:'orders',  label:'à¦…à¦°à§à¦¡à¦¾à¦°',   emoji:'ðŸ“¦' },
+    { id:'profile', label:'à¦ªà§à¦°à§‹à¦«à¦¾à¦‡à¦²', emoji:'ðŸ‘¤' },
   ];
   return (
     <div className="app-bottom-nav" style={{
@@ -117,26 +117,26 @@ function BottomNav({ active, onTab }) {
   );
 }
 
-function LoadingScreen({ message = 'CityBest লোড হচ্ছে...' }) {
+function LoadingScreen({ message = 'CityBest à¦²à§‹à¦¡ à¦¹à¦šà§à¦›à§‡...' }) {
   return (
     <div style={{
       minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center',
       background:'linear-gradient(135deg, #e6f4ed 0%, #f5f6fa 100%)',
       flexDirection:'column', gap:16, fontFamily:"'Hind Siliguri', sans-serif",
     }}>
-      <span style={{ fontSize:52 }}>🛒</span>
+      <span style={{ fontSize:52 }}>ðŸ›’</span>
       <p style={{ color:C.green, fontWeight:700, fontSize:18 }}>{message}</p>
     </div>
   );
 }
 
 
-// ── Helper: Bengali digits ────────────────────────────────────────────────────
+// â”€â”€ Helper: Bengali digits â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function toBnDigits(n) {
-  return String(n).replace(/[0-9]/g, d => '০১২৩৪৫৬৭৮৯'[d]);
+  return String(n).replace(/[0-9]/g, d => 'à§¦à§§à§¨à§©à§ªà§«à§¬à§­à§®à§¯'[d]);
 }
 
-// ── GasOrderSection: inline brand picker + order form ────────────────────────
+// â”€â”€ GasOrderSection: inline brand picker + order form â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function GasOrderSection({ user }) {
   const [brands,     setBrands]     = useState([]);
   const [selected,   setSelected]   = useState(null);
@@ -161,12 +161,12 @@ function GasOrderSection({ user }) {
       .then(r => r.json())
       .then(data => setBrands(data.filter(r => r.type === 'cylinder')))
       .catch(() => setBrands([
-        { id:'omera',       name:'ওমেরা',     unit:'১২ কেজি সিলিন্ডার', price:1250, img:'https://res.cloudinary.com/dpzlzcyuj/image/upload/v1774787034/a7nheq7xjpljr9sshn4f.png' },
-        { id:'bashundhara', name:'বসুন্ধরা',  unit:'১২ কেজি সিলিন্ডার', price:1260, img:'https://res.cloudinary.com/dpzlzcyuj/image/upload/v1774787467/ijav7iuuwfnzwu9n0pfd.png' },
-        { id:'jamuna',      name:'যমুনা',     unit:'১২ কেজি সিলিন্ডার', price:1240, img:'https://res.cloudinary.com/dpzlzcyuj/image/upload/v1774787626/nsa6ubcgvqyqibrzkwwl.png' },
-        { id:'fresh',       name:'ফ্রেশ',     unit:'১২ কেজি সিলিন্ডার', price:1255, img:'https://res.cloudinary.com/dpzlzcyuj/image/upload/v1774786508/o9hi5htwvmcrunb9s2ph.png' },
-        { id:'laugfs',      name:'লাউগফস',    unit:'১২ কেজি সিলিন্ডার', price:1245, img:'' },
-        { id:'beximco',     name:'বেক্সিমকো', unit:'১২ কেজি সিলিন্ডার', price:1250, img:'' },
+        { id:'omera',       name:'à¦“à¦®à§‡à¦°à¦¾',     unit:'à§§à§¨ à¦•à§‡à¦œà¦¿ à¦¸à¦¿à¦²à¦¿à¦¨à§à¦¡à¦¾à¦°', price:1250, img:'https://res.cloudinary.com/dpzlzcyuj/image/upload/v1774787034/a7nheq7xjpljr9sshn4f.png' },
+        { id:'bashundhara', name:'à¦¬à¦¸à§à¦¨à§à¦§à¦°à¦¾',  unit:'à§§à§¨ à¦•à§‡à¦œà¦¿ à¦¸à¦¿à¦²à¦¿à¦¨à§à¦¡à¦¾à¦°', price:1260, img:'https://res.cloudinary.com/dpzlzcyuj/image/upload/v1774787467/ijav7iuuwfnzwu9n0pfd.png' },
+        { id:'jamuna',      name:'à¦¯à¦®à§à¦¨à¦¾',     unit:'à§§à§¨ à¦•à§‡à¦œà¦¿ à¦¸à¦¿à¦²à¦¿à¦¨à§à¦¡à¦¾à¦°', price:1240, img:'https://res.cloudinary.com/dpzlzcyuj/image/upload/v1774787626/nsa6ubcgvqyqibrzkwwl.png' },
+        { id:'fresh',       name:'à¦«à§à¦°à§‡à¦¶',     unit:'à§§à§¨ à¦•à§‡à¦œà¦¿ à¦¸à¦¿à¦²à¦¿à¦¨à§à¦¡à¦¾à¦°', price:1255, img:'https://res.cloudinary.com/dpzlzcyuj/image/upload/v1774786508/o9hi5htwvmcrunb9s2ph.png' },
+        { id:'laugfs',      name:'à¦²à¦¾à¦‰à¦—à¦«à¦¸',    unit:'à§§à§¨ à¦•à§‡à¦œà¦¿ à¦¸à¦¿à¦²à¦¿à¦¨à§à¦¡à¦¾à¦°', price:1245, img:'' },
+        { id:'beximco',     name:'à¦¬à§‡à¦•à§à¦¸à¦¿à¦®à¦•à§‹', unit:'à§§à§¨ à¦•à§‡à¦œà¦¿ à¦¸à¦¿à¦²à¦¿à¦¨à§à¦¡à¦¾à¦°', price:1250, img:'' },
       ]));
   }, []);
 
@@ -189,9 +189,9 @@ function GasOrderSection({ user }) {
   };
 
   const submitOrder = async () => {
-    if (!name.trim())              { setError('নাম দিন'); return; }
-    if (!phone || phone.length<10) { setError('সঠিক মোবাইল নম্বর দিন'); return; }
-    if (!address.trim())           { setError('ডেলিভারি ঠিকানা দিন'); return; }
+    if (!name.trim())              { setError('à¦¨à¦¾à¦® à¦¦à¦¿à¦¨'); return; }
+    if (!phone || phone.length<10) { setError('à¦¸à¦ à¦¿à¦• à¦®à§‹à¦¬à¦¾à¦‡à¦² à¦¨à¦®à§à¦¬à¦° à¦¦à¦¿à¦¨'); return; }
+    if (!address.trim())           { setError('à¦¡à§‡à¦²à¦¿à¦­à¦¾à¦°à¦¿ à¦ à¦¿à¦•à¦¾à¦¨à¦¾ à¦¦à¦¿à¦¨'); return; }
     setError(''); setSubmitting(true);
     try {
       await fetch(API_BASE + '/api/orders', {
@@ -199,7 +199,7 @@ function GasOrderSection({ user }) {
         body: JSON.stringify({ uid:user?user.uid:'guest', items:[{ productId:selected.id, name:selected.name, qty, price:selected.price }], customerName:name, total:selected.price*qty, address, phone, note, lat, lng, paymentMethod:'cod' }),
       });
       setStep('success');
-    } catch { setError('অর্ডার দেওয়া যায়নি। আবার চেষ্টা করুন।'); }
+    } catch { setError('à¦…à¦°à§à¦¡à¦¾à¦° à¦¦à§‡à¦“à¦¯à¦¼à¦¾ à¦¯à¦¾à¦¯à¦¼à¦¨à¦¿à¥¤ à¦†à¦¬à¦¾à¦° à¦šà§‡à¦·à§à¦Ÿà¦¾ à¦•à¦°à§à¦¨à¥¤'); }
     setSubmitting(false);
   };
 
@@ -213,22 +213,22 @@ function GasOrderSection({ user }) {
 
   if (step === 'brands') return (
     <div style={{ margin:'12px 16px 0' }}>
-      <div style={{ fontWeight:800, fontSize:14, color:C.text, marginBottom:10 }}>������ ব্র্যান্ড বেছে অর্ডার করুন</div>
+      <div style={{ fontWeight:800, fontSize:14, color:C.text, marginBottom:10 }}>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ à¦¬à§à¦°à§à¦¯à¦¾à¦¨à§à¦¡ à¦¬à§‡à¦›à§‡ à¦…à¦°à§à¦¡à¦¾à¦° à¦•à¦°à§à¦¨</div>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
         {brands.map(b => (
           <div key={b.id} onClick={() => setSelected(b)} style={{ border:'2px solid '+(selected&&selected.id===b.id?C.green:C.border), borderRadius:14, padding:12, background:selected&&selected.id===b.id?C.greenLight:C.white, cursor:'pointer', textAlign:'center', position:'relative', transition:'all 0.15s' }}>
-            {selected&&selected.id===b.id && <div style={{ position:'absolute', top:8, right:8, width:20, height:20, background:C.green, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontSize:11, fontWeight:700 }}>✓</div>}
+            {selected&&selected.id===b.id && <div style={{ position:'absolute', top:8, right:8, width:20, height:20, background:C.green, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontSize:11, fontWeight:700 }}>âœ“</div>}
             <div style={{ width:64, height:64, margin:'0 auto 8px', borderRadius:10, background:'#f8f8f8', border:'1px solid '+C.border, display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
-              {b.img ? <img src={b.img} alt={b.name} style={{ width:'100%', height:'100%', objectFit:'contain' }} /> : <span style={{ fontSize:32 }}>������</span>}
+              {b.img ? <img src={b.img} alt={b.name} style={{ width:'100%', height:'100%', objectFit:'contain' }} /> : <span style={{ fontSize:32 }}>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</span>}
             </div>
             <div style={{ fontWeight:700, fontSize:13, color:C.text }}>{b.name}</div>
             <div style={{ fontSize:11, color:C.textLight, marginTop:2 }}>{b.unit}</div>
-            <div style={{ fontWeight:800, fontSize:15, color:C.green, marginTop:4 }}>৳{toBnDigits(b.price.toLocaleString())}</div>
+            <div style={{ fontWeight:800, fontSize:15, color:C.green, marginTop:4 }}>à§³{toBnDigits(b.price.toLocaleString())}</div>
           </div>
         ))}
       </div>
-      {selected && <div style={{ marginTop:10, background:C.greenLight, border:'1px solid #a5d6a7', borderRadius:12, padding:'10px 14px', display:'flex', alignItems:'center', gap:10 }}><div style={{ width:24, height:24, background:C.green, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontSize:12 }}>✓</div><div style={{ fontSize:13, color:'#2e7d32', fontWeight:600 }}>{selected.name} — ৳{toBnDigits(selected.price)} / সিলিন্ডার</div></div>}
-      <button onClick={() => { if (!selected) { alert('প্রথমে একটি ব্র্যান্ড বেছে নিন'); return; } setStep('form'); }} style={{ width:'100%', marginTop:10, background:C.green, color:'#fff', border:'none', borderRadius:12, padding:'13px', fontSize:15, fontWeight:700, cursor:'pointer', fontFamily:'inherit' }}>������️ অর্ডার করুন</button>
+      {selected && <div style={{ marginTop:10, background:C.greenLight, border:'1px solid #a5d6a7', borderRadius:12, padding:'10px 14px', display:'flex', alignItems:'center', gap:10 }}><div style={{ width:24, height:24, background:C.green, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontSize:12 }}>âœ“</div><div style={{ fontSize:13, color:'#2e7d32', fontWeight:600 }}>{selected.name} â€” à§³{toBnDigits(selected.price)} / à¦¸à¦¿à¦²à¦¿à¦¨à§à¦¡à¦¾à¦°</div></div>}
+      <button onClick={() => { if (!selected) { alert('à¦ªà§à¦°à¦¥à¦®à§‡ à¦à¦•à¦Ÿà¦¿ à¦¬à§à¦°à§à¦¯à¦¾à¦¨à§à¦¡ à¦¬à§‡à¦›à§‡ à¦¨à¦¿à¦¨'); return; } setStep('form'); }} style={{ width:'100%', marginTop:10, background:C.green, color:'#fff', border:'none', borderRadius:12, padding:'13px', fontSize:15, fontWeight:700, cursor:'pointer', fontFamily:'inherit' }}>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¸ à¦…à¦°à§à¦¡à¦¾à¦° à¦•à¦°à§à¦¨</button>
     </div>
   );
 
@@ -237,39 +237,39 @@ function GasOrderSection({ user }) {
       <div style={{ background:C.greenLight, borderRadius:10, padding:'10px 14px' }}>
         <div style={{ display:'flex', alignItems:'center', gap:10 }}>
           <div style={{ width:40, height:40, borderRadius:8, background:'#fff', border:'1px solid '+C.border, display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
-            {selected.img ? <img src={selected.img} alt={selected.name} style={{ width:'100%', height:'100%', objectFit:'contain' }} /> : <span style={{ fontSize:24 }}>������</span>}
+            {selected.img ? <img src={selected.img} alt={selected.name} style={{ width:'100%', height:'100%', objectFit:'contain' }} /> : <span style={{ fontSize:24 }}>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</span>}
           </div>
           <div><div style={{ fontWeight:700, fontSize:14, color:C.text }}>{selected.name}</div><div style={{ fontSize:12, color:C.textLight }}>{selected.unit}</div></div>
         </div>
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginTop:10 }}>
-          <span style={{ fontSize:13, color:C.textMid, fontWeight:600 }}>পরিমাণ</span>
+          <span style={{ fontSize:13, color:C.textMid, fontWeight:600 }}>à¦ªà¦°à¦¿à¦®à¦¾à¦£</span>
           <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-            <button onClick={() => setQty(q => Math.max(1,q-1))} style={{ width:34, height:34, border:'2px solid '+C.green, borderRadius:'50%', background:'none', color:C.green, fontSize:20, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:700 }}>−</button>
+            <button onClick={() => setQty(q => Math.max(1,q-1))} style={{ width:34, height:34, border:'2px solid '+C.green, borderRadius:'50%', background:'none', color:C.green, fontSize:20, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:700 }}>âˆ’</button>
             <span style={{ fontWeight:800, fontSize:20, minWidth:24, textAlign:'center' }}>{toBnDigits(qty)}</span>
             <button onClick={() => setQty(q => q+1)} style={{ width:34, height:34, border:'2px solid '+C.green, borderRadius:'50%', background:'none', color:C.green, fontSize:20, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:700 }}>+</button>
           </div>
         </div>
         <div style={{ display:'flex', justifyContent:'space-between', marginTop:10, paddingTop:10, borderTop:'1px solid #c8e6c9' }}>
-          <span style={{ fontWeight:700, fontSize:14 }}>মোট</span>
-          <span style={{ fontWeight:800, fontSize:18, color:C.green }}>৳{toBnDigits((selected.price*qty).toLocaleString())}</span>
+          <span style={{ fontWeight:700, fontSize:14 }}>à¦®à§‹à¦Ÿ</span>
+          <span style={{ fontWeight:800, fontSize:18, color:C.green }}>à§³{toBnDigits((selected.price*qty).toLocaleString())}</span>
         </div>
       </div>
-      <div><label style={{ fontSize:13, color:C.textMid, fontWeight:600, display:'block', marginBottom:5 }}>������ আপনার নাম *</label><input value={name} onChange={e => setName(e.target.value)} placeholder="পূর্ণ নাম লিখুন" style={inp} /></div>
-      <div><label style={{ fontSize:13, color:C.textMid, fontWeight:600, display:'block', marginBottom:5 }}>������ মোবাইল নম্বর *</label><input value={phone} onChange={e => setPhone(e.target.value.replace(/\D/g,''))} placeholder="01XXXXXXXXX" maxLength={11} style={inp} /></div>
+      <div><label style={{ fontSize:13, color:C.textMid, fontWeight:600, display:'block', marginBottom:5 }}>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ à¦†à¦ªà¦¨à¦¾à¦° à¦¨à¦¾à¦® *</label><input value={name} onChange={e => setName(e.target.value)} placeholder="à¦ªà§‚à¦°à§à¦£ à¦¨à¦¾à¦® à¦²à¦¿à¦–à§à¦¨" style={inp} /></div>
+      <div><label style={{ fontSize:13, color:C.textMid, fontWeight:600, display:'block', marginBottom:5 }}>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ à¦®à§‹à¦¬à¦¾à¦‡à¦² à¦¨à¦®à§à¦¬à¦° *</label><input value={phone} onChange={e => setPhone(e.target.value.replace(/\D/g,''))} placeholder="01XXXXXXXXX" maxLength={11} style={inp} /></div>
       <div>
-        <label style={{ fontSize:13, color:C.textMid, fontWeight:600, display:'block', marginBottom:5 }}>������ ডেলিভারি ঠিকানা *</label>
-        <textarea value={address} onChange={e => setAddress(e.target.value)} rows={3} placeholder="বাড়ি নং, মহল্লা, সিরাজগঞ্জ সদর" style={{ ...inp, resize:'none' }} />
+        <label style={{ fontSize:13, color:C.textMid, fontWeight:600, display:'block', marginBottom:5 }}>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ à¦¡à§‡à¦²à¦¿à¦­à¦¾à¦°à¦¿ à¦ à¦¿à¦•à¦¾à¦¨à¦¾ *</label>
+        <textarea value={address} onChange={e => setAddress(e.target.value)} rows={3} placeholder="à¦¬à¦¾à§œà¦¿ à¦¨à¦‚, à¦®à¦¹à¦²à§à¦²à¦¾, à¦¸à¦¿à¦°à¦¾à¦œà¦—à¦žà§à¦œ à¦¸à¦¦à¦°" style={{ ...inp, resize:'none' }} />
         <button onClick={getGPS} disabled={gpsState==='loading'} style={{ marginTop:6, width:'100%', background:gpsState==='done'?'#c8e6c9':C.greenLight, color:C.green, border:'1.5px dashed '+C.green, borderRadius:10, padding:'9px', fontSize:13, fontWeight:700, fontFamily:'inherit', cursor:'pointer' }}>
-          {gpsState==='idle'&&'������ আমার লোকেশন ব্যবহার করুন'}{gpsState==='loading'&&'⏳ লোকেশন খোঁজা হচ্ছে...'}{gpsState==='done'&&'✅ লোকেশন পাওয়া গেছে'}{gpsState==='fail'&&'❌ লোকেশন পাওয়া যায়নি'}
+          {gpsState==='idle'&&'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ à¦†à¦®à¦¾à¦° à¦²à§‹à¦•à§‡à¦¶à¦¨ à¦¬à§à¦¯à¦¬à¦¹à¦¾à¦° à¦•à¦°à§à¦¨'}{gpsState==='loading'&&'â³ à¦²à§‹à¦•à§‡à¦¶à¦¨ à¦–à§‹à¦à¦œà¦¾ à¦¹à¦šà§à¦›à§‡...'}{gpsState==='done'&&'âœ… à¦²à§‹à¦•à§‡à¦¶à¦¨ à¦ªà¦¾à¦“à¦¯à¦¼à¦¾ à¦—à§‡à¦›à§‡'}{gpsState==='fail'&&'âŒ à¦²à§‹à¦•à§‡à¦¶à¦¨ à¦ªà¦¾à¦“à¦¯à¦¼à¦¾ à¦¯à¦¾à¦¯à¦¼à¦¨à¦¿'}
         </button>
       </div>
-      <div><label style={{ fontSize:13, color:C.textMid, fontWeight:600, display:'block', marginBottom:5 }}>������ বিশেষ নির্দেশনা (ঐচ্ছিক)</label><input value={note} onChange={e => setNote(e.target.value)} placeholder="যেমন: গেটের বাইরে রাখুন" style={inp} /></div>
-      <div style={{ background:C.greenLight, border:'1px solid #a5d6a7', borderRadius:10, padding:'10px 14px', display:'flex', gap:10 }}><span style={{ fontSize:18 }}>������️</span><span style={{ fontSize:13, color:'#2e7d32', lineHeight:1.5 }}><strong>ক্যাশ অন ডেলিভারি</strong> — পণ্য হাতে পেয়ে টাকা দিন।</span></div>
+      <div><label style={{ fontSize:13, color:C.textMid, fontWeight:600, display:'block', marginBottom:5 }}>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ à¦¬à¦¿à¦¶à§‡à¦· à¦¨à¦¿à¦°à§à¦¦à§‡à¦¶à¦¨à¦¾ (à¦à¦šà§à¦›à¦¿à¦•)</label><input value={note} onChange={e => setNote(e.target.value)} placeholder="à¦¯à§‡à¦®à¦¨: à¦—à§‡à¦Ÿà§‡à¦° à¦¬à¦¾à¦‡à¦°à§‡ à¦°à¦¾à¦–à§à¦¨" style={inp} /></div>
+      <div style={{ background:C.greenLight, border:'1px solid #a5d6a7', borderRadius:10, padding:'10px 14px', display:'flex', gap:10 }}><span style={{ fontSize:18 }}>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¸</span><span style={{ fontSize:13, color:'#2e7d32', lineHeight:1.5 }}><strong>à¦•à§à¦¯à¦¾à¦¶ à¦…à¦¨ à¦¡à§‡à¦²à¦¿à¦­à¦¾à¦°à¦¿</strong> â€” à¦ªà¦£à§à¦¯ à¦¹à¦¾à¦¤à§‡ à¦ªà§‡à¦¯à¦¼à§‡ à¦Ÿà¦¾à¦•à¦¾ à¦¦à¦¿à¦¨à¥¤</span></div>
       {error && <div style={{ background:C.redLight, borderRadius:10, padding:'10px 14px', color:C.red, fontSize:14, fontWeight:600 }}>{error}</div>}
       <div style={{ display:'flex', gap:10 }}>
-        <button onClick={() => { setStep('brands'); setError(''); }} style={{ flex:1, background:C.bg, border:'1px solid '+C.border, borderRadius:10, padding:'12px', fontSize:14, fontWeight:600, cursor:'pointer', fontFamily:'inherit', color:C.textMid }}>← ফিরে যান</button>
+        <button onClick={() => { setStep('brands'); setError(''); }} style={{ flex:1, background:C.bg, border:'1px solid '+C.border, borderRadius:10, padding:'12px', fontSize:14, fontWeight:600, cursor:'pointer', fontFamily:'inherit', color:C.textMid }}>â† à¦«à¦¿à¦°à§‡ à¦¯à¦¾à¦¨</button>
         <button onClick={submitOrder} disabled={submitting} style={{ flex:2, background:submitting?'#9ca3af':C.green, color:'#fff', border:'none', borderRadius:10, padding:'12px', fontSize:15, fontWeight:700, cursor:submitting?'not-allowed':'pointer', fontFamily:'inherit' }}>
-          {submitting?'অর্ডার দেওয়া হচ্ছে...':'✓ অর্ডার নিশ্চিত করুন'}
+          {submitting?'à¦…à¦°à§à¦¡à¦¾à¦° à¦¦à§‡à¦“à¦¯à¦¼à¦¾ à¦¹à¦šà§à¦›à§‡...':'âœ“ à¦…à¦°à§à¦¡à¦¾à¦° à¦¨à¦¿à¦¶à§à¦šà¦¿à¦¤ à¦•à¦°à§à¦¨'}
         </button>
       </div>
     </div>
@@ -277,26 +277,26 @@ function GasOrderSection({ user }) {
 
   if (step === 'success') return (
     <div style={{ margin:'12px 16px 0', background:C.white, borderRadius:14, border:'1px solid '+C.border, padding:24, textAlign:'center' }}>
-      <div style={{ width:72, height:72, background:C.greenLight, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontSize:36, margin:'0 auto 14px' }}>✅</div>
-      <div style={{ fontWeight:800, fontSize:20, color:C.text }}>অর্ডার হয়েছে!</div>
-      <div style={{ color:C.textMid, fontSize:13, marginTop:6, lineHeight:1.6 }}>আপনার অর্ডার পেয়েছি।<br/>{phone} নম্বরে কনফার্মেশন কল পাবেন।</div>
+      <div style={{ width:72, height:72, background:C.greenLight, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontSize:36, margin:'0 auto 14px' }}>âœ…</div>
+      <div style={{ fontWeight:800, fontSize:20, color:C.text }}>à¦…à¦°à§à¦¡à¦¾à¦° à¦¹à¦¯à¦¼à§‡à¦›à§‡!</div>
+      <div style={{ color:C.textMid, fontSize:13, marginTop:6, lineHeight:1.6 }}>à¦†à¦ªà¦¨à¦¾à¦° à¦…à¦°à§à¦¡à¦¾à¦° à¦ªà§‡à¦¯à¦¼à§‡à¦›à¦¿à¥¤<br/>{phone} à¦¨à¦®à§à¦¬à¦°à§‡ à¦•à¦¨à¦«à¦¾à¦°à§à¦®à§‡à¦¶à¦¨ à¦•à¦² à¦ªà¦¾à¦¬à§‡à¦¨à¥¤</div>
       <div style={{ margin:'14px 0', background:C.greenLight, border:'1px solid #c8e6c9', borderRadius:12, padding:14, textAlign:'left' }}>
-        {[['পণ্য', selected?selected.name:''], ['পরিমাণ', toBnDigits(qty)+' সিলিন্ডার'], ['ঠিকানা', address], ['মোট', '৳'+toBnDigits((selected?selected.price*qty:0).toLocaleString())]].map(pair => (
+        {[['à¦ªà¦£à§à¦¯', selected?selected.name:''], ['à¦ªà¦°à¦¿à¦®à¦¾à¦£', toBnDigits(qty)+' à¦¸à¦¿à¦²à¦¿à¦¨à§à¦¡à¦¾à¦°'], ['à¦ à¦¿à¦•à¦¾à¦¨à¦¾', address], ['à¦®à§‹à¦Ÿ', 'à§³'+toBnDigits((selected?selected.price*qty:0).toLocaleString())]].map(pair => (
           <div key={pair[0]} style={{ display:'flex', justifyContent:'space-between', padding:'4px 0', fontSize:13 }}>
             <span style={{ color:C.textLight }}>{pair[0]}</span>
             <span style={{ fontWeight:600, color:C.text, textAlign:'right', maxWidth:'60%' }}>{pair[1]}</span>
           </div>
         ))}
       </div>
-      <a href="tel:01764101555" style={{ display:'inline-flex', alignItems:'center', gap:6, color:C.green, fontSize:15, fontWeight:700, textDecoration:'none', marginBottom:14 }}>������ 01764-101555</a><br/>
-      <button onClick={reset} style={{ background:'none', border:'2px solid '+C.green, color:C.green, borderRadius:12, padding:'10px 28px', fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:'inherit' }}>আবার অর্ডার করুন</button>
+      <a href="tel:01764101555" style={{ display:'inline-flex', alignItems:'center', gap:6, color:C.green, fontSize:15, fontWeight:700, textDecoration:'none', marginBottom:14 }}>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 01764-101555</a><br/>
+      <button onClick={reset} style={{ background:'none', border:'2px solid '+C.green, color:C.green, borderRadius:12, padding:'10px 28px', fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:'inherit' }}>à¦†à¦¬à¦¾à¦° à¦…à¦°à§à¦¡à¦¾à¦° à¦•à¦°à§à¦¨</button>
     </div>
   );
 
   return null;
 }
 
-// ── CategoryPage ──────────────────────────────────────────────────────────────
+// â”€â”€ CategoryPage â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function CategoryPage({ category, products, onUpdateQty, onBack, onCategoryNav, onTab, activeTab, user, categories }) {
   const catProducts = category.id === 'all' ? products : products.filter(p => p.category === category.id);
   const allCats   = categories && categories.length > 0 ? categories : CATEGORIES.filter(c => c.id !== 'all');
@@ -305,10 +305,10 @@ function CategoryPage({ category, products, onUpdateQty, onBack, onCategoryNav, 
   return (
     <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Hind Siliguri', sans-serif", paddingBottom:130 }}>
       <div style={{ background:C.green, padding:'14px 16px 12px', display:'flex', alignItems:'center', gap:12, position:'sticky', top:0, zIndex:100 }}>
-        <button onClick={onBack} style={{ background:'rgba(255,255,255,0.2)', border:'none', borderRadius:50, width:36, height:36, fontSize:18, cursor:'pointer', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center' }}>←</button>
+        <button onClick={onBack} style={{ background:'rgba(255,255,255,0.2)', border:'none', borderRadius:50, width:36, height:36, fontSize:18, cursor:'pointer', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center' }}>â†</button>
         <div>
           <div style={{ color:'#fff', fontWeight:800, fontSize:18 }}>{category.emoji} {category.label}</div>
-          <div style={{ color:'rgba(255,255,255,0.75)', fontSize:10, marginTop:1 }}>{toBnDigits(catProducts.length)} টি পণ্য</div>
+          <div style={{ color:'rgba(255,255,255,0.75)', fontSize:10, marginTop:1 }}>{toBnDigits(catProducts.length)} à¦Ÿà¦¿ à¦ªà¦£à§à¦¯</div>
         </div>
       </div>
 
@@ -316,7 +316,7 @@ function CategoryPage({ category, products, onUpdateQty, onBack, onCategoryNav, 
 
       {catProducts.length > 0 && (
         <>
-          <div style={{ padding:'14px 16px 8px', fontWeight:800, fontSize:14, color:C.text }}>������️ {category.label} পণ্য</div>
+          <div style={{ padding:'14px 16px 8px', fontWeight:800, fontSize:14, color:C.text }}>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¸ {category.label} à¦ªà¦£à§à¦¯</div>
           <div style={{ display:'grid', gridTemplateColumns:window.innerWidth>=768?'repeat(4,1fr)':'1fr 1fr', gap:12, padding:'0 16px' }}>
             {catProducts.map(p => (
               <ProductCard key={p.id||p._id} product={p}
@@ -331,17 +331,17 @@ function CategoryPage({ category, products, onUpdateQty, onBack, onCategoryNav, 
       {catProducts.length === 0 && category.id !== 'gas' && (
         <div style={{ textAlign:'center', padding:'60px 32px' }}>
           <div style={{ fontSize:56 }}>{category.emoji}</div>
-          <div style={{ fontWeight:700, fontSize:17, color:C.text, marginTop:14 }}>শীঘ্রই আসছে</div>
-          <div style={{ color:C.textLight, fontSize:13, marginTop:6 }}>এই ক্যাটাগরি শীঘ্রই যোগ হবে</div>
+          <div style={{ fontWeight:700, fontSize:17, color:C.text, marginTop:14 }}>à¦¶à§€à¦˜à§à¦°à¦‡ à¦†à¦¸à¦›à§‡</div>
+          <div style={{ color:C.textLight, fontSize:13, marginTop:6 }}>à¦à¦‡ à¦•à§à¦¯à¦¾à¦Ÿà¦¾à¦—à¦°à¦¿ à¦¶à§€à¦˜à§à¦°à¦‡ à¦¯à§‹à¦— à¦¹à¦¬à§‡</div>
         </div>
       )}
 
       <div style={{ padding:'20px 16px 8px' }}>
-        <div style={{ fontWeight:800, fontSize:14, color:C.text, marginBottom:12 }}>অন্যান্য ক্যাটাগরি</div>
+        <div style={{ fontWeight:800, fontSize:14, color:C.text, marginBottom:12 }}>à¦…à¦¨à§à¦¯à¦¾à¦¨à§à¦¯ à¦•à§à¦¯à¦¾à¦Ÿà¦¾à¦—à¦°à¦¿</div>
         <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:10 }}>
           {otherCats.map(cat => (
             <button key={cat.id} onClick={() => onCategoryNav(cat)} style={{ background:cat.bg, border:'1.5px solid '+cat.accent+'33', borderRadius:14, padding:'12px 8px', cursor:'pointer', fontFamily:'inherit', textAlign:'center', display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
-              {cat.image ? <img src={cat.image} alt={cat.label} style={{ width:36, height:36, objectFit:'contain' }} /> : <span style={{ fontSize:28 }}>{cat.emoji || '🛒'}</span>}
+              {cat.image ? <img src={cat.image} alt={cat.label} style={{ width:36, height:36, objectFit:'contain' }} /> : <span style={{ fontSize:28 }}>{cat.emoji || 'ðŸ›’'}</span>}
               <span style={{ fontWeight:700, fontSize:12, color:cat.accent }}>{cat.label}</span>
             </button>
           ))}
@@ -371,12 +371,12 @@ function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, onCategoryO
       <div style={{ background:C.green, padding:'14px 16px 12px', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100 }}>
         <div>
           <div style={{ color:'#fff', fontWeight:800, fontSize:21, lineHeight:1 }}>CityBest</div>
-          <div style={{ color:'rgba(255,255,255,0.75)', fontSize:10, marginTop:2 }}>সিরাজগঞ্জ • দ্রুত ডেলিভারি</div>
+          <div style={{ color:'rgba(255,255,255,0.75)', fontSize:10, marginTop:2 }}>à¦¸à¦¿à¦°à¦¾à¦œà¦—à¦žà§à¦œ â€¢ à¦¦à§à¦°à§à¦¤ à¦¡à§‡à¦²à¦¿à¦­à¦¾à¦°à¦¿</div>
         </div>
         <div style={{ display:'flex', gap:8 }}>
-          <button onClick={() => onTab('profile')} style={{ background:'rgba(255,255,255,0.15)', border:'none', borderRadius:50, width:38, height:38, fontSize:17, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>👤</button>
+          <button onClick={() => onTab('profile')} style={{ background:'rgba(255,255,255,0.15)', border:'none', borderRadius:50, width:38, height:38, fontSize:17, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>ðŸ‘¤</button>
           <button onClick={onCart} style={{ background:'rgba(255,255,255,0.15)', border:'none', borderRadius:50, width:38, height:38, fontSize:17, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', position:'relative' }}>
-            🛒
+            ðŸ›’
             {cartCount > 0 && <span style={{ position:'absolute', top:-2, right:-2, background:C.orange, color:'#fff', borderRadius:50, width:17, height:17, fontSize:9, fontWeight:800, display:'flex', alignItems:'center', justifyContent:'center' }}>{cartCount}</span>}
           </button>
         </div>
@@ -384,8 +384,8 @@ function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, onCategoryO
 
       <div style={{ padding:'12px 16px 0' }}>
         <div style={{ background:C.white, borderRadius:12, border:`1.5px solid ${C.border}`, display:'flex', alignItems:'center', padding:'10px 14px', gap:10 }}>
-          <span style={{ fontSize:14, opacity:0.4 }}>🔍</span>
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="পণ্য খুঁজুন..."
+          <span style={{ fontSize:14, opacity:0.4 }}>ðŸ”</span>
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="à¦ªà¦£à§à¦¯ à¦–à§à¦à¦œà§à¦¨..."
             style={{ border:'none', outline:'none', flex:1, fontSize:14, fontFamily:'inherit', background:'transparent', color:C.text }} />
         </div>
       </div>
@@ -394,22 +394,22 @@ function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, onCategoryO
         <div style={{ padding:'12px 16px 0' }}>
           <div style={{ background:`linear-gradient(135deg, ${C.green}, ${C.greenMid})`, borderRadius:16, padding:'18px 20px', display:'flex', justifyContent:'space-between', alignItems:'center', overflow:'hidden' }}>
             <div>
-              <div style={{ color:'#fff', fontWeight:800, fontSize:17, lineHeight:1.3 }}>৩০ মিনিটে<br/>ডেলিভারি! ⚡</div>
-              <div style={{ color:'rgba(255,255,255,0.85)', fontSize:11, marginTop:5 }}>প্রথম অর্ডারে ৫০ টাকা ছাড়</div>
-              <div style={{ marginTop:9, background:C.orange, borderRadius:8, padding:'5px 12px', color:'#fff', fontSize:11, fontWeight:700, display:'inline-block' }}>অর্ডার করুন →</div>
+              <div style={{ color:'#fff', fontWeight:800, fontSize:17, lineHeight:1.3 }}>à§©à§¦ à¦®à¦¿à¦¨à¦¿à¦Ÿà§‡<br/>à¦¡à§‡à¦²à¦¿à¦­à¦¾à¦°à¦¿! âš¡</div>
+              <div style={{ color:'rgba(255,255,255,0.85)', fontSize:11, marginTop:5 }}>à¦ªà§à¦°à¦¥à¦® à¦…à¦°à§à¦¡à¦¾à¦°à§‡ à§«à§¦ à¦Ÿà¦¾à¦•à¦¾ à¦›à¦¾à¦¡à¦¼</div>
+              <div style={{ marginTop:9, background:C.orange, borderRadius:8, padding:'5px 12px', color:'#fff', fontSize:11, fontWeight:700, display:'inline-block' }}>à¦…à¦°à§à¦¡à¦¾à¦° à¦•à¦°à§à¦¨ â†’</div>
             </div>
-            <div style={{ fontSize:54, opacity:0.9 }}>🛵</div>
+            <div style={{ fontSize:54, opacity:0.9 }}>ðŸ›µ</div>
           </div>
         </div>
       )}
 
       {!search && (
         <>
-          <div style={{ padding:'16px 16px 6px', fontWeight:800, fontSize:14, color:C.text }}>ক্যাটাগরি</div>
+          <div style={{ padding:'16px 16px 6px', fontWeight:800, fontSize:14, color:C.text }}>à¦•à§à¦¯à¦¾à¦Ÿà¦¾à¦—à¦°à¦¿</div>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(6, 1fr)', gap:10, padding:'0 16px 4px' }}>
             {(categories && categories.length > 0 ? categories : CATEGORIES.filter(c => c.id !== 'all')).map(cat => (
               <button key={cat.id} onClick={() => onCategoryOpen(cat)} style={{ background:cat.bg, border:'1.5px solid '+cat.accent+'33', borderRadius:16, padding:'14px 8px 12px', cursor:'pointer', fontFamily:'inherit', textAlign:'center', display:'flex', flexDirection:'column', alignItems:'center', gap:6, boxShadow:'0 2px 8px rgba(0,0,0,0.05)' }}>
-                {cat.image ? <img src={cat.image} alt={cat.label} style={{ width:40, height:40, objectFit:'contain' }} /> : <span style={{ fontSize:32 }}>{cat.emoji || '🛒'}</span>}
+                {cat.image ? <img src={cat.image} alt={cat.label} style={{ width:40, height:40, objectFit:'contain' }} /> : <span style={{ fontSize:32 }}>{cat.emoji || 'ðŸ›’'}</span>}
                 <span style={{ fontWeight:700, fontSize:12, color:cat.accent }}>{cat.label}</span>
               </button>
             ))}
@@ -438,7 +438,7 @@ function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, onCategoryO
 
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'14px 16px 8px' }}>
         <div style={{ fontWeight:800, fontSize:15, color:C.text }}>
-          {search ? `"${search}" এর ফলাফল: ${filtered.length} টি` : '🛒 সব পণ্য'}
+          {search ? `"${search}" à¦à¦° à¦«à¦²à¦¾à¦«à¦²: ${filtered.length} à¦Ÿà¦¿` : 'ðŸ›’ à¦¸à¦¬ à¦ªà¦£à§à¦¯'}
         </div>
       </div>
 
@@ -459,9 +459,9 @@ function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, onCategoryO
             justifyContent:'space-between', cursor:'pointer', fontFamily:'inherit',
             boxShadow:'0 8px 24px rgba(14,138,74,0.35)',
           }}>
-            <div style={{ background:'rgba(255,255,255,0.2)', borderRadius:8, padding:'4px 10px', fontSize:13, fontWeight:700 }}>{cartCount} টি</div>
-            <div style={{ fontWeight:800, fontSize:15 }}>🛒 কার্ট দেখুন</div>
-            <div style={{ fontWeight:800, fontSize:14 }}>৳{cartAmount}</div>
+            <div style={{ background:'rgba(255,255,255,0.2)', borderRadius:8, padding:'4px 10px', fontSize:13, fontWeight:700 }}>{cartCount} à¦Ÿà¦¿</div>
+            <div style={{ fontWeight:800, fontSize:15 }}>ðŸ›’ à¦•à¦¾à¦°à§à¦Ÿ à¦¦à§‡à¦–à§à¦¨</div>
+            <div style={{ fontWeight:800, fontSize:14 }}>à§³{cartAmount}</div>
           </button>
         </div>
       )}
@@ -479,16 +479,16 @@ function CartPage({ items, onUpdateQty, onBack, onCheckout }) {
   return (
     <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Hind Siliguri', sans-serif", maxWidth:'100%', margin:'0 auto', paddingBottom:20 }}>
       <div style={{ background:C.white, borderBottom:`1px solid ${C.border}`, padding:'14px 16px', display:'flex', alignItems:'center', gap:12, position:'sticky', top:0, zIndex:100 }}>
-        <button onClick={onBack} style={{ background:C.bg, border:'none', borderRadius:50, width:38, height:38, fontSize:18, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>←</button>
-        <div style={{ fontWeight:800, fontSize:18, color:C.text }}>আমার কার্ট</div>
-        <div style={{ marginLeft:'auto', background:C.greenLight, color:C.green, borderRadius:50, padding:'3px 12px', fontSize:13, fontWeight:700 }}>{items.length} টি পণ্য</div>
+        <button onClick={onBack} style={{ background:C.bg, border:'none', borderRadius:50, width:38, height:38, fontSize:18, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>â†</button>
+        <div style={{ fontWeight:800, fontSize:18, color:C.text }}>à¦†à¦®à¦¾à¦° à¦•à¦¾à¦°à§à¦Ÿ</div>
+        <div style={{ marginLeft:'auto', background:C.greenLight, color:C.green, borderRadius:50, padding:'3px 12px', fontSize:13, fontWeight:700 }}>{items.length} à¦Ÿà¦¿ à¦ªà¦£à§à¦¯</div>
       </div>
 
       {items.length === 0 ? (
         <div style={{ textAlign:'center', padding:'80px 32px' }}>
-          <div style={{ fontSize:64 }}>🛒</div>
-          <div style={{ fontWeight:700, fontSize:18, color:C.text, marginTop:16 }}>কার্ট খালি</div>
-          <button onClick={onBack} style={{ marginTop:24, background:C.green, color:'#fff', border:'none', borderRadius:12, padding:'12px 28px', fontSize:15, fontWeight:700, cursor:'pointer', fontFamily:'inherit' }}>কেনাকাটা করুন</button>
+          <div style={{ fontSize:64 }}>ðŸ›’</div>
+          <div style={{ fontWeight:700, fontSize:18, color:C.text, marginTop:16 }}>à¦•à¦¾à¦°à§à¦Ÿ à¦–à¦¾à¦²à¦¿</div>
+          <button onClick={onBack} style={{ marginTop:24, background:C.green, color:'#fff', border:'none', borderRadius:12, padding:'12px 28px', fontSize:15, fontWeight:700, cursor:'pointer', fontFamily:'inherit' }}>à¦•à§‡à¦¨à¦¾à¦•à¦¾à¦Ÿà¦¾ à¦•à¦°à§à¦¨</button>
         </div>
       ) : (
         <>
@@ -499,7 +499,7 @@ function CartPage({ items, onUpdateQty, onBack, onCheckout }) {
                 <div style={{ flex:1 }}>
                   <div style={{ fontWeight:700, fontSize:14, color:C.text }}>{item.name}</div>
                   <div style={{ fontSize:11, color:C.textLight, marginTop:2 }}>{item.unit}</div>
-                  <div style={{ fontWeight:800, fontSize:15, color:C.green, marginTop:4 }}>৳{item.price}</div>
+                  <div style={{ fontWeight:800, fontSize:15, color:C.green, marginTop:4 }}>à§³{item.price}</div>
                 </div>
                 <QtyControl qty={item.qty} onInc={() => onUpdateQty(item.id, 1)} onDec={() => onUpdateQty(item.id, -1)} />
               </div>
@@ -508,27 +508,27 @@ function CartPage({ items, onUpdateQty, onBack, onCheckout }) {
 
           {delivery > 0 && (
             <div style={{ margin:'0 16px', background:C.orangeLight, borderRadius:10, padding:'10px 14px', fontSize:13, color:C.orange, fontWeight:600 }}>
-              🚚 আরো ৳{500 - subtotal} এর কেনাকাটা করলে বিনামূল্যে ডেলিভারি!
+              ðŸšš à¦†à¦°à§‹ à§³{500 - subtotal} à¦à¦° à¦•à§‡à¦¨à¦¾à¦•à¦¾à¦Ÿà¦¾ à¦•à¦°à¦²à§‡ à¦¬à¦¿à¦¨à¦¾à¦®à§‚à¦²à§à¦¯à§‡ à¦¡à§‡à¦²à¦¿à¦­à¦¾à¦°à¦¿!
             </div>
           )}
 
           <div style={{ margin:'12px 16px 0', background:C.white, borderRadius:16, border:`1px solid ${C.border}`, padding:16 }}>
-            <div style={{ fontWeight:800, fontSize:15, color:C.text, marginBottom:12 }}>অর্ডার সারসংক্ষেপ</div>
-            {[['পণ্যের দাম', `৳${subtotal}`], ['ডেলিভারি চার্জ', delivery===0?'বিনামূল্যে ✅':`৳${delivery}`]].map(([l,v]) => (
+            <div style={{ fontWeight:800, fontSize:15, color:C.text, marginBottom:12 }}>à¦…à¦°à§à¦¡à¦¾à¦° à¦¸à¦¾à¦°à¦¸à¦‚à¦•à§à¦·à§‡à¦ª</div>
+            {[['à¦ªà¦£à§à¦¯à§‡à¦° à¦¦à¦¾à¦®', `à§³${subtotal}`], ['à¦¡à§‡à¦²à¦¿à¦­à¦¾à¦°à¦¿ à¦šà¦¾à¦°à§à¦œ', delivery===0?'à¦¬à¦¿à¦¨à¦¾à¦®à§‚à¦²à§à¦¯à§‡ âœ…':`à§³${delivery}`]].map(([l,v]) => (
               <div key={l} style={{ display:'flex', justifyContent:'space-between', marginBottom:10 }}>
                 <span style={{ color:C.textMid, fontSize:14 }}>{l}</span>
-                <span style={{ fontWeight:600, fontSize:14, color:l==='ডেলিভারি চার্জ'&&delivery===0?C.green:C.text }}>{v}</span>
+                <span style={{ fontWeight:600, fontSize:14, color:l==='à¦¡à§‡à¦²à¦¿à¦­à¦¾à¦°à¦¿ à¦šà¦¾à¦°à§à¦œ'&&delivery===0?C.green:C.text }}>{v}</span>
               </div>
             ))}
             <div style={{ borderTop:`1px solid ${C.border}`, paddingTop:12, display:'flex', justifyContent:'space-between' }}>
-              <span style={{ fontWeight:800, fontSize:16, color:C.text }}>মোট</span>
-              <span style={{ fontWeight:800, fontSize:18, color:C.green }}>৳{total}</span>
+              <span style={{ fontWeight:800, fontSize:16, color:C.text }}>à¦®à§‹à¦Ÿ</span>
+              <span style={{ fontWeight:800, fontSize:18, color:C.green }}>à§³{total}</span>
             </div>
           </div>
 
           <div style={{ padding:'16px' }}>
             <button onClick={() => onCheckout(total)} style={{ width:'100%', background:C.green, color:'#fff', border:'none', borderRadius:14, padding:16, fontSize:16, fontWeight:800, cursor:'pointer', fontFamily:'inherit' }}>
-              অর্ডার দিন → ৳{total}
+              à¦…à¦°à§à¦¡à¦¾à¦° à¦¦à¦¿à¦¨ â†’ à§³{total}
             </button>
           </div>
         </>
@@ -546,7 +546,7 @@ function CheckoutPage({ cartItems, total, user, onBack, onSuccess }) {
   const [error,      setError]      = useState('');
 
   const pickLocation = () => {
-    if (!navigator.geolocation) { setError('আপনার ব্রাউজার লোকেশন সাপোর্ট করে না'); return; }
+    if (!navigator.geolocation) { setError('à¦†à¦ªà¦¨à¦¾à¦° à¦¬à§à¦°à¦¾à¦‰à¦œà¦¾à¦° à¦²à§‹à¦•à§‡à¦¶à¦¨ à¦¸à¦¾à¦ªà§‹à¦°à§à¦Ÿ à¦•à¦°à§‡ à¦¨à¦¾'); return; }
     setLocLoading(true);
     setError('');
     navigator.geolocation.getCurrentPosition(
@@ -561,14 +561,14 @@ function CheckoutPage({ cartItems, total, user, onBack, onSuccess }) {
         }
         setLocLoading(false);
       },
-      () => { setError('লোকেশন পাওয়া যায়নি। ঠিকানা নিজে লিখুন।'); setLocLoading(false); },
+      () => { setError('à¦²à§‹à¦•à§‡à¦¶à¦¨ à¦ªà¦¾à¦“à¦¯à¦¼à¦¾ à¦¯à¦¾à¦¯à¦¼à¦¨à¦¿à¥¤ à¦ à¦¿à¦•à¦¾à¦¨à¦¾ à¦¨à¦¿à¦œà§‡ à¦²à¦¿à¦–à§à¦¨à¥¤'); setLocLoading(false); },
       { timeout:10000, enableHighAccuracy:true }
     );
   };
 
   const placeOrder = async () => {
-    if (!address.trim()) { setError('ঠিকানা দিন'); return; }
-    if (!phone.trim())   { setError('ফোন নম্বর দিন'); return; }
+    if (!address.trim()) { setError('à¦ à¦¿à¦•à¦¾à¦¨à¦¾ à¦¦à¦¿à¦¨'); return; }
+    if (!phone.trim())   { setError('à¦«à§‹à¦¨ à¦¨à¦®à§à¦¬à¦° à¦¦à¦¿à¦¨'); return; }
     setLoading(true);
     setError('');
     try {
@@ -582,7 +582,7 @@ function CheckoutPage({ cartItems, total, user, onBack, onSuccess }) {
       onSuccess();
     } catch (err) {
       console.error(err);
-      setError('অর্ডার দেওয়া যায়নি। আবার চেষ্টা করুন।');
+      setError('à¦…à¦°à§à¦¡à¦¾à¦° à¦¦à§‡à¦“à¦¯à¦¼à¦¾ à¦¯à¦¾à¦¯à¦¼à¦¨à¦¿à¥¤ à¦†à¦¬à¦¾à¦° à¦šà§‡à¦·à§à¦Ÿà¦¾ à¦•à¦°à§à¦¨à¥¤');
     }
     setLoading(false);
   };
@@ -592,16 +592,16 @@ function CheckoutPage({ cartItems, total, user, onBack, onSuccess }) {
   return (
     <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Hind Siliguri', sans-serif", maxWidth:'100%', margin:'0 auto', paddingBottom:32 }}>
       <div style={{ background:C.white, borderBottom:`1px solid ${C.border}`, padding:'14px 16px', display:'flex', alignItems:'center', gap:12, position:'sticky', top:0, zIndex:100 }}>
-        <button onClick={onBack} style={{ background:C.bg, border:'none', borderRadius:50, width:38, height:38, fontSize:18, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>←</button>
-        <div style={{ fontWeight:800, fontSize:18, color:C.text }}>ডেলিভারি তথ্য</div>
+        <button onClick={onBack} style={{ background:C.bg, border:'none', borderRadius:50, width:38, height:38, fontSize:18, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>â†</button>
+        <div style={{ fontWeight:800, fontSize:18, color:C.text }}>à¦¡à§‡à¦²à¦¿à¦­à¦¾à¦°à¦¿ à¦¤à¦¥à§à¦¯</div>
       </div>
 
       <div style={{ padding:16, display:'flex', flexDirection:'column', gap:14 }}>
         <div style={{ background:C.white, borderRadius:14, border:`1px solid ${C.border}`, padding:16 }}>
-          <div style={{ fontWeight:700, fontSize:15, color:C.text, marginBottom:12 }}>📍 ডেলিভারি ঠিকানা</div>
+          <div style={{ fontWeight:700, fontSize:15, color:C.text, marginBottom:12 }}>ðŸ“ à¦¡à§‡à¦²à¦¿à¦­à¦¾à¦°à¦¿ à¦ à¦¿à¦•à¦¾à¦¨à¦¾</div>
 
           <textarea value={address} onChange={e => setAddress(e.target.value)}
-            placeholder="আপনার সম্পূর্ণ ঠিকানা লিখুন..." rows={3}
+            placeholder="à¦†à¦ªà¦¨à¦¾à¦° à¦¸à¦®à§à¦ªà§‚à¦°à§à¦£ à¦ à¦¿à¦•à¦¾à¦¨à¦¾ à¦²à¦¿à¦–à§à¦¨..." rows={3}
             style={{ ...inputStyle, resize:'none', marginBottom:10 }} />
 
           <button onClick={pickLocation} disabled={locLoading} style={{
@@ -611,19 +611,19 @@ function CheckoutPage({ cartItems, total, user, onBack, onSuccess }) {
             fontFamily:'inherit', display:'flex', alignItems:'center', justifyContent:'center',
             gap:8, marginBottom:10,
           }}>
-            {locLoading ? '⏳ লোকেশন খোঁজা হচ্ছে...' : '📍 আমার লোকেশন ব্যবহার করুন'}
+            {locLoading ? 'â³ à¦²à§‹à¦•à§‡à¦¶à¦¨ à¦–à§‹à¦à¦œà¦¾ à¦¹à¦šà§à¦›à§‡...' : 'ðŸ“ à¦†à¦®à¦¾à¦° à¦²à§‹à¦•à§‡à¦¶à¦¨ à¦¬à§à¦¯à¦¬à¦¹à¦¾à¦° à¦•à¦°à§à¦¨'}
           </button>
 
           <input value={phone} onChange={e => setPhone(e.target.value)}
-            placeholder="ফোন নম্বর" style={inputStyle} />
+            placeholder="à¦«à§‹à¦¨ à¦¨à¦®à§à¦¬à¦°" style={inputStyle} />
         </div>
 
         <div style={{ background:C.white, borderRadius:14, border:`1px solid ${C.border}`, padding:16 }}>
-          <div style={{ fontWeight:700, fontSize:15, color:C.text, marginBottom:12 }}>💳 পেমেন্ট পদ্ধতি</div>
+          <div style={{ fontWeight:700, fontSize:15, color:C.text, marginBottom:12 }}>ðŸ’³ à¦ªà§‡à¦®à§‡à¦¨à§à¦Ÿ à¦ªà¦¦à§à¦§à¦¤à¦¿</div>
           {[
-            { id:'cod',   label:'ক্যাশ অন ডেলিভারি', emoji:'💵' },
-            { id:'bkash', label:'বিকাশ',              emoji:'📱' },
-            { id:'nagad', label:'নগদ',                emoji:'📱' },
+            { id:'cod',   label:'à¦•à§à¦¯à¦¾à¦¶ à¦…à¦¨ à¦¡à§‡à¦²à¦¿à¦­à¦¾à¦°à¦¿', emoji:'ðŸ’µ' },
+            { id:'bkash', label:'à¦¬à¦¿à¦•à¦¾à¦¶',              emoji:'ðŸ“±' },
+            { id:'nagad', label:'à¦¨à¦—à¦¦',                emoji:'ðŸ“±' },
           ].map(m => (
             <button key={m.id} onClick={() => setPayMethod(m.id)} style={{
               width:'100%', background:payMethod===m.id?C.greenLight:C.bg,
@@ -633,7 +633,7 @@ function CheckoutPage({ cartItems, total, user, onBack, onSuccess }) {
             }}>
               <span style={{ fontSize:20 }}>{m.emoji}</span>
               <span style={{ fontWeight:600, fontSize:14, color:C.text }}>{m.label}</span>
-              {payMethod===m.id && <span style={{ marginLeft:'auto', color:C.green, fontWeight:800 }}>✓</span>}
+              {payMethod===m.id && <span style={{ marginLeft:'auto', color:C.green, fontWeight:800 }}>âœ“</span>}
             </button>
           ))}
         </div>
@@ -645,7 +645,7 @@ function CheckoutPage({ cartItems, total, user, onBack, onSuccess }) {
           border:'none', borderRadius:14, padding:16, fontSize:16,
           fontWeight:800, cursor:loading?'not-allowed':'pointer', fontFamily:'inherit',
         }}>
-          {loading ? 'অর্ডার দেওয়া হচ্ছে...' : `অর্ডার নিশ্চিত করুন • ৳${total}`}
+          {loading ? 'à¦…à¦°à§à¦¡à¦¾à¦° à¦¦à§‡à¦“à¦¯à¦¼à¦¾ à¦¹à¦šà§à¦›à§‡...' : `à¦…à¦°à§à¦¡à¦¾à¦° à¦¨à¦¿à¦¶à§à¦šà¦¿à¦¤ à¦•à¦°à§à¦¨ â€¢ à§³${total}`}
         </button>
       </div>
     </div>
@@ -656,20 +656,20 @@ function OrderSuccess({ onHome }) {
   return (
     <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Hind Siliguri', sans-serif", maxWidth:'100%', margin:'0 auto', display:'flex', alignItems:'center', justifyContent:'center' }}>
       <div style={{ textAlign:'center', padding:32 }}>
-        <div style={{ fontSize:80 }}>✅</div>
-        <div style={{ fontWeight:800, fontSize:24, color:C.text, marginTop:20 }}>অর্ডার হয়েছে!</div>
+        <div style={{ fontSize:80 }}>âœ…</div>
+        <div style={{ fontWeight:800, fontSize:24, color:C.text, marginTop:20 }}>à¦…à¦°à§à¦¡à¦¾à¦° à¦¹à¦¯à¦¼à§‡à¦›à§‡!</div>
         <div style={{ color:C.textMid, fontSize:15, marginTop:10, lineHeight:1.6 }}>
-          আপনার অর্ডার সফলভাবে গ্রহণ করা হয়েছে।<br/>৩০ মিনিটের মধ্যে ডেলিভারি পাবেন।
+          à¦†à¦ªà¦¨à¦¾à¦° à¦…à¦°à§à¦¡à¦¾à¦° à¦¸à¦«à¦²à¦­à¦¾à¦¬à§‡ à¦—à§à¦°à¦¹à¦£ à¦•à¦°à¦¾ à¦¹à¦¯à¦¼à§‡à¦›à§‡à¥¤<br/>à§©à§¦ à¦®à¦¿à¦¨à¦¿à¦Ÿà§‡à¦° à¦®à¦§à§à¦¯à§‡ à¦¡à§‡à¦²à¦¿à¦­à¦¾à¦°à¦¿ à¦ªà¦¾à¦¬à§‡à¦¨à¥¤
         </div>
         <div style={{ margin:'24px 0', background:C.greenLight, borderRadius:14, padding:16, display:'flex', alignItems:'center', gap:12 }}>
-          <span style={{ fontSize:32 }}>🛵</span>
+          <span style={{ fontSize:32 }}>ðŸ›µ</span>
           <div style={{ textAlign:'left' }}>
-            <div style={{ fontWeight:700, color:C.green, fontSize:14 }}>ডেলিভারি চলছে...</div>
-            <div style={{ color:C.textMid, fontSize:12, marginTop:2 }}>আনুমানিক সময়: ২৫-৩০ মিনিট</div>
+            <div style={{ fontWeight:700, color:C.green, fontSize:14 }}>à¦¡à§‡à¦²à¦¿à¦­à¦¾à¦°à¦¿ à¦šà¦²à¦›à§‡...</div>
+            <div style={{ color:C.textMid, fontSize:12, marginTop:2 }}>à¦†à¦¨à§à¦®à¦¾à¦¨à¦¿à¦• à¦¸à¦®à¦¯à¦¼: à§¨à§«-à§©à§¦ à¦®à¦¿à¦¨à¦¿à¦Ÿ</div>
           </div>
         </div>
         <button onClick={onHome} style={{ background:C.green, color:'#fff', border:'none', borderRadius:14, padding:'14px 36px', fontSize:16, fontWeight:800, cursor:'pointer', fontFamily:'inherit' }}>
-          হোমে যান
+          à¦¹à§‹à¦®à§‡ à¦¯à¦¾à¦¨
         </button>
       </div>
     </div>
@@ -692,23 +692,23 @@ function OrdersPage({ user, onTab }) {
   }, []);
 
   const statusColor = { pending:'#f97316', confirmed:'#0e8a4a', delivered:'#4b5563', cancelled:'#ef4444' };
-  const statusLabel = { pending:'অপেক্ষায়', confirmed:'নিশ্চিত', delivered:'ডেলিভারি হয়েছে', cancelled:'বাতিল' };
+  const statusLabel = { pending:'à¦…à¦ªà§‡à¦•à§à¦·à¦¾à¦¯à¦¼', confirmed:'à¦¨à¦¿à¦¶à§à¦šà¦¿à¦¤', delivered:'à¦¡à§‡à¦²à¦¿à¦­à¦¾à¦°à¦¿ à¦¹à¦¯à¦¼à§‡à¦›à§‡', cancelled:'à¦¬à¦¾à¦¤à¦¿à¦²' };
 
   return (
     <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Hind Siliguri', sans-serif", maxWidth:'100%', margin:'0 auto', paddingBottom:80 }}>
       <div style={{ background:C.green, padding:'14px 16px 12px' }}>
-        <div style={{ color:'#fff', fontWeight:800, fontSize:19 }}>আমার অর্ডার</div>
+        <div style={{ color:'#fff', fontWeight:800, fontSize:19 }}>à¦†à¦®à¦¾à¦° à¦…à¦°à§à¦¡à¦¾à¦°</div>
         <div style={{ color:'rgba(255,255,255,0.75)', fontSize:10, marginTop:2 }}>CityBest</div>
       </div>
 
       {loading ? (
-        <div style={{ textAlign:'center', padding:'60px 32px', color:C.textMid }}>লোড হচ্ছে...</div>
+        <div style={{ textAlign:'center', padding:'60px 32px', color:C.textMid }}>à¦²à§‹à¦¡ à¦¹à¦šà§à¦›à§‡...</div>
       ) : orders.length === 0 ? (
         <div style={{ textAlign:'center', padding:'80px 32px' }}>
-          <div style={{ fontSize:56 }}>📦</div>
-          <div style={{ fontWeight:700, fontSize:18, color:C.text, marginTop:16 }}>কোনো অর্ডার নেই</div>
-          <div style={{ color:C.textLight, fontSize:13, marginTop:8 }}>এখনো কোনো অর্ডার দেননি</div>
-          <button onClick={() => onTab('home')} style={{ marginTop:20, background:C.green, color:'#fff', border:'none', borderRadius:12, padding:'12px 24px', fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:'inherit' }}>কেনাকাটা শুরু করুন</button>
+          <div style={{ fontSize:56 }}>ðŸ“¦</div>
+          <div style={{ fontWeight:700, fontSize:18, color:C.text, marginTop:16 }}>à¦•à§‹à¦¨à§‹ à¦…à¦°à§à¦¡à¦¾à¦° à¦¨à§‡à¦‡</div>
+          <div style={{ color:C.textLight, fontSize:13, marginTop:8 }}>à¦à¦–à¦¨à§‹ à¦•à§‹à¦¨à§‹ à¦…à¦°à§à¦¡à¦¾à¦° à¦¦à§‡à¦¨à¦¨à¦¿</div>
+          <button onClick={() => onTab('home')} style={{ marginTop:20, background:C.green, color:'#fff', border:'none', borderRadius:12, padding:'12px 24px', fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:'inherit' }}>à¦•à§‡à¦¨à¦¾à¦•à¦¾à¦Ÿà¦¾ à¦¶à§à¦°à§ à¦•à¦°à§à¦¨</button>
         </div>
       ) : (
         <div style={{ padding:'12px 16px', display:'flex', flexDirection:'column', gap:10 }}>
@@ -722,12 +722,12 @@ function OrdersPage({ user, onTab }) {
               </div>
               <div style={{ display:'flex', flexWrap:'wrap', gap:4, marginBottom:10 }}>
                 {(order.items||[]).map((item, j) => (
-                  <span key={j} style={{ fontSize:12, color:C.textMid, background:C.bg, borderRadius:8, padding:'3px 8px' }}>{item.name} ×{item.qty}</span>
+                  <span key={j} style={{ fontSize:12, color:C.textMid, background:C.bg, borderRadius:8, padding:'3px 8px' }}>{item.name} Ã—{item.qty}</span>
                 ))}
               </div>
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
                 <span style={{ fontSize:12, color:C.textLight }}>{order.createdAt ? new Date(order.createdAt).toLocaleDateString('bn-BD') : ''}</span>
-                <span style={{ fontWeight:800, fontSize:16, color:C.green }}>৳{order.total}</span>
+                <span style={{ fontWeight:800, fontSize:16, color:C.green }}>à§³{order.total}</span>
               </div>
             </div>
           ))}
@@ -739,13 +739,13 @@ function OrdersPage({ user, onTab }) {
 }
 
 function ProfilePage({ user, onLogout, onTab }) {
-  const displayName = user.displayName || user.phoneNumber || user.email || 'ব্যবহারকারী';
+  const displayName = user.displayName || user.phoneNumber || user.email || 'à¦¬à§à¦¯à¦¬à¦¹à¦¾à¦°à¦•à¦¾à¦°à§€';
   const initials    = displayName.slice(0,2).toUpperCase();
 
   return (
     <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Hind Siliguri', sans-serif", maxWidth:'100%', margin:'0 auto', paddingBottom:80 }}>
       <div style={{ background:C.green, padding:'14px 16px 12px' }}>
-        <div style={{ color:'#fff', fontWeight:800, fontSize:19 }}>প্রোফাইল</div>
+        <div style={{ color:'#fff', fontWeight:800, fontSize:19 }}>à¦ªà§à¦°à§‹à¦«à¦¾à¦‡à¦²</div>
       </div>
 
       <div style={{ margin:'16px', background:C.white, borderRadius:16, border:`1px solid ${C.border}`, padding:20, display:'flex', alignItems:'center', gap:16 }}>
@@ -759,10 +759,10 @@ function ProfilePage({ user, onLogout, onTab }) {
       </div>
 
       {[
-        { emoji:'📦', label:'আমার অর্ডার',       action: () => onTab('orders') },
-        { emoji:'📍', label:'ডেলিভারি ঠিকানা',   action: () => {} },
-        { emoji:'🔔', label:'নোটিফিকেশন',        action: () => {} },
-        { emoji:'❓', label:'সাহায্য ও সাপোর্ট', action: () => {} },
+        { emoji:'ðŸ“¦', label:'à¦†à¦®à¦¾à¦° à¦…à¦°à§à¦¡à¦¾à¦°',       action: () => onTab('orders') },
+        { emoji:'ðŸ“', label:'à¦¡à§‡à¦²à¦¿à¦­à¦¾à¦°à¦¿ à¦ à¦¿à¦•à¦¾à¦¨à¦¾',   action: () => {} },
+        { emoji:'ðŸ””', label:'à¦¨à§‹à¦Ÿà¦¿à¦«à¦¿à¦•à§‡à¦¶à¦¨',        action: () => {} },
+        { emoji:'â“', label:'à¦¸à¦¾à¦¹à¦¾à¦¯à§à¦¯ à¦“ à¦¸à¦¾à¦ªà§‹à¦°à§à¦Ÿ', action: () => {} },
       ].map(item => (
         <button key={item.label} onClick={item.action} style={{
           width:'calc(100% - 32px)', margin:'0 16px 10px', background:C.white,
@@ -771,7 +771,7 @@ function ProfilePage({ user, onLogout, onTab }) {
         }}>
           <span style={{ fontSize:20 }}>{item.emoji}</span>
           <span style={{ fontWeight:600, fontSize:15, color:C.text, flex:1 }}>{item.label}</span>
-          <span style={{ color:C.textLight, fontSize:16 }}>›</span>
+          <span style={{ color:C.textLight, fontSize:16 }}>â€º</span>
         </button>
       ))}
 
@@ -780,8 +780,8 @@ function ProfilePage({ user, onLogout, onTab }) {
         border:`1px solid ${C.red}30`, borderRadius:14, padding:'14px 16px',
         display:'flex', alignItems:'center', gap:14, cursor:'pointer', fontFamily:'inherit',
       }}>
-        <span style={{ fontSize:20 }}>🚪</span>
-        <span style={{ fontWeight:700, fontSize:15, color:C.red }}>লগআউট</span>
+        <span style={{ fontSize:20 }}>ðŸšª</span>
+        <span style={{ fontWeight:700, fontSize:15, color:C.red }}>à¦²à¦—à¦†à¦‰à¦Ÿ</span>
       </button>
 
       <BottomNav active="profile" onTab={onTab} />
@@ -848,7 +848,7 @@ function AppContent() {
   if (!adminToken) return <AdminLogin onLogin={(t) => { localStorage.setItem('adminToken', t); window.location.reload(); }} />;
   return <AdminDashboard token={adminToken} onLogout={() => { localStorage.removeItem('adminToken'); window.location.reload(); }} />;
 }
-if (prodLoading) return <LoadingScreen message="পণ্য লোড হচ্ছে..." />;
+if (prodLoading) return <LoadingScreen message="à¦ªà¦£à§à¦¯ à¦²à§‹à¦¡ à¦¹à¦šà§à¦›à§‡..." />;
 
   if (view === 'success')  return <OrderSuccess onHome={() => { clearCart(); setView('home'); setActiveTab('home'); }} />;
   if (view === 'checkout' && !user) return <Login />;
@@ -869,7 +869,7 @@ if (prodLoading) return <LoadingScreen message="পণ্য লোড হচ্
       user={user}
     />
   );
-  return <HomePage products={products} onUpdateQty={updateQty} onCart={() => setView('cart')} onTab={handleTab} activeTab={activeTab} onCategoryOpen={openCategory} />;
+  return <HomePage products={products} onUpdateQty={updateQty} onCart={() => setView('cart')} onTab={handleTab} activeTab={activeTab} onCategoryOpen={openCategory} categories={categories} />;
 }
 
 export default function App() {
@@ -879,6 +879,7 @@ export default function App() {
     </AuthProvider>
   );
 }
+
 
 
 
