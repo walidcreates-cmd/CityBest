@@ -69,6 +69,7 @@ app.post('/api/admin/login', (req, res) => {
 app.use('/api/ai',       require('./routes/ai'));
 app.use('/api/otp',      require('./routes/otp'));
 app.use('/api/products', require('./routes/products'));
+app.use('/api/categories', require('./routes/categories'));
 app.use('/api/liverate', require('./routes/liverate'));
 app.use('/api/orders',   require('./routes/orders'));
 app.use('/api/admin',    verifyAdmin, require('./routes/admin'));
