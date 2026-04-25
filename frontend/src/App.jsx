@@ -408,9 +408,9 @@ function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, onCategoryO
           <div style={{ padding:'16px 16px 6px', fontWeight:800, fontSize:14, color:C.text }}>ক্যাটাগরি</div>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(6, 1fr)', gap:10, padding:'0 16px 4px' }}>
             {(categories && categories.length > 0 ? categories : CATEGORIES.filter(c => c.id !== 'all')).map(cat => (
-              <button key={cat.id} onClick={() => onCategoryOpen(cat)} style={{ background:cat.bg, border:'1.5px solid '+cat.accent+'33', borderRadius:16, padding:'14px 8px 12px', position:'relative', overflow:'hidden', minHeight:120, position:'relative', overflow:'hidden', minHeight:120, position:'relative', overflow:'hidden', minHeight:120, cursor:'pointer', fontFamily:'inherit', textAlign:'center', display:'flex', flexDirection:'column', alignItems:'center', gap:6, boxShadow:'0 2px 8px rgba(0,0,0,0.05)' }}>
-                {cat.image ? <img src={cat.image} alt={cat.label} style={{ width:'100%', height:'100%', objectFit:'cover', position:'absolute', top:0, left:0, borderRadius:16 }} /> : <span style={{ fontSize:32 }}>{cat.emoji || '🛒'}</span>}
-                <span style={{ fontWeight:700, fontSize:12, color:cat.accent }}>{cat.label}</span>
+              <button key={cat.id} onClick={() => onCategoryOpen(cat)} style={{ background:cat.bg, border:'1.5px solid '+cat.accent+'33', borderRadius:16, padding:0, cursor:'pointer', fontFamily:'inherit', textAlign:'center', display:'flex', flexDirection:'column', alignItems:'center', gap:0, boxShadow:'0 2px 8px rgba(0,0,0,0.05)', overflow:'hidden' }}>
+                {cat.image ? <img src={cat.image} alt={cat.label} style={{ width:'100%', height:80, objectFit:'cover', display:'block' }} /> : <div style={{ height:80, display:'flex', alignItems:'center', justifyContent:'center', background:cat.bg }}><span style={{ fontSize:32 }}>{cat.emoji || '🛒'}</span></div>}
+                <span style={{ fontWeight:700, fontSize:12, color:cat.accent, padding:'6px 4px 8px', display:'block', width:'100%' }}>{cat.label}</span>
               </button>
             ))}
           </div>
