@@ -869,7 +869,7 @@ if (prodLoading) return <LoadingScreen message="পণ্য লোড হচ্
       user={user}
     />
   );
-  return <HomePage products={products} onUpdateQty={updateQty} onCart={() => setView('cart')} onTab={handleTab} activeTab={activeTab} onCategoryOpen={openCategory} />;
+  return <HomePage products={products} onUpdateQty={updateQty} onCart={() => setView('cart')} onTab={handleTab} activeTab={activeTab} onCategoryOpen={openCategory} categories={categories}/>;
 }
 
 export default function App() {
