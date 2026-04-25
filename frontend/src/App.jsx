@@ -373,7 +373,7 @@ function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, onCategoryO
           <div style={{ color:'#fff', fontWeight:800, fontSize:21, lineHeight:1 }}>CityBest</div>
           <div style={{ color:'rgba(255,255,255,0.75)', fontSize:10, marginTop:2 }}>সিরাজগঞ্জ • দ্রুত ডেলিভারি</div>
         </div>
-        <div style={{ flex:1, background:'rgba(255,255,255,0.18)', borderRadius:10, display:'flex', alignItems:'center', padding:'8px 12px', gap:8 }}>
+        <div style={{ flex:1, maxWidth:600, background:'rgba(255,255,255,0.18)', borderRadius:10, display:'flex', alignItems:'center', padding:'8px 12px', gap:8 }}>
             <span style={{ fontSize:13, color:'rgba(255,255,255,0.8)' }}>🔍</span>
             <input value={search} onChange={e => setSearch(e.target.value)} placeholder="পণ্য খুঁজুন..." style={{ border:'none', outline:'none', flex:1, fontSize:13, fontFamily:'inherit', background:'transparent', color:'#fff' }} />
           </div>
