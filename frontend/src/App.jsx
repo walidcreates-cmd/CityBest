@@ -353,7 +353,7 @@ function CategoryPage({ category, products, onUpdateQty, onBack, onCategoryNav, 
   );
 }
 
-function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, onCategoryOpen }) {
+function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, onCategoryOpen, categories }) {
   const [search, setSearch]     = useState('');
   const [category, setCategory] = useState('all');
 
