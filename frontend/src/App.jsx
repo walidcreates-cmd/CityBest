@@ -368,25 +368,21 @@ function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, onCategoryO
 
   return (
     <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Hind Siliguri', sans-serif", maxWidth:'100%', margin:'0 auto', paddingBottom:130 }}>
-      <div style={{ background:C.green, padding:'14px 16px 12px', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100 }}>
+      <div style={{ background:C.green, padding:'14px 16px 12px', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100, gap:12 }}>
         <div>
           <div style={{ color:'#fff', fontWeight:800, fontSize:21, lineHeight:1 }}>CityBest</div>
           <div style={{ color:'rgba(255,255,255,0.75)', fontSize:10, marginTop:2 }}>সিরাজগঞ্জ • দ্রুত ডেলিভারি</div>
         </div>
-        <div style={{ display:'flex', gap:8 }}>
+        <div style={{ flex:1, background:'rgba(255,255,255,0.18)', borderRadius:10, display:'flex', alignItems:'center', padding:'8px 12px', gap:8 }}>
+            <span style={{ fontSize:13, color:'rgba(255,255,255,0.8)' }}>🔍</span>
+            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="পণ্য খুঁজুন..." style={{ border:'none', outline:'none', flex:1, fontSize:13, fontFamily:'inherit', background:'transparent', color:'#fff' }} />
+          </div>
+          <div style={{ display:'flex', gap:8 }}>
           <button onClick={() => onTab('profile')} style={{ background:'rgba(255,255,255,0.15)', border:'none', borderRadius:50, width:38, height:38, fontSize:17, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>👤</button>
           <button onClick={onCart} style={{ background:'rgba(255,255,255,0.15)', border:'none', borderRadius:50, width:38, height:38, fontSize:17, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', position:'relative' }}>
             🛒
             {cartCount > 0 && <span style={{ position:'absolute', top:-2, right:-2, background:C.orange, color:'#fff', borderRadius:50, width:17, height:17, fontSize:9, fontWeight:800, display:'flex', alignItems:'center', justifyContent:'center' }}>{cartCount}</span>}
           </button>
-        </div>
-      </div>
-
-      <div style={{ padding:'12px 16px 0' }}>
-        <div style={{ background:C.white, borderRadius:12, border:`1.5px solid ${C.border}`, display:'flex', alignItems:'center', padding:'10px 14px', gap:10 }}>
-          <span style={{ fontSize:14, opacity:0.4 }}>🔍</span>
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="পণ্য খুঁজুন..."
-            style={{ border:'none', outline:'none', flex:1, fontSize:14, fontFamily:'inherit', background:'transparent', color:C.text }} />
         </div>
       </div>
 
