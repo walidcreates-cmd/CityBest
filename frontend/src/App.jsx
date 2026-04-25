@@ -297,9 +297,10 @@ function GasOrderSection({ user }) {
 }
 
 // ── CategoryPage ──────────────────────────────────────────────────────────────
-function CategoryPage({ category, products, onUpdateQty, onBack, onCategoryNav, onTab, activeTab, user }) {
+function CategoryPage({ category, products, onUpdateQty, onBack, onCategoryNav, onTab, activeTab, user, categories }) {
   const catProducts = category.id === 'all' ? products : products.filter(p => p.category === category.id);
-  const otherCats   = CATEGORIES.filter(c => c.id !== 'all' && c.id !== category.id);
+  const allCats   = categories && categories.length > 0 ? categories : CATEGORIES.filter(c => c.id !== 'all');
+  const otherCats = allCats.filter(c => c.id !== category.id);
 
   return (
     <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Hind Siliguri', sans-serif", paddingBottom:130 }}>
@@ -406,7 +407,7 @@ function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, onCategoryO
         <>
           <div style={{ padding:'16px 16px 6px', fontWeight:800, fontSize:14, color:C.text }}>ক্যাটাগরি</div>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(6, 1fr)', gap:10, padding:'0 16px 4px' }}>
-            {CATEGORIES.filter(c => c.id !== 'all').map(cat => (
+            {(categories && categories.length > 0 ? categories : CATEGORIES.filter(c => c.id !== 'all')).map(cat => (
               <button key={cat.id} onClick={() => onCategoryOpen(cat)} style={{ background:cat.bg, border:'1.5px solid '+cat.accent+'33', borderRadius:16, padding:'14px 8px 12px', cursor:'pointer', fontFamily:'inherit', textAlign:'center', display:'flex', flexDirection:'column', alignItems:'center', gap:6, boxShadow:'0 2px 8px rgba(0,0,0,0.05)' }}>
                 <span style={{ fontSize:32 }}>{cat.emoji}</span>
                 <span style={{ fontWeight:700, fontSize:12, color:cat.accent }}>{cat.label}</span>
@@ -796,6 +797,7 @@ function AppContent() {
   const [activeTab,   setActiveTab]   = useState('home');
   const [orderTotal,  setOrderTotal]  = useState(0);
   const [activeCategory, setActiveCategory] = useState(null);
+  const [categories,  setCategories]  = useState([]);
 
   useEffect(() => {
     (async () => {
@@ -810,6 +812,16 @@ function AppContent() {
       }
       setProdLoading(false);
     })();
+  }, []);
+
+  // Fetch categories from backend, fallback to hardcoded
+  useEffect(() => {
+    fetch(`${API_BASE}/api/categories`)
+      .then(r => r.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) setCategories(data);
+      })
+      .catch(() => {}); // silently fall back to hardcoded CATEGORIES
   }, []);
 
   const updateQty = (id, delta) => {
