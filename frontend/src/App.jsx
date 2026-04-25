@@ -35,13 +35,13 @@ const FALLBACK_PRODUCTS = [
 ];
 
 const CATEGORIES = [
-  { id:'all',   label:'সব',      emoji:'🏪' },
-  { id:'gas',   label:'গ্যাস',   emoji:'🔵' },
-  { id:'rice',  label:'চাল',     emoji:'🍚' },
-  { id:'oil',   label:'তেল',     emoji:'🫙' },
-  { id:'veg',   label:'সবজি',    emoji:'🥦' },
-  { id:'fish',  label:'মাছ',     emoji:'🐟' },
-  { id:'spice', label:'মশলা',    emoji:'🌶️' },
+  { id:'all',   label:'সব',      emoji:'🏪', bg:'#f0fdf4', accent:'#16a34a' },
+  { id:'gas',   label:'গ্যাস',   emoji:'🔵', bg:'#eff6ff', accent:'#2563eb' },
+  { id:'rice',  label:'চাল',     emoji:'🍚', bg:'#fefce8', accent:'#ca8a04' },
+  { id:'oil',   label:'তেল',     emoji:'🫙', bg:'#fff7ed', accent:'#ea580c' },
+  { id:'veg',   label:'সবজি',    emoji:'🥦', bg:'#f0fdf4', accent:'#15803d' },
+  { id:'fish',  label:'মাছ',     emoji:'🐟', bg:'#f0f9ff', accent:'#0284c7' },
+  { id:'spice', label:'মশলা',    emoji:'🌶️', bg:'#fff1f2', accent:'#e11d48' },
 ];
 
 async function getAuthHeader(user) {
@@ -130,60 +130,56 @@ function LoadingScreen({ message = 'CityBest লোড হচ্ছে...' }) {
   );
 }
 
-function GasOrderSection({ user }) {
-  const [brands,    setBrands]    = useState([]);
-  const [selected,  setSelected]  = useState(null);
-  const [qty,       setQty]       = useState(1);
-  const [step,      setStep]      = useState('brands'); // brands | form | success
-  const [name,      setName]      = useState('');
-  const [phone,     setPhone]     = useState('');
-  const [address,   setAddress]   = useState('');
-  const [note,      setNote]      = useState('');
-  const [lat,       setLat]       = useState('');
-  const [lng,       setLng]       = useState('');
-  const [gpsState,  setGpsState]  = useState('idle'); // idle | loading | done | fail
-  const [submitting,setSubmitting] = useState(false);
-  const [error,     setError]     = useState('');
 
-  // Auto-fill phone if logged in via phone OTP
+// ── Helper: Bengali digits ────────────────────────────────────────────────────
+function toBnDigits(n) {
+  return String(n).replace(/[0-9]/g, d => '০১২৩৪৫৬৭৮৯'[d]);
+}
+
+// ── GasOrderSection: inline brand picker + order form ────────────────────────
+function GasOrderSection({ user }) {
+  const [brands,     setBrands]     = useState([]);
+  const [selected,   setSelected]   = useState(null);
+  const [qty,        setQty]        = useState(1);
+  const [step,       setStep]       = useState('brands');
+  const [name,       setName]       = useState('');
+  const [phone,      setPhone]      = useState('');
+  const [address,    setAddress]    = useState('');
+  const [note,       setNote]       = useState('');
+  const [lat,        setLat]        = useState('');
+  const [lng,        setLng]        = useState('');
+  const [gpsState,   setGpsState]   = useState('idle');
+  const [submitting, setSubmitting] = useState(false);
+  const [error,      setError]      = useState('');
+
   useEffect(() => {
-    if (user?.phoneNumber) {
-      // Firebase phone numbers come as +8801XXXXXXXXX — strip +88
-      setPhone(user.phoneNumber.replace(/^\+88/, ''));
-    }
+    if (user && user.phoneNumber) setPhone(user.phoneNumber.replace(/^\+88/, ''));
   }, [user]);
 
-  // Fetch live rates from backend
   useEffect(() => {
-    fetch(`${API_BASE}/api/liverate`)
+    fetch(API_BASE + '/api/liverate')
       .then(r => r.json())
       .then(data => setBrands(data.filter(r => r.type === 'cylinder')))
-      .catch(() => {
-        // Fallback static brands
-        setBrands([
-          { id:'omera',      name:'ওমেরা',    unit:'১২ কেজি সিলিন্ডার', price:1250, img:'https://res.cloudinary.com/dpzlzcyuj/image/upload/v1774787034/a7nheq7xjpljr9sshn4f.png' },
-          { id:'bashundhara',name:'বসুন্ধরা', unit:'১২ কেজি সিলিন্ডার', price:1260, img:'https://res.cloudinary.com/dpzlzcyuj/image/upload/v1774787467/ijav7iuuwfnzwu9n0pfd.png' },
-          { id:'jamuna',     name:'যমুনা',    unit:'১২ কেজি সিলিন্ডার', price:1240, img:'https://res.cloudinary.com/dpzlzcyuj/image/upload/v1774787626/nsa6ubcgvqyqibrzkwwl.png' },
-          { id:'fresh',      name:'ফ্রেশ',    unit:'১২ কেজি সিলিন্ডার', price:1255, img:'https://res.cloudinary.com/dpzlzcyuj/image/upload/v1774786508/o9hi5htwvmcrunb9s2ph.png' },
-          { id:'laugfs',     name:'লাউগফস',   unit:'১২ কেজি সিলিন্ডার', price:1245, img:'' },
-          { id:'beximco',    name:'বেক্সিমকো', unit:'১২ কেজি সিলিন্ডার', price:1250, img:'' },
-        ]);
-      });
+      .catch(() => setBrands([
+        { id:'omera',       name:'ওমেরা',     unit:'১২ কেজি সিলিন্ডার', price:1250, img:'https://res.cloudinary.com/dpzlzcyuj/image/upload/v1774787034/a7nheq7xjpljr9sshn4f.png' },
+        { id:'bashundhara', name:'বসুন্ধরা',  unit:'১২ কেজি সিলিন্ডার', price:1260, img:'https://res.cloudinary.com/dpzlzcyuj/image/upload/v1774787467/ijav7iuuwfnzwu9n0pfd.png' },
+        { id:'jamuna',      name:'যমুনা',     unit:'১২ কেজি সিলিন্ডার', price:1240, img:'https://res.cloudinary.com/dpzlzcyuj/image/upload/v1774787626/nsa6ubcgvqyqibrzkwwl.png' },
+        { id:'fresh',       name:'ফ্রেশ',     unit:'১২ কেজি সিলিন্ডার', price:1255, img:'https://res.cloudinary.com/dpzlzcyuj/image/upload/v1774786508/o9hi5htwvmcrunb9s2ph.png' },
+        { id:'laugfs',      name:'লাউগফস',    unit:'১২ কেজি সিলিন্ডার', price:1245, img:'' },
+        { id:'beximco',     name:'বেক্সিমকো', unit:'১২ কেজি সিলিন্ডার', price:1250, img:'' },
+      ]));
   }, []);
-
-  const toBn = n => String(n).replace(/[0-9]/g, d => '০১২৩৪৫৬৭৮৯'[d]);
 
   const getGPS = () => {
     if (!navigator.geolocation) return;
     setGpsState('loading');
     navigator.geolocation.getCurrentPosition(
       async pos => {
-        setLat(pos.coords.latitude);
-        setLng(pos.coords.longitude);
+        setLat(pos.coords.latitude); setLng(pos.coords.longitude);
         try {
-          const res  = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json&accept-language=bn`);
-          const data = await res.json();
-          if (data.display_name) setAddress(data.display_name);
+          const r = await fetch('https://nominatim.openstreetmap.org/reverse?lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude + '&format=json&accept-language=bn');
+          const d = await r.json();
+          if (d.display_name) setAddress(d.display_name);
         } catch {}
         setGpsState('done');
       },
@@ -196,193 +192,167 @@ function GasOrderSection({ user }) {
     if (!name.trim())              { setError('নাম দিন'); return; }
     if (!phone || phone.length<10) { setError('সঠিক মোবাইল নম্বর দিন'); return; }
     if (!address.trim())           { setError('ডেলিভারি ঠিকানা দিন'); return; }
-    setError('');
-    setSubmitting(true);
+    setError(''); setSubmitting(true);
     try {
-      await fetch(`${API_BASE}/api/orders`, {
-        method:'POST',
-        headers:{ 'Content-Type':'application/json' },
-        body: JSON.stringify({
-          uid: user?.uid || 'guest',
-          items: [{ productId: selected.id, name: selected.name, qty, price: selected.price }],
-          customerName: name,
-          total: selected.price * qty,
-          address, phone, note,
-          lat, lng,
-          paymentMethod: 'cod',
-        }),
+      await fetch(API_BASE + '/api/orders', {
+        method:'POST', headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify({ uid:user?user.uid:'guest', items:[{ productId:selected.id, name:selected.name, qty, price:selected.price }], customerName:name, total:selected.price*qty, address, phone, note, lat, lng, paymentMethod:'cod' }),
       });
       setStep('success');
-    } catch {
-      setError('অর্ডার দেওয়া যায়নি। আবার চেষ্টা করুন।');
-    }
+    } catch { setError('অর্ডার দেওয়া যায়নি। আবার চেষ্টা করুন।'); }
     setSubmitting(false);
   };
 
   const reset = () => {
-    setSelected(null); setQty(1); setStep('brands');
-    setName(''); setAddress(''); setNote('');
-    setLat(''); setLng(''); setGpsState('idle'); setError('');
-    if (!user?.phoneNumber) setPhone('');
+    setSelected(null); setQty(1); setStep('brands'); setName('');
+    setAddress(''); setNote(''); setLat(''); setLng(''); setGpsState('idle'); setError('');
+    if (!(user && user.phoneNumber)) setPhone('');
   };
 
-  const inputStyle = {
-    width:'100%', border:`1.5px solid ${C.border}`, borderRadius:10,
-    padding:'10px 12px', fontSize:14, fontFamily:'inherit',
-    outline:'none', boxSizing:'border-box', color:C.text,
-  };
+  const inp = { width:'100%', border:'1.5px solid '+C.border, borderRadius:10, padding:'10px 12px', fontSize:14, fontFamily:'inherit', outline:'none', boxSizing:'border-box', color:C.text };
+
+  if (step === 'brands') return (
+    <div style={{ margin:'12px 16px 0' }}>
+      <div style={{ fontWeight:800, fontSize:14, color:C.text, marginBottom:10 }}>������ ব্র্যান্ড বেছে অর্ডার করুন</div>
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+        {brands.map(b => (
+          <div key={b.id} onClick={() => setSelected(b)} style={{ border:'2px solid '+(selected&&selected.id===b.id?C.green:C.border), borderRadius:14, padding:12, background:selected&&selected.id===b.id?C.greenLight:C.white, cursor:'pointer', textAlign:'center', position:'relative', transition:'all 0.15s' }}>
+            {selected&&selected.id===b.id && <div style={{ position:'absolute', top:8, right:8, width:20, height:20, background:C.green, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontSize:11, fontWeight:700 }}>✓</div>}
+            <div style={{ width:64, height:64, margin:'0 auto 8px', borderRadius:10, background:'#f8f8f8', border:'1px solid '+C.border, display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
+              {b.img ? <img src={b.img} alt={b.name} style={{ width:'100%', height:'100%', objectFit:'contain' }} /> : <span style={{ fontSize:32 }}>������</span>}
+            </div>
+            <div style={{ fontWeight:700, fontSize:13, color:C.text }}>{b.name}</div>
+            <div style={{ fontSize:11, color:C.textLight, marginTop:2 }}>{b.unit}</div>
+            <div style={{ fontWeight:800, fontSize:15, color:C.green, marginTop:4 }}>৳{toBnDigits(b.price.toLocaleString())}</div>
+          </div>
+        ))}
+      </div>
+      {selected && <div style={{ marginTop:10, background:C.greenLight, border:'1px solid #a5d6a7', borderRadius:12, padding:'10px 14px', display:'flex', alignItems:'center', gap:10 }}><div style={{ width:24, height:24, background:C.green, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontSize:12 }}>✓</div><div style={{ fontSize:13, color:'#2e7d32', fontWeight:600 }}>{selected.name} — ৳{toBnDigits(selected.price)} / সিলিন্ডার</div></div>}
+      <button onClick={() => { if (!selected) { alert('প্রথমে একটি ব্র্যান্ড বেছে নিন'); return; } setStep('form'); }} style={{ width:'100%', marginTop:10, background:C.green, color:'#fff', border:'none', borderRadius:12, padding:'13px', fontSize:15, fontWeight:700, cursor:'pointer', fontFamily:'inherit' }}>������️ অর্ডার করুন</button>
+    </div>
+  );
+
+  if (step === 'form' && selected) return (
+    <div style={{ margin:'12px 16px 0', background:C.white, borderRadius:14, border:'1px solid '+C.border, padding:16, display:'flex', flexDirection:'column', gap:12 }}>
+      <div style={{ background:C.greenLight, borderRadius:10, padding:'10px 14px' }}>
+        <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+          <div style={{ width:40, height:40, borderRadius:8, background:'#fff', border:'1px solid '+C.border, display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
+            {selected.img ? <img src={selected.img} alt={selected.name} style={{ width:'100%', height:'100%', objectFit:'contain' }} /> : <span style={{ fontSize:24 }}>������</span>}
+          </div>
+          <div><div style={{ fontWeight:700, fontSize:14, color:C.text }}>{selected.name}</div><div style={{ fontSize:12, color:C.textLight }}>{selected.unit}</div></div>
+        </div>
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginTop:10 }}>
+          <span style={{ fontSize:13, color:C.textMid, fontWeight:600 }}>পরিমাণ</span>
+          <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+            <button onClick={() => setQty(q => Math.max(1,q-1))} style={{ width:34, height:34, border:'2px solid '+C.green, borderRadius:'50%', background:'none', color:C.green, fontSize:20, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:700 }}>−</button>
+            <span style={{ fontWeight:800, fontSize:20, minWidth:24, textAlign:'center' }}>{toBnDigits(qty)}</span>
+            <button onClick={() => setQty(q => q+1)} style={{ width:34, height:34, border:'2px solid '+C.green, borderRadius:'50%', background:'none', color:C.green, fontSize:20, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:700 }}>+</button>
+          </div>
+        </div>
+        <div style={{ display:'flex', justifyContent:'space-between', marginTop:10, paddingTop:10, borderTop:'1px solid #c8e6c9' }}>
+          <span style={{ fontWeight:700, fontSize:14 }}>মোট</span>
+          <span style={{ fontWeight:800, fontSize:18, color:C.green }}>৳{toBnDigits((selected.price*qty).toLocaleString())}</span>
+        </div>
+      </div>
+      <div><label style={{ fontSize:13, color:C.textMid, fontWeight:600, display:'block', marginBottom:5 }}>������ আপনার নাম *</label><input value={name} onChange={e => setName(e.target.value)} placeholder="পূর্ণ নাম লিখুন" style={inp} /></div>
+      <div><label style={{ fontSize:13, color:C.textMid, fontWeight:600, display:'block', marginBottom:5 }}>������ মোবাইল নম্বর *</label><input value={phone} onChange={e => setPhone(e.target.value.replace(/\D/g,''))} placeholder="01XXXXXXXXX" maxLength={11} style={inp} /></div>
+      <div>
+        <label style={{ fontSize:13, color:C.textMid, fontWeight:600, display:'block', marginBottom:5 }}>������ ডেলিভারি ঠিকানা *</label>
+        <textarea value={address} onChange={e => setAddress(e.target.value)} rows={3} placeholder="বাড়ি নং, মহল্লা, সিরাজগঞ্জ সদর" style={{ ...inp, resize:'none' }} />
+        <button onClick={getGPS} disabled={gpsState==='loading'} style={{ marginTop:6, width:'100%', background:gpsState==='done'?'#c8e6c9':C.greenLight, color:C.green, border:'1.5px dashed '+C.green, borderRadius:10, padding:'9px', fontSize:13, fontWeight:700, fontFamily:'inherit', cursor:'pointer' }}>
+          {gpsState==='idle'&&'������ আমার লোকেশন ব্যবহার করুন'}{gpsState==='loading'&&'⏳ লোকেশন খোঁজা হচ্ছে...'}{gpsState==='done'&&'✅ লোকেশন পাওয়া গেছে'}{gpsState==='fail'&&'❌ লোকেশন পাওয়া যায়নি'}
+        </button>
+      </div>
+      <div><label style={{ fontSize:13, color:C.textMid, fontWeight:600, display:'block', marginBottom:5 }}>������ বিশেষ নির্দেশনা (ঐচ্ছিক)</label><input value={note} onChange={e => setNote(e.target.value)} placeholder="যেমন: গেটের বাইরে রাখুন" style={inp} /></div>
+      <div style={{ background:C.greenLight, border:'1px solid #a5d6a7', borderRadius:10, padding:'10px 14px', display:'flex', gap:10 }}><span style={{ fontSize:18 }}>������️</span><span style={{ fontSize:13, color:'#2e7d32', lineHeight:1.5 }}><strong>ক্যাশ অন ডেলিভারি</strong> — পণ্য হাতে পেয়ে টাকা দিন।</span></div>
+      {error && <div style={{ background:C.redLight, borderRadius:10, padding:'10px 14px', color:C.red, fontSize:14, fontWeight:600 }}>{error}</div>}
+      <div style={{ display:'flex', gap:10 }}>
+        <button onClick={() => { setStep('brands'); setError(''); }} style={{ flex:1, background:C.bg, border:'1px solid '+C.border, borderRadius:10, padding:'12px', fontSize:14, fontWeight:600, cursor:'pointer', fontFamily:'inherit', color:C.textMid }}>← ফিরে যান</button>
+        <button onClick={submitOrder} disabled={submitting} style={{ flex:2, background:submitting?'#9ca3af':C.green, color:'#fff', border:'none', borderRadius:10, padding:'12px', fontSize:15, fontWeight:700, cursor:submitting?'not-allowed':'pointer', fontFamily:'inherit' }}>
+          {submitting?'অর্ডার দেওয়া হচ্ছে...':'✓ অর্ডার নিশ্চিত করুন'}
+        </button>
+      </div>
+    </div>
+  );
+
+  if (step === 'success') return (
+    <div style={{ margin:'12px 16px 0', background:C.white, borderRadius:14, border:'1px solid '+C.border, padding:24, textAlign:'center' }}>
+      <div style={{ width:72, height:72, background:C.greenLight, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontSize:36, margin:'0 auto 14px' }}>✅</div>
+      <div style={{ fontWeight:800, fontSize:20, color:C.text }}>অর্ডার হয়েছে!</div>
+      <div style={{ color:C.textMid, fontSize:13, marginTop:6, lineHeight:1.6 }}>আপনার অর্ডার পেয়েছি।<br/>{phone} নম্বরে কনফার্মেশন কল পাবেন।</div>
+      <div style={{ margin:'14px 0', background:C.greenLight, border:'1px solid #c8e6c9', borderRadius:12, padding:14, textAlign:'left' }}>
+        {[['পণ্য', selected?selected.name:''], ['পরিমাণ', toBnDigits(qty)+' সিলিন্ডার'], ['ঠিকানা', address], ['মোট', '৳'+toBnDigits((selected?selected.price*qty:0).toLocaleString())]].map(pair => (
+          <div key={pair[0]} style={{ display:'flex', justifyContent:'space-between', padding:'4px 0', fontSize:13 }}>
+            <span style={{ color:C.textLight }}>{pair[0]}</span>
+            <span style={{ fontWeight:600, color:C.text, textAlign:'right', maxWidth:'60%' }}>{pair[1]}</span>
+          </div>
+        ))}
+      </div>
+      <a href="tel:01764101555" style={{ display:'inline-flex', alignItems:'center', gap:6, color:C.green, fontSize:15, fontWeight:700, textDecoration:'none', marginBottom:14 }}>������ 01764-101555</a><br/>
+      <button onClick={reset} style={{ background:'none', border:'2px solid '+C.green, color:C.green, borderRadius:12, padding:'10px 28px', fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:'inherit' }}>আবার অর্ডার করুন</button>
+    </div>
+  );
+
+  return null;
+}
+
+// ── CategoryPage ──────────────────────────────────────────────────────────────
+function CategoryPage({ category, products, onUpdateQty, onBack, onCategoryNav, onTab, activeTab, user }) {
+  const catProducts = category.id === 'all' ? products : products.filter(p => p.category === category.id);
+  const otherCats   = CATEGORIES.filter(c => c.id !== 'all' && c.id !== category.id);
 
   return (
-    <div style={{ margin:'0 16px', marginTop:12 }}>
-      {/* Section header */}
-      <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:10 }}>
-        <span style={{ fontSize:18 }}>🔵</span>
-        <span style={{ fontWeight:800, fontSize:15, color:C.text }}>ব্র্যান্ড বেছে অর্ডার করুন</span>
+    <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Hind Siliguri', sans-serif", paddingBottom:130 }}>
+      <div style={{ background:C.green, padding:'14px 16px 12px', display:'flex', alignItems:'center', gap:12, position:'sticky', top:0, zIndex:100 }}>
+        <button onClick={onBack} style={{ background:'rgba(255,255,255,0.2)', border:'none', borderRadius:50, width:36, height:36, fontSize:18, cursor:'pointer', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center' }}>←</button>
+        <div>
+          <div style={{ color:'#fff', fontWeight:800, fontSize:18 }}>{category.emoji} {category.label}</div>
+          <div style={{ color:'rgba(255,255,255,0.75)', fontSize:10, marginTop:1 }}>{toBnDigits(catProducts.length)} টি পণ্য</div>
+        </div>
       </div>
 
-      {/* STEP: Brand selection */}
-      {step === 'brands' && (
+      {category.id === 'gas' && <GasOrderSection user={user} />}
+
+      {catProducts.length > 0 && (
         <>
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
-            {brands.map(b => (
-              <div key={b.id} onClick={() => setSelected(b)} style={{
-                border:`2px solid ${selected?.id===b.id ? C.green : C.border}`,
-                borderRadius:14, padding:12, background: selected?.id===b.id ? C.greenLight : C.white,
-                cursor:'pointer', textAlign:'center', position:'relative',
-                boxShadow: selected?.id===b.id ? `0 0 0 3px rgba(14,138,74,0.12)` : 'none',
-                transition:'all 0.15s',
-              }}>
-                {selected?.id===b.id && (
-                  <div style={{ position:'absolute', top:8, right:8, width:20, height:20, background:C.green, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontSize:11, fontWeight:700 }}>✓</div>
-                )}
-                <div style={{ width:64, height:64, margin:'0 auto 8px', borderRadius:10, background:'#f8f8f8', border:`1px solid ${C.border}`, display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
-                  {b.img ? <img src={b.img} alt={b.name} style={{ width:'100%', height:'100%', objectFit:'contain' }} /> : <span style={{ fontSize:32 }}>🔵</span>}
-                </div>
-                <div style={{ fontWeight:700, fontSize:13, color:C.text }}>{b.name}</div>
-                <div style={{ fontSize:11, color:C.textLight, marginTop:2 }}>{b.unit}</div>
-                <div style={{ fontWeight:800, fontSize:15, color:C.green, marginTop:4 }}>৳{toBn(b.price.toLocaleString())}</div>
-              </div>
+          <div style={{ padding:'14px 16px 8px', fontWeight:800, fontSize:14, color:C.text }}>������️ {category.label} পণ্য</div>
+          <div style={{ display:'grid', gridTemplateColumns:window.innerWidth>=768?'repeat(4,1fr)':'1fr 1fr', gap:12, padding:'0 16px' }}>
+            {catProducts.map(p => (
+              <ProductCard key={p.id||p._id} product={p}
+                onInc={() => onUpdateQty(p.id||p._id, 1)}
+                onDec={() => onUpdateQty(p.id||p._id, -1)}
+              />
             ))}
           </div>
-
-          {selected && (
-            <div style={{ marginTop:12, background:C.greenLight, border:`1px solid #a5d6a7`, borderRadius:12, padding:'10px 14px', display:'flex', alignItems:'center', gap:10 }}>
-              <div style={{ width:26, height:26, background:C.green, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontSize:13, fontWeight:700, flexShrink:0 }}>✓</div>
-              <div>
-                <div style={{ fontSize:13, color:'#2e7d32', fontWeight:600 }}>{selected.name} — ৳{toBn(selected.price)} / সিলিন্ডার</div>
-                <div style={{ fontSize:11, color:'#4caf50', marginTop:2 }}>নিচে পরিমাণ ও ঠিকানা দিন</div>
-              </div>
-            </div>
-          )}
-
-          <button onClick={() => { if (!selected) { alert('প্রথমে একটি ব্র্যান্ড বেছে নিন'); return; } setStep('form'); }} style={{
-            width:'100%', marginTop:12, background:C.green, color:'#fff',
-            border:'none', borderRadius:12, padding:'13px', fontSize:15,
-            fontWeight:700, cursor:'pointer', fontFamily:'inherit',
-          }}>🛒 অর্ডার করুন</button>
         </>
       )}
 
-      {/* STEP: Order form */}
-      {step === 'form' && selected && (
-        <div style={{ background:C.white, borderRadius:14, border:`1px solid ${C.border}`, padding:16, display:'flex', flexDirection:'column', gap:12 }}>
-          {/* Mini summary */}
-          <div style={{ background:C.greenLight, borderRadius:10, padding:'10px 14px' }}>
-            <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-              <div style={{ width:40, height:40, borderRadius:8, background:'#fff', border:`1px solid ${C.border}`, display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
-                {selected.img ? <img src={selected.img} alt={selected.name} style={{ width:'100%', height:'100%', objectFit:'contain' }} /> : <span style={{ fontSize:24 }}>🔵</span>}
-              </div>
-              <div>
-                <div style={{ fontWeight:700, fontSize:14, color:C.text }}>{selected.name}</div>
-                <div style={{ fontSize:12, color:C.textLight }}>{selected.unit}</div>
-              </div>
-            </div>
-            {/* Qty control */}
-            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginTop:10 }}>
-              <span style={{ fontSize:13, color:C.textMid, fontWeight:600 }}>পরিমাণ (সিলিন্ডার)</span>
-              <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-                <button onClick={() => setQty(q => Math.max(1, q-1))} style={{ width:34, height:34, border:`2px solid ${C.green}`, borderRadius:'50%', background:'none', color:C.green, fontSize:20, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:700 }}>−</button>
-                <span style={{ fontWeight:800, fontSize:20, minWidth:24, textAlign:'center' }}>{toBn(qty)}</span>
-                <button onClick={() => setQty(q => q+1)} style={{ width:34, height:34, border:`2px solid ${C.green}`, borderRadius:'50%', background:'none', color:C.green, fontSize:20, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:700 }}>+</button>
-              </div>
-            </div>
-            <div style={{ display:'flex', justifyContent:'space-between', marginTop:10, paddingTop:10, borderTop:`1px solid #c8e6c9` }}>
-              <span style={{ fontWeight:700, fontSize:14, color:C.text }}>মোট</span>
-              <span style={{ fontWeight:800, fontSize:18, color:C.green }}>৳{toBn((selected.price * qty).toLocaleString())}</span>
-            </div>
-          </div>
-
-          {/* Form fields */}
-          <div>
-            <label style={{ fontSize:13, color:C.textMid, fontWeight:600, display:'block', marginBottom:5 }}>👤 আপনার নাম *</label>
-            <input value={name} onChange={e => setName(e.target.value)} placeholder="পূর্ণ নাম লিখুন" style={inputStyle} />
-          </div>
-          <div>
-            <label style={{ fontSize:13, color:C.textMid, fontWeight:600, display:'block', marginBottom:5 }}>📱 মোবাইল নম্বর *</label>
-            <input value={phone} onChange={e => setPhone(e.target.value.replace(/\D/g,''))} placeholder="01XXXXXXXXX" maxLength={11} style={inputStyle} />
-          </div>
-          <div>
-            <label style={{ fontSize:13, color:C.textMid, fontWeight:600, display:'block', marginBottom:5 }}>📍 ডেলিভারি ঠিকানা *</label>
-            <textarea value={address} onChange={e => setAddress(e.target.value)} rows={3} placeholder="বাড়ি নং, মহল্লা, সিরাজগঞ্জ সদর" style={{ ...inputStyle, resize:'none' }} />
-            <button onClick={getGPS} disabled={gpsState==='loading'} style={{
-              marginTop:6, width:'100%', background: gpsState==='done'?'#c8e6c9':C.greenLight,
-              color:C.green, border:`1.5px dashed ${C.green}`, borderRadius:10,
-              padding:'9px', fontSize:13, fontWeight:700, fontFamily:'inherit', cursor:'pointer',
-            }}>
-              {gpsState==='idle'   && '📍 আমার লোকেশন ব্যবহার করুন'}
-              {gpsState==='loading'&& '⏳ লোকেশন খোঁজা হচ্ছে...'}
-              {gpsState==='done'   && '✅ লোকেশন পাওয়া গেছে'}
-              {gpsState==='fail'   && '❌ লোকেশন পাওয়া যায়নি'}
-            </button>
-          </div>
-          <div>
-            <label style={{ fontSize:13, color:C.textMid, fontWeight:600, display:'block', marginBottom:5 }}>💬 বিশেষ নির্দেশনা (ঐচ্ছিক)</label>
-            <input value={note} onChange={e => setNote(e.target.value)} placeholder="যেমন: গেটের বাইরে রাখুন" style={inputStyle} />
-          </div>
-
-          {/* COD badge */}
-          <div style={{ background:C.greenLight, border:`1px solid #a5d6a7`, borderRadius:10, padding:'10px 14px', display:'flex', gap:10 }}>
-            <span style={{ fontSize:18 }}>🛡️</span>
-            <span style={{ fontSize:13, color:'#2e7d32', lineHeight:1.5 }}><strong>ক্যাশ অন ডেলিভারি</strong> — পণ্য হাতে পেয়ে টাকা দিন।</span>
-          </div>
-
-          {error && <div style={{ background:C.redLight, borderRadius:10, padding:'10px 14px', color:C.red, fontSize:14, fontWeight:600 }}>{error}</div>}
-
-          <div style={{ display:'flex', gap:10 }}>
-            <button onClick={() => { setStep('brands'); setError(''); }} style={{ flex:1, background:C.bg, border:`1px solid ${C.border}`, borderRadius:10, padding:'12px', fontSize:14, fontWeight:600, cursor:'pointer', fontFamily:'inherit', color:C.textMid }}>← ফিরে যান</button>
-            <button onClick={submitOrder} disabled={submitting} style={{ flex:2, background:submitting?'#9ca3af':C.green, color:'#fff', border:'none', borderRadius:10, padding:'12px', fontSize:15, fontWeight:700, cursor:submitting?'not-allowed':'pointer', fontFamily:'inherit' }}>
-              {submitting ? 'অর্ডার দেওয়া হচ্ছে...' : '✓ অর্ডার নিশ্চিত করুন'}
-            </button>
-          </div>
+      {catProducts.length === 0 && category.id !== 'gas' && (
+        <div style={{ textAlign:'center', padding:'60px 32px' }}>
+          <div style={{ fontSize:56 }}>{category.emoji}</div>
+          <div style={{ fontWeight:700, fontSize:17, color:C.text, marginTop:14 }}>শীঘ্রই আসছে</div>
+          <div style={{ color:C.textLight, fontSize:13, marginTop:6 }}>এই ক্যাটাগরি শীঘ্রই যোগ হবে</div>
         </div>
       )}
 
-      {/* STEP: Success */}
-      {step === 'success' && (
-        <div style={{ background:C.white, borderRadius:14, border:`1px solid ${C.border}`, padding:24, textAlign:'center' }}>
-          <div style={{ width:72, height:72, background:C.greenLight, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontSize:36, margin:'0 auto 14px' }}>✅</div>
-          <div style={{ fontWeight:800, fontSize:20, color:C.text }}>অর্ডার হয়েছে!</div>
-          <div style={{ color:C.textMid, fontSize:13, marginTop:6, lineHeight:1.6 }}>
-            আপনার অর্ডার পেয়েছি।<br/>{phone} নম্বরে শীঘ্রই কনফার্মেশন কল পাবেন।
-          </div>
-          <div style={{ margin:'14px 0', background:C.greenLight, border:`1px solid #c8e6c9`, borderRadius:12, padding:14, textAlign:'left' }}>
-            {[['পণ্য', selected?.name],['পরিমাণ', `${toBn(qty)} সিলিন্ডার`],['ঠিকানা', address],['মোট', `৳${toBn((selected?.price*qty).toLocaleString())}`]].map(([l,v]) => (
-              <div key={l} style={{ display:'flex', justifyContent:'space-between', padding:'4px 0', fontSize:13 }}>
-                <span style={{ color:C.textLight }}>{l}</span>
-                <span style={{ fontWeight:600, color:C.text, textAlign:'right', maxWidth:'60%' }}>{v}</span>
-              </div>
-            ))}
-          </div>
-          <a href="tel:01764101555" style={{ display:'inline-flex', alignItems:'center', gap:6, color:C.green, fontSize:15, fontWeight:700, textDecoration:'none', marginBottom:14 }}>📞 01764-101555</a>
-          <br/>
-          <button onClick={reset} style={{ background:'none', border:`2px solid ${C.green}`, color:C.green, borderRadius:12, padding:'10px 28px', fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:'inherit' }}>আবার অর্ডার করুন</button>
+      <div style={{ padding:'20px 16px 8px' }}>
+        <div style={{ fontWeight:800, fontSize:14, color:C.text, marginBottom:12 }}>অন্যান্য ক্যাটাগরি</div>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:10 }}>
+          {otherCats.map(cat => (
+            <button key={cat.id} onClick={() => onCategoryNav(cat)} style={{ background:cat.bg, border:'1.5px solid '+cat.accent+'33', borderRadius:14, padding:'12px 8px', cursor:'pointer', fontFamily:'inherit', textAlign:'center', display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
+              <span style={{ fontSize:28 }}>{cat.emoji}</span>
+              <span style={{ fontWeight:700, fontSize:12, color:cat.accent }}>{cat.label}</span>
+            </button>
+          ))}
         </div>
-      )}
+      </div>
+
+      <BottomNav active={activeTab} onTab={onTab} />
     </div>
   );
 }
 
-function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, user }) {
+function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, onCategoryOpen }) {
   const [search, setSearch]     = useState('');
   const [category, setCategory] = useState('all');
 
@@ -433,6 +403,20 @@ function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, user }) {
       )}
 
       {!search && (
+        <>
+          <div style={{ padding:'16px 16px 6px', fontWeight:800, fontSize:14, color:C.text }}>������ ক্যাটাগরি</div>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:10, padding:'0 16px 4px' }}>
+            {CATEGORIES.filter(c => c.id !== 'all').map(cat => (
+              <button key={cat.id} onClick={() => onCategoryOpen(cat)} style={{ background:cat.bg, border:'1.5px solid '+cat.accent+'33', borderRadius:16, padding:'14px 8px 12px', cursor:'pointer', fontFamily:'inherit', textAlign:'center', display:'flex', flexDirection:'column', alignItems:'center', gap:6, boxShadow:'0 2px 8px rgba(0,0,0,0.05)' }}>
+                <span style={{ fontSize:32 }}>{cat.emoji}</span>
+                <span style={{ fontWeight:700, fontSize:12, color:cat.accent }}>{cat.label}</span>
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+
+      {!search && (
         <div style={{ padding:'12px 0 0' }}>
           <div style={{ display:'flex', gap:8, overflowX:'auto', padding:'0 16px 4px', scrollbarWidth:'none' }}>
             {CATEGORIES.map(cat => (
@@ -465,10 +449,6 @@ function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, user }) {
           />
         ))}
       </div>
-
-      {(category === 'gas' || category === 'all') && !search && (
-        <GasOrderSection user={user} />
-      )}
 
       {cartCount > 0 && (
         <div style={{ position:'fixed', bottom:70, left:'50%', transform:'translateX(-50%)', width:'calc(100% - 32px)', maxWidth:398, zIndex:200 }}>
@@ -815,6 +795,7 @@ function AppContent() {
   const [view,        setView]        = useState('home');
   const [activeTab,   setActiveTab]   = useState('home');
   const [orderTotal,  setOrderTotal]  = useState(0);
+  const [activeCategory, setActiveCategory] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -840,7 +821,13 @@ function AppContent() {
 
   const handleTab = (tab) => {
     setActiveTab(tab);
+    setActiveCategory(null);
     setView(tab==='orders'?'orders':tab==='profile'?'profile':'home');
+  };
+
+  const openCategory = (cat) => {
+    setActiveCategory(cat);
+    setView('category');
   };
 
   if (loading)     return <LoadingScreen />;
@@ -858,7 +845,19 @@ if (prodLoading) return <LoadingScreen message="পণ্য লোড হচ্
   if (view === 'orders')   return <OrdersPage user={user} onTab={handleTab} />;
   if (view === 'profile')  return <ProfilePage user={user} onLogout={logout} onTab={handleTab} />;
 
-  return <HomePage products={products} onUpdateQty={updateQty} onCart={() => setView('cart')} onTab={handleTab} activeTab={activeTab} user={user} />;
+  if (view === 'category' && activeCategory) return (
+    <CategoryPage
+      category={activeCategory}
+      products={products}
+      onUpdateQty={updateQty}
+      onBack={() => setView('home')}
+      onCategoryNav={(cat) => { setActiveCategory(cat); }}
+      onTab={handleTab}
+      activeTab={activeTab}
+      user={user}
+    />
+  );
+  return <HomePage products={products} onUpdateQty={updateQty} onCart={() => setView('cart')} onTab={handleTab} activeTab={activeTab} onCategoryOpen={openCategory} />;
 }
 
 export default function App() {
@@ -868,3 +867,6 @@ export default function App() {
     </AuthProvider>
   );
 }
+
+
+
