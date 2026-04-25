@@ -341,7 +341,7 @@ function CategoryPage({ category, products, onUpdateQty, onBack, onCategoryNav, 
         <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:10 }}>
           {otherCats.map(cat => (
             <button key={cat.id} onClick={() => onCategoryNav(cat)} style={{ background:cat.bg, border:'1.5px solid '+cat.accent+'33', borderRadius:14, padding:'12px 8px', cursor:'pointer', fontFamily:'inherit', textAlign:'center', display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
-              <span style={{ fontSize:28 }}>{cat.emoji}</span>
+              {cat.image ? <img src={cat.image} alt={cat.label} style={{ width:36, height:36, objectFit:'contain' }} /> : <span style={{ fontSize:28 }}>{cat.emoji || '🛒'}</span>}
               <span style={{ fontWeight:700, fontSize:12, color:cat.accent }}>{cat.label}</span>
             </button>
           ))}
@@ -409,7 +409,7 @@ function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, onCategoryO
           <div style={{ display:'grid', gridTemplateColumns:'repeat(6, 1fr)', gap:10, padding:'0 16px 4px' }}>
             {(categories && categories.length > 0 ? categories : CATEGORIES.filter(c => c.id !== 'all')).map(cat => (
               <button key={cat.id} onClick={() => onCategoryOpen(cat)} style={{ background:cat.bg, border:'1.5px solid '+cat.accent+'33', borderRadius:16, padding:'14px 8px 12px', cursor:'pointer', fontFamily:'inherit', textAlign:'center', display:'flex', flexDirection:'column', alignItems:'center', gap:6, boxShadow:'0 2px 8px rgba(0,0,0,0.05)' }}>
-                <span style={{ fontSize:32 }}>{cat.emoji}</span>
+                {cat.image ? <img src={cat.image} alt={cat.label} style={{ width:40, height:40, objectFit:'contain' }} /> : <span style={{ fontSize:32 }}>{cat.emoji || '🛒'}</span>}
                 <span style={{ fontWeight:700, fontSize:12, color:cat.accent }}>{cat.label}</span>
               </button>
             ))}
