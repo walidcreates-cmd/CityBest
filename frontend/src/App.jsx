@@ -213,13 +213,13 @@ function GasOrderSection({ user }) {
 
   if (step === 'brands') return (
     <div style={{ margin:'12px 16px 0' }}>
-      <div style={{ fontWeight:800, fontSize:14, color:C.text, marginBottom:10 }}>������ ব্র্যান্ড বেছে অর্ডার করুন</div>
+      <div style={{ fontWeight:800, fontSize:14, color:C.text, marginBottom:10 }}>������ ব্র্যান্ড বেছে অর্ডার করুন</div>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
         {brands.map(b => (
           <div key={b.id} onClick={() => setSelected(b)} style={{ border:'2px solid '+(selected&&selected.id===b.id?C.green:C.border), borderRadius:14, padding:12, background:selected&&selected.id===b.id?C.greenLight:C.white, cursor:'pointer', textAlign:'center', position:'relative', transition:'all 0.15s' }}>
             {selected&&selected.id===b.id && <div style={{ position:'absolute', top:8, right:8, width:20, height:20, background:C.green, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontSize:11, fontWeight:700 }}>✓</div>}
             <div style={{ width:64, height:64, margin:'0 auto 8px', borderRadius:10, background:'#f8f8f8', border:'1px solid '+C.border, display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
-              {b.img ? <img src={b.img} alt={b.name} style={{ width:'100%', height:'100%', objectFit:'contain' }} /> : <span style={{ fontSize:32 }}>������</span>}
+              {b.img ? <img src={b.img} alt={b.name} style={{ width:'100%', height:'100%', objectFit:'contain' }} /> : <span style={{ fontSize:32 }}>������</span>}
             </div>
             <div style={{ fontWeight:700, fontSize:13, color:C.text }}>{b.name}</div>
             <div style={{ fontSize:11, color:C.textLight, marginTop:2 }}>{b.unit}</div>
@@ -228,7 +228,7 @@ function GasOrderSection({ user }) {
         ))}
       </div>
       {selected && <div style={{ marginTop:10, background:C.greenLight, border:'1px solid #a5d6a7', borderRadius:12, padding:'10px 14px', display:'flex', alignItems:'center', gap:10 }}><div style={{ width:24, height:24, background:C.green, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontSize:12 }}>✓</div><div style={{ fontSize:13, color:'#2e7d32', fontWeight:600 }}>{selected.name} — ৳{toBnDigits(selected.price)} / সিলিন্ডার</div></div>}
-      <button onClick={() => { if (!selected) { alert('প্রথমে একটি ব্র্যান্ড বেছে নিন'); return; } setStep('form'); }} style={{ width:'100%', marginTop:10, background:C.green, color:'#fff', border:'none', borderRadius:12, padding:'13px', fontSize:15, fontWeight:700, cursor:'pointer', fontFamily:'inherit' }}>������️ অর্ডার করুন</button>
+      <button onClick={() => { if (!selected) { alert('প্রথমে একটি ব্র্যান্ড বেছে নিন'); return; } setStep('form'); }} style={{ width:'100%', marginTop:10, background:C.green, color:'#fff', border:'none', borderRadius:12, padding:'13px', fontSize:15, fontWeight:700, cursor:'pointer', fontFamily:'inherit' }}>������️ অর্ডার করুন</button>
     </div>
   );
 
@@ -237,7 +237,7 @@ function GasOrderSection({ user }) {
       <div style={{ background:C.greenLight, borderRadius:10, padding:'10px 14px' }}>
         <div style={{ display:'flex', alignItems:'center', gap:10 }}>
           <div style={{ width:40, height:40, borderRadius:8, background:'#fff', border:'1px solid '+C.border, display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
-            {selected.img ? <img src={selected.img} alt={selected.name} style={{ width:'100%', height:'100%', objectFit:'contain' }} /> : <span style={{ fontSize:24 }}>������</span>}
+            {selected.img ? <img src={selected.img} alt={selected.name} style={{ width:'100%', height:'100%', objectFit:'contain' }} /> : <span style={{ fontSize:24 }}>������</span>}
           </div>
           <div><div style={{ fontWeight:700, fontSize:14, color:C.text }}>{selected.name}</div><div style={{ fontSize:12, color:C.textLight }}>{selected.unit}</div></div>
         </div>
@@ -254,17 +254,17 @@ function GasOrderSection({ user }) {
           <span style={{ fontWeight:800, fontSize:18, color:C.green }}>৳{toBnDigits((selected.price*qty).toLocaleString())}</span>
         </div>
       </div>
-      <div><label style={{ fontSize:13, color:C.textMid, fontWeight:600, display:'block', marginBottom:5 }}>������ আপনার নাম *</label><input value={name} onChange={e => setName(e.target.value)} placeholder="পূর্ণ নাম লিখুন" style={inp} /></div>
-      <div><label style={{ fontSize:13, color:C.textMid, fontWeight:600, display:'block', marginBottom:5 }}>������ মোবাইল নম্বর *</label><input value={phone} onChange={e => setPhone(e.target.value.replace(/\D/g,''))} placeholder="01XXXXXXXXX" maxLength={11} style={inp} /></div>
+      <div><label style={{ fontSize:13, color:C.textMid, fontWeight:600, display:'block', marginBottom:5 }}>������ আপনার নাম *</label><input value={name} onChange={e => setName(e.target.value)} placeholder="পূর্ণ নাম লিখুন" style={inp} /></div>
+      <div><label style={{ fontSize:13, color:C.textMid, fontWeight:600, display:'block', marginBottom:5 }}>������ মোবাইল নম্বর *</label><input value={phone} onChange={e => setPhone(e.target.value.replace(/\D/g,''))} placeholder="01XXXXXXXXX" maxLength={11} style={inp} /></div>
       <div>
-        <label style={{ fontSize:13, color:C.textMid, fontWeight:600, display:'block', marginBottom:5 }}>������ ডেলিভারি ঠিকানা *</label>
+        <label style={{ fontSize:13, color:C.textMid, fontWeight:600, display:'block', marginBottom:5 }}>������ ডেলিভারি ঠিকানা *</label>
         <textarea value={address} onChange={e => setAddress(e.target.value)} rows={3} placeholder="বাড়ি নং, মহল্লা, সিরাজগঞ্জ সদর" style={{ ...inp, resize:'none' }} />
         <button onClick={getGPS} disabled={gpsState==='loading'} style={{ marginTop:6, width:'100%', background:gpsState==='done'?'#c8e6c9':C.greenLight, color:C.green, border:'1.5px dashed '+C.green, borderRadius:10, padding:'9px', fontSize:13, fontWeight:700, fontFamily:'inherit', cursor:'pointer' }}>
-          {gpsState==='idle'&&'������ আমার লোকেশন ব্যবহার করুন'}{gpsState==='loading'&&'⏳ লোকেশন খোঁজা হচ্ছে...'}{gpsState==='done'&&'✅ লোকেশন পাওয়া গেছে'}{gpsState==='fail'&&'❌ লোকেশন পাওয়া যায়নি'}
+          {gpsState==='idle'&&'������ আমার লোকেশন ব্যবহার করুন'}{gpsState==='loading'&&'⏳ লোকেশন খোঁজা হচ্ছে...'}{gpsState==='done'&&'✅ লোকেশন পাওয়া গেছে'}{gpsState==='fail'&&'❌ লোকেশন পাওয়া যায়নি'}
         </button>
       </div>
-      <div><label style={{ fontSize:13, color:C.textMid, fontWeight:600, display:'block', marginBottom:5 }}>������ বিশেষ নির্দেশনা (ঐচ্ছিক)</label><input value={note} onChange={e => setNote(e.target.value)} placeholder="যেমন: গেটের বাইরে রাখুন" style={inp} /></div>
-      <div style={{ background:C.greenLight, border:'1px solid #a5d6a7', borderRadius:10, padding:'10px 14px', display:'flex', gap:10 }}><span style={{ fontSize:18 }}>������️</span><span style={{ fontSize:13, color:'#2e7d32', lineHeight:1.5 }}><strong>ক্যাশ অন ডেলিভারি</strong> — পণ্য হাতে পেয়ে টাকা দিন।</span></div>
+      <div><label style={{ fontSize:13, color:C.textMid, fontWeight:600, display:'block', marginBottom:5 }}>������ বিশেষ নির্দেশনা (ঐচ্ছিক)</label><input value={note} onChange={e => setNote(e.target.value)} placeholder="যেমন: গেটের বাইরে রাখুন" style={inp} /></div>
+      <div style={{ background:C.greenLight, border:'1px solid #a5d6a7', borderRadius:10, padding:'10px 14px', display:'flex', gap:10 }}><span style={{ fontSize:18 }}>������️</span><span style={{ fontSize:13, color:'#2e7d32', lineHeight:1.5 }}><strong>ক্যাশ অন ডেলিভারি</strong> — পণ্য হাতে পেয়ে টাকা দিন।</span></div>
       {error && <div style={{ background:C.redLight, borderRadius:10, padding:'10px 14px', color:C.red, fontSize:14, fontWeight:600 }}>{error}</div>}
       <div style={{ display:'flex', gap:10 }}>
         <button onClick={() => { setStep('brands'); setError(''); }} style={{ flex:1, background:C.bg, border:'1px solid '+C.border, borderRadius:10, padding:'12px', fontSize:14, fontWeight:600, cursor:'pointer', fontFamily:'inherit', color:C.textMid }}>← ফিরে যান</button>
@@ -288,7 +288,7 @@ function GasOrderSection({ user }) {
           </div>
         ))}
       </div>
-      <a href="tel:01764101555" style={{ display:'inline-flex', alignItems:'center', gap:6, color:C.green, fontSize:15, fontWeight:700, textDecoration:'none', marginBottom:14 }}>������ 01764-101555</a><br/>
+      <a href="tel:01764101555" style={{ display:'inline-flex', alignItems:'center', gap:6, color:C.green, fontSize:15, fontWeight:700, textDecoration:'none', marginBottom:14 }}>������ 01764-101555</a><br/>
       <button onClick={reset} style={{ background:'none', border:'2px solid '+C.green, color:C.green, borderRadius:12, padding:'10px 28px', fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:'inherit' }}>আবার অর্ডার করুন</button>
     </div>
   );
@@ -315,7 +315,7 @@ function CategoryPage({ category, products, onUpdateQty, onBack, onCategoryNav, 
 
       {catProducts.length > 0 && (
         <>
-          <div style={{ padding:'14px 16px 8px', fontWeight:800, fontSize:14, color:C.text }}>������️ {category.label} পণ্য</div>
+          <div style={{ padding:'14px 16px 8px', fontWeight:800, fontSize:14, color:C.text }}>������️ {category.label} পণ্য</div>
           <div style={{ display:'grid', gridTemplateColumns:window.innerWidth>=768?'repeat(4,1fr)':'1fr 1fr', gap:12, padding:'0 16px' }}>
             {catProducts.map(p => (
               <ProductCard key={p.id||p._id} product={p}
@@ -404,8 +404,8 @@ function HomePage({ products, onUpdateQty, onCart, onTab, activeTab, onCategoryO
 
       {!search && (
         <>
-          <div style={{ padding:'16px 16px 6px', fontWeight:800, fontSize:14, color:C.text }}>������ ক্যাটাগরি</div>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:10, padding:'0 16px 4px' }}>
+          <div style={{ padding:'16px 16px 6px', fontWeight:800, fontSize:14, color:C.text }}>ক্যাটাগরি</div></div>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(6, 1fr)', gap:10, padding:'0 16px 4px' }}>
             {CATEGORIES.filter(c => c.id !== 'all').map(cat => (
               <button key={cat.id} onClick={() => onCategoryOpen(cat)} style={{ background:cat.bg, border:'1.5px solid '+cat.accent+'33', borderRadius:16, padding:'14px 8px 12px', cursor:'pointer', fontFamily:'inherit', textAlign:'center', display:'flex', flexDirection:'column', alignItems:'center', gap:6, boxShadow:'0 2px 8px rgba(0,0,0,0.05)' }}>
                 <span style={{ fontSize:32 }}>{cat.emoji}</span>
