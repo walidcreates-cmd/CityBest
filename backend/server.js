@@ -128,7 +128,7 @@ app.post('/api/telegram-webhook', async (req, res) => {
           message_id: messageId,
           reply_markup: {
             inline_keyboard: [[
-              { text: '✔✔ ডেলিভারড', callback_data: 'done' }
+              { text: 'ডেলিভারি সম্পন্ন হয়েছে ✅✅', callback_data: 'done' }
             ]]
           }
         }),
