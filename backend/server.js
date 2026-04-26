@@ -81,6 +81,66 @@ app.get('/', (req, res) => {
 });
 
 // ── Connect DB & Start ─────────────────────────────────────────────────────
+// ── Telegram Webhook (Deliver button callback) ─────────────────────────────
+const Order = require('./models/Order');
+
+app.post('/api/telegram-webhook', async (req, res) => {
+  try {
+    const callback = req.body.callback_query;
+    if (!callback) return res.sendStatus(200);
+
+    const data       = callback.data; // e.g. "deliver:68001abc..."
+    const messageId  = callback.message.message_id;
+    const chatId     = callback.message.chat.id;
+    const callbackId = callback.id;
+
+    if (data.startsWith('deliver:')) {
+      const orderId = data.split(':')[1];
+
+      const order = await Order.findByIdAndUpdate(
+        orderId,
+        { status: 'delivered' },
+        { new: true }
+      );
+
+      if (!order) {
+        await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/answerCallbackQuery`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ callback_query_id: callbackId, text: '❌ অর্ডার পাওয়া যায়নি!' }),
+        });
+        return res.sendStatus(200);
+      }
+
+      // Answer the callback (removes loading spinner)
+      await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/answerCallbackQuery`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ callback_query_id: callbackId, text: '✅ ডেলিভার হয়েছে!' }),
+      });
+
+      // Edit the button to show "✔✔ ডেলিভারড"
+      await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/editMessageReplyMarkup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          message_id: messageId,
+          reply_markup: {
+            inline_keyboard: [[
+              { text: '✔✔ ডেলিভারড', callback_data: 'done' }
+            ]]
+          }
+        }),
+      });
+    }
+
+    res.sendStatus(200);
+  } catch (err) {
+    console.error('Telegram webhook error:', err.message);
+    res.sendStatus(200);
+  }
+});
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('✅ MongoDB connected');
