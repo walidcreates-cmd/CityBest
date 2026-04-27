@@ -26,11 +26,6 @@ function AppContent() {
 
   const clearCart = () => setProducts(prev => prev.map(p => ({ ...p, qty: 0 })));
 
-  // ── Survey tool: accessible at /survey without customer login ─────────
-  if (window.location.pathname.startsWith('/survey')) {
-    return <Survey />;
-  }
-
   if (loading) {
     return (
       <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center',
