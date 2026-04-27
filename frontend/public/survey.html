@@ -229,16 +229,15 @@ textarea.field-input{resize:vertical;min-height:70px}
         <div class="section-hdr" style="background:var(--green)">👤 মার্চেন্ট পরিচয়</div>
         <div class="field-grid">
           <div><label class="field-label">Survey Date</label><input class="field-input" type="date" id="f_surveyDate"/></div>
-          <div><label class="field-label">Staff Name</label>
-            <select class="field-select" id="f_staffName"><option value="">— বেছে নিন —</option>
-            <option>Rahim</option><option>Karim</option><option>Nasrin</option><option>Other</option></select></div>
+          <div><label class="field-label">Staff Name (স্টাফ নাম)</label>
+            <input class="field-input" type="text" id="f_staffName" placeholder="আপনার নাম লিখুন"/></div>
           <div><label class="field-label">Merchant Name <span class="req">*</span></label><input class="field-input" type="text" id="f_merchantName" placeholder="মার্চেন্টের নাম"/></div>
           <div><label class="field-label">Mobile No <span class="req">*</span></label><input class="field-input" type="tel" id="f_mobileNo" placeholder="01XXXXXXXXX"/></div>
           <div><label class="field-label">Shop Name</label><input class="field-input" type="text" id="f_shopName" placeholder="দোকানের নাম"/></div>
           <div><label class="field-label">Business Type</label>
             <select class="field-select" id="f_businessType"><option value="">— বেছে নিন —</option>
             <option>Restaurant</option><option>Food Cart</option><option>Tea Stall</option><option>Bakery</option><option>Hotel</option><option>Other</option></select></div>
-          <div><label class="field-label">Area / Location</label><input class="field-input" type="text" id="f_area" placeholder="এলাকার নাম"/></div>
+          <div style="grid-column:1/-1"><label class="field-label">📍 Location / Address <span class="req">*</span></label><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px"><button type="button" id="gpsBtn" onclick="getGPS()" style="padding:10px 18px;background:#1565C0;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">📍 GPS Location নিন</button><span id="gpsStatus" style="font-size:12px;color:#888">GPS এখনো নেওয়া হয়নি</span></div><input class="field-input" type="text" id="f_area" placeholder="GPS নেওয়ার পর address এখানে আসবে"/><input type="hidden" id="f_lat"/><input type="hidden" id="f_lng"/><div id="gpsMapLink" style="margin-top:6px;font-size:12px;display:none"><a id="gpsLink" href="#" target="_blank" style="color:#1565C0;font-weight:600">🗺️ Google Maps-এ দেখুন</a></div></div>
         </div>
 
         <div class="section-hdr" style="background:#1A5276">🔵 গ্যাস ডেটা</div>
@@ -594,6 +593,54 @@ function calcProdTotal(key){
   if(el) el.textContent = total>0 ? `মাসিক মোট: ৳${fmt(total)}${p.daily?' (×30)':''}` : '';
 }
 
+// ── GPS ───────────────────────────────────────────────────────────────────
+let gpsConfirmed = false;
+
+async function getGPS(){
+  const btn    = document.getElementById('gpsBtn');
+  const status = document.getElementById('gpsStatus');
+  const mapDiv = document.getElementById('gpsMapLink');
+  const link   = document.getElementById('gpsLink');
+
+  if(!navigator.geolocation){
+    status.textContent = 'GPS সাপোর্ট নেই';
+    status.style.color = '#C62828'; return;
+  }
+
+  btn.textContent = 'লোকেশন নেওয়া হচ্ছে...';
+  btn.disabled = true;
+
+  navigator.geolocation.getCurrentPosition(async pos => {
+    const lat = pos.coords.latitude.toFixed(6);
+    const lng = pos.coords.longitude.toFixed(6);
+    document.getElementById('f_lat').value = lat;
+    document.getElementById('f_lng').value = lng;
+
+    try {
+      const r = await fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json');
+      const d = await r.json();
+      document.getElementById('f_area').value = d.display_name || lat+', '+lng;
+    } catch {
+      document.getElementById('f_area').value = lat+', '+lng;
+    }
+
+    const mapsUrl = 'https://www.google.com/maps?q='+lat+','+lng;
+    link.href = mapsUrl;
+    mapDiv.style.display = 'block';
+    gpsConfirmed = true;
+    btn.textContent = 'GPS নেওয়া হয়েছে';
+    btn.style.background = '#1A7A45';
+    btn.disabled = false;
+    status.textContent = 'lat: '+lat+', lng: '+lng;
+    status.style.color = '#1A7A45';
+  }, err => {
+    btn.textContent = 'GPS Location নিন';
+    btn.disabled = false;
+    status.textContent = 'লোকেশন অ্যাক্সেস দিন এবং আবার চেষ্টা করুন';
+    status.style.color = '#C62828';
+  }, {enableHighAccuracy:true, timeout:15000});
+}
+
 function setDefaultDate(){
   const d = new Date().toISOString().slice(0,10);
   const el = document.getElementById('f_surveyDate');
@@ -611,6 +658,8 @@ function getFormData(){
     gasPricePerCylinder: gn('f_gasPricePerCylinder'), gasDelivery: g('f_gasDelivery'),
     interestedInCityBest: g('f_interestedInCityBest'), productsInterested: g('f_productsInterested'),
     followUpStatus: g('f_followUpStatus'), followUpDate: g('f_followUpDate'), notes: g('f_notes'),
+    lat: g('f_lat'),
+    lng: g('f_lng'),
   };
   PRODUCTS.forEach(p=>{
     const qKey = p.daily?`f_${p.key}QtyPerDay`:`f_${p.key}Qty`;
@@ -673,6 +722,12 @@ async function submitForm(){
   const data = getFormData();
   if(!data.merchantName||!data.mobileNo){
     document.getElementById('saveMsg').textContent='❌ নাম এবং মোবাইল নম্বর দিন।';
+    document.getElementById('saveMsg').style.color='#C62828'; return;
+  }
+  if(!gpsConfirmed && !editingId){
+    document.getElementById('saveMsg').textContent='❌ প্রথমে GPS Location নিন।';
+    document.getElementById('saveMsg').style.color='#C62828'; return;
+  }
     document.getElementById('saveMsg').style.color='#C62828'; return;
   }
   const btn = document.getElementById('submitBtn');
