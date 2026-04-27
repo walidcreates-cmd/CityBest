@@ -728,6 +728,8 @@ async function submitForm(){
     document.getElementById('saveMsg').textContent='❌ প্রথমে GPS Location নিন।';
     document.getElementById('saveMsg').style.color='#C62828'; return;
   }
+    document.getElementById('saveMsg').style.color='#C62828'; return;
+  }
   const btn = document.getElementById('submitBtn');
   btn.disabled=true; btn.textContent='সংরক্ষণ হচ্ছে...';
   try{
