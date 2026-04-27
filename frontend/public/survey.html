@@ -8,77 +8,58 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Hind Siliguri',Arial,sans-serif;background:#f5f7fa;min-height:100vh}
-:root{--green:#1A7A45;--green-light:#e8f5e9;--blue:#1565C0;--blue-light:#e3f2fd;
-  --orange:#E65100;--orange-light:#fff3e0;--red:#B71C1C;--red-light:#fce4ec;
-  --purple:#6A1B9A;--purple-light:#f3e5f5;--teal:#00695C;--gray:#888}
-
-/* ── Login ── */
 #loginPage{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;background:linear-gradient(135deg,#e8f5e9,#f1f8e9)}
-.login-card{background:#fff;border-radius:20px;padding:40px 32px;width:100%;max-width:380px;box-shadow:0 8px 40px rgba(0,0,0,0.1)}
-.login-logo{text-align:center;margin-bottom:28px}
-.login-logo .icon{font-size:48px}
-.login-logo h1{margin:8px 0 4px;font-size:24px;font-weight:800;color:var(--green)}
-.login-logo p{color:#888;font-size:13px}
-.login-label{font-size:14px;font-weight:600;color:#444;margin-bottom:8px}
-.login-input{width:100%;padding:12px 14px;font-size:16px;border:2px solid #e0e0e0;border-radius:10px;outline:none;font-family:inherit;margin-bottom:12px}
-.login-btn{width:100%;padding:14px;background:var(--green);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit}
-.login-btn:hover{background:#145c34}
-.login-error{color:#e53935;font-size:13px;text-align:center;margin-top:10px;font-weight:600}
-
-/* ── App shell ── */
+.login-card{background:#fff;border-radius:20px;padding:40px 32px;width:100%;max-width:380px;box-shadow:0 8px 40px rgba(0,0,0,0.1);text-align:center}
+.login-card h1{font-size:24px;font-weight:800;color:#1A7A45;margin:10px 0 4px}
+.login-card p{color:#888;font-size:13px;margin-bottom:24px}
+.login-card label{display:block;text-align:left;font-size:14px;font-weight:600;color:#444;margin-bottom:8px}
+.pw-input{width:100%;padding:12px 14px;font-size:16px;border:2px solid #e0e0e0;border-radius:10px;outline:none;font-family:inherit;margin-bottom:12px}
+.pw-btn{width:100%;padding:14px;background:#1A7A45;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit}
+.pw-btn:hover{background:#145c34}
+.pw-error{color:#e53935;font-size:13px;margin-top:10px;font-weight:600}
 #app{display:none}
-.navbar{background:var(--green);padding:0 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.15);height:52px}
-.navbar-brand{display:flex;align-items:center;gap:8px;color:#fff;font-weight:800;font-size:16px}
-.nav-tabs{display:flex;gap:2px}
-.nav-tab{padding:8px 12px;background:transparent;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;opacity:0.8;transition:all 0.15s}
-.nav-tab:hover,.nav-tab.active{background:rgba(255,255,255,0.2);opacity:1}
-.nav-logout{padding:8px 12px;background:transparent;color:rgba(255,255,255,0.6);border:none;font-size:12px;cursor:pointer;font-family:inherit}
+.navbar{background:#1A7A45;padding:0 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.15);height:52px;flex-wrap:wrap}
+.nb-brand{color:#fff;font-weight:800;font-size:16px;display:flex;align-items:center;gap:8px}
+.nb-tabs{display:flex;gap:2px}
+.nb-tab{padding:8px 12px;background:transparent;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;opacity:0.8}
+.nb-tab:hover,.nb-tab.active{background:rgba(255,255,255,0.2);opacity:1}
+.nb-logout{padding:8px 12px;background:transparent;color:rgba(255,255,255,0.6);border:none;font-size:12px;cursor:pointer;font-family:inherit}
 .content{max-width:1200px;margin:0 auto;padding:20px 16px}
-
-/* ── Views ── */
-.view{display:none}
-.view.active{display:block}
-
-/* ── KPI cards ── */
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:24px}
+.view{display:none}.view.active{display:block}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
 .kpi-card{background:#fff;border-radius:12px;padding:16px 18px;box-shadow:0 2px 8px rgba(0,0,0,0.07)}
 .kpi-icon{font-size:22px;margin-bottom:6px}
 .kpi-val{font-size:22px;font-weight:800;margin-bottom:2px}
 .kpi-label{font-size:12px;color:#888}
-
-/* ── Charts ── */
 .chart-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.07);margin-bottom:16px}
 .chart-title{font-size:14px;font-weight:700;color:#333;margin-bottom:16px}
-.bar-wrap{display:flex;align-items:flex-end;gap:8px;height:160px;padding:0 4px}
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.bar-wrap{display:flex;align-items:flex-end;gap:8px;height:160px}
 .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
 .bar-val{font-size:10px;color:#555;font-weight:600;min-height:14px;text-align:center}
-.bar-body{width:100%;border-radius:4px 4px 0 0;transition:height 0.4s ease;min-width:20px}
-.bar-lbl{font-size:10px;color:#666;text-align:center;line-height:1.2;max-width:60px}
-.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
-
-/* ── Hbar ── */
+.bar-body{width:100%;border-radius:4px 4px 0 0;transition:height 0.4s}
+.bar-lbl{font-size:10px;color:#666;text-align:center;line-height:1.2}
 .hbar-row{margin-bottom:10px}
-.hbar-labels{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px}
-.hbar-label{color:#333;font-weight:500}
-.hbar-spend{color:#888}
+.hbar-top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px}
 .hbar-track{background:#f0f0f0;border-radius:4px;height:10px;overflow:hidden}
 .hbar-fill{height:100%;border-radius:4px;transition:width 0.4s}
-.hbar-total{margin-top:12px;padding-top:12px;border-top:1px solid #eee;display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:var(--green)}
-
-/* ── Tables ── */
+.hbar-total{margin-top:12px;padding-top:12px;border-top:1px solid #eee;display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:#1A7A45}
 .table-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.07);margin-bottom:20px}
 .table-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:13px}
-thead tr{background:var(--green);color:#fff}
+thead tr{background:#1A7A45;color:#fff}
 th{padding:11px 14px;text-align:left;font-weight:700;white-space:nowrap}
 tbody tr:nth-child(even){background:#f8fffe}
 tbody tr:hover{background:#f0faf4}
-td{padding:9px 14px;border-bottom:1px solid #eee;vertical-space:middle}
-
-/* ── Per-customer ── */
-.merchant-select-bar{background:#fff;border-radius:12px;padding:16px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.07);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.merchant-select-bar label{font-size:14px;font-weight:700;color:#333}
-.merchant-select-bar select{padding:8px 14px;border-radius:8px;border:2px solid var(--green);font-size:14px;color:var(--green);font-weight:700;outline:none;font-family:inherit;background:#f0faf4;cursor:pointer}
+td{padding:9px 14px;border-bottom:1px solid #eee}
+.badge{padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;display:inline-block}
+.sel-bar{background:#fff;border-radius:12px;padding:16px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.07);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.sel-bar label{font-size:14px;font-weight:700;color:#333}
+.sel-bar select{padding:8px 14px;border-radius:8px;border:2px solid #1A7A45;font-size:14px;color:#1A7A45;font-weight:700;outline:none;font-family:inherit;background:#f0faf4;cursor:pointer}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.info-card{background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,0.07)}
+.info-label{font-size:11px;color:#888;margin-bottom:4px}
+.info-val{font-size:16px;font-weight:800}
 .prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:16px}
 .prod-card{border-radius:10px;padding:14px}
 .prod-cat{font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:6px}
@@ -86,183 +67,168 @@ td{padding:9px 14px;border-bottom:1px solid #eee;vertical-space:middle}
 .prod-qty{font-size:12px;color:#555;margin-bottom:2px}
 .prod-price{font-size:12px;color:#555}
 .prod-total{margin-top:8px;padding-top:8px;font-size:13px;font-weight:700}
-.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
-.info-card{background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,0.07)}
-.info-label{font-size:11px;color:#888;margin-bottom:4px}
-.info-val{font-size:16px;font-weight:800}
-
-/* ── List view ── */
 .list-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
-.list-header h2{font-size:18px;color:var(--green)}
-.search-input{padding:8px 14px;border-radius:8px;border:1.5px solid #ccc;font-size:13px;width:260px;outline:none;font-family:inherit}
-.badge{padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;display:inline-block}
-.action-btns{display:flex;gap:6px}
-.action-btn{padding:5px 10px;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit}
-
-/* ── Form ── */
+.list-header h2{font-size:18px;color:#1A7A45}
+.search-box{padding:8px 14px;border-radius:8px;border:1.5px solid #ccc;font-size:13px;width:260px;outline:none;font-family:inherit}
+.act-btns{display:flex;gap:6px}
+.act-btn{padding:5px 10px;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit}
 .form-card{background:#fff;border-radius:12px;padding:24px;box-shadow:0 2px 8px rgba(0,0,0,0.07)}
-.form-title{font-size:18px;font-weight:700;color:var(--green);margin-bottom:20px}
-.section-hdr{color:#fff;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:700;margin-bottom:14px}
+.form-title{font-size:18px;font-weight:700;color:#1A7A45;margin-bottom:20px}
+.sec-hdr{color:#fff;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:700;margin-bottom:14px}
 .field-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:20px}
 .field-label{font-size:12px;color:#555;display:block;margin-bottom:5px;font-weight:600}
 .field-input,.field-select{width:100%;padding:9px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;font-family:inherit}
-.field-input:focus,.field-select:focus{border-color:var(--green)}
-.prod-form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin-bottom:20px}
+.field-input:focus,.field-select:focus{border-color:#1A7A45}
+textarea.field-input{resize:vertical;min-height:70px}
+.req{color:#e53935}
+.gps-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.gps-btn{padding:10px 18px;background:#1565C0;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
+.gps-status{font-size:12px;color:#888}
+.gps-link{font-size:12px;margin-top:6px;display:none}
+.gps-link a{color:#1565C0;font-weight:600}
+.prod-form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-bottom:20px}
 .prod-form-card{border-radius:10px;padding:14px}
 .prod-form-name{font-size:13px;font-weight:700;margin-bottom:10px}
-.prod-form-inputs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.prod-monthly{margin-top:8px;font-size:12px;font-weight:700}
+.prod-inputs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.prod-monthly{font-size:12px;font-weight:700;margin-top:8px}
 .submit-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.submit-btn{padding:14px 32px;background:var(--green);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit}
+.submit-btn{padding:14px 32px;background:#1A7A45;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit}
 .submit-btn:hover{background:#145c34}
 .submit-btn:disabled{background:#aaa;cursor:default}
 .cancel-btn{padding:14px 24px;background:#f5f5f5;color:#555;border:none;border-radius:10px;font-size:14px;cursor:pointer;font-family:inherit}
 .save-msg{font-size:14px;font-weight:700}
-textarea.field-input{resize:vertical;min-height:70px}
-.req{color:#e53935}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="loginPage">
   <div class="login-card">
-    <div class="login-logo">
-      <div class="icon">📋</div>
-      <h1>CityBest Survey</h1>
-      <p>স্টাফ অ্যাক্সেস পোর্টাল</p>
-    </div>
-    <p class="login-label">পাসওয়ার্ড দিন</p>
-    <input class="login-input" type="password" id="pwInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
-    <button class="login-btn" onclick="doLogin()">প্রবেশ করুন</button>
-    <div class="login-error" id="pwError"></div>
+    <div style="font-size:48px">📋</div>
+    <h1>CityBest Survey</h1>
+    <p>স্টাফ অ্যাক্সেস পোর্টাল</p>
+    <label>পাসওয়ার্ড দিন</label>
+    <input class="pw-input" type="password" id="pwInput" placeholder="••••••••"/>
+    <button class="pw-btn" id="loginBtn" onclick="doLogin()">প্রবেশ করুন</button>
+    <div class="pw-error" id="pwError"></div>
   </div>
 </div>
 
-<!-- APP -->
 <div id="app">
   <nav class="navbar">
-    <div class="navbar-brand">🛒 CityBest Survey</div>
-    <div class="nav-tabs">
-      <button class="nav-tab active" onclick="showView('dashboard')">📊 ড্যাশবোর্ড</button>
-      <button class="nav-tab" onclick="showView('customers')">👤 প্রতি কাস্টমার</button>
-      <button class="nav-tab" onclick="showView('list')">📋 তালিকা</button>
-      <button class="nav-tab" onclick="showView('entry')">➕ নতুন এন্ট্রি</button>
+    <div class="nb-brand">🛒 CityBest Survey</div>
+    <div class="nb-tabs">
+      <button class="nb-tab active" onclick="showView('dashboard',this)">📊 ড্যাশবোর্ড</button>
+      <button class="nb-tab" onclick="showView('customers',this)">👤 প্রতি কাস্টমার</button>
+      <button class="nb-tab" onclick="showView('list',this)">📋 তালিকা</button>
+      <button class="nb-tab" onclick="showView('entry',this)">➕ নতুন এন্ট্রি</button>
     </div>
-    <button class="nav-logout" onclick="doLogout()">লগআউট</button>
+    <button class="nb-logout" onclick="doLogout()">লগআউট</button>
   </nav>
-
   <div class="content">
 
     <!-- DASHBOARD -->
     <div class="view active" id="view-dashboard">
       <div class="kpi-grid" id="kpiGrid"></div>
       <div class="chart-row">
-        <div class="chart-card">
-          <div class="chart-title">💰 মার্চেন্ট অনুযায়ী মোট খরচ/মাস</div>
-          <div class="bar-wrap" id="merchantBarChart"></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-title">🗺️ ক্যাটাগরি অনুযায়ী মোট চাহিদা</div>
-          <div class="bar-wrap" id="categoryBarChart"></div>
-        </div>
+        <div class="chart-card"><div class="chart-title">💰 মার্চেন্ট অনুযায়ী মোট খরচ/মাস</div><div class="bar-wrap" id="merchantChart"></div></div>
+        <div class="chart-card"><div class="chart-title">🗺️ ক্যাটাগরি অনুযায়ী চাহিদা</div><div class="bar-wrap" id="catChart"></div></div>
       </div>
       <div class="chart-card">
         <div class="chart-title">🔵 গ্যাস ব্র্যান্ড মার্কেট শেয়ার</div>
-        <div class="table-wrap"><table id="brandTable">
-          <thead><tr><th>ব্র্যান্ড</th><th>মার্চেন্ট</th><th>% শেয়ার</th><th>গড় মূল্য ৳</th><th>মোট গ্যাস ৳/মাস</th></tr></thead>
-          <tbody id="brandTbody"></tbody>
-        </table></div>
+        <div class="table-wrap"><table><thead><tr><th>ব্র্যান্ড</th><th>মার্চেন্ট</th><th>% শেয়ার</th><th>গড় মূল্য ৳</th><th>মোট ৳/মাস</th></tr></thead><tbody id="brandTbody"></tbody></table></div>
       </div>
       <div class="chart-card">
-        <div class="chart-title">📦 পণ্যভিত্তিক মোট চাহিদা ও খরচ</div>
-        <div class="table-wrap"><table>
-          <thead><tr><th>পণ্য</th><th>ইউনিট</th><th>মোট পরিমাণ/মাস</th><th>মোট খরচ ৳/মাস</th><th>ক্যাটাগরি</th></tr></thead>
-          <tbody id="demandTbody"></tbody>
-        </table></div>
+        <div class="chart-title">📦 পণ্যভিত্তিক চাহিদা ও খরচ</div>
+        <div class="table-wrap"><table><thead><tr><th>পণ্য</th><th>ইউনিট</th><th>মোট পরিমাণ/মাস</th><th>মোট ৳/মাস</th><th>ক্যাটাগরি</th></tr></thead><tbody id="demandTbody"></tbody></table></div>
       </div>
     </div>
 
     <!-- PER CUSTOMER -->
     <div class="view" id="view-customers">
-      <div class="merchant-select-bar">
+      <div class="sel-bar">
         <label>👤 মার্চেন্ট বেছে নিন:</label>
-        <select id="merchantSelect" onchange="renderCustomerView()"></select>
-        <button class="action-btn" style="background:#e8f5e9;color:var(--green)" onclick="editSelectedMerchant()">✏️ সম্পাদনা</button>
+        <select id="merchantSel" onchange="renderCustomer()"></select>
+        <button class="act-btn" style="background:#e8f5e9;color:#1A7A45" onclick="editFromCustomer()">✏️ সম্পাদনা</button>
       </div>
-      <div id="customerKPIs" class="info-grid"></div>
+      <div class="info-grid" id="custKPIs"></div>
       <div class="chart-row">
-        <div class="chart-card">
-          <div class="chart-title">📊 ক্যাটাগরি অনুযায়ী খরচ/মাস</div>
-          <div class="bar-wrap" id="custBarChart"></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-title">📈 খরচের অনুপাত</div>
-          <div id="custHbars"></div>
-        </div>
+        <div class="chart-card"><div class="chart-title">📊 ক্যাটাগরি অনুযায়ী খরচ/মাস</div><div class="bar-wrap" id="custBarChart"></div></div>
+        <div class="chart-card"><div class="chart-title">📈 খরচের অনুপাত</div><div id="custHbars"></div></div>
       </div>
-      <div class="chart-card">
-        <div class="chart-title">📦 প্রতিটি পণ্যের বিস্তারিত</div>
-        <div class="prod-grid" id="custProdGrid"></div>
-      </div>
+      <div class="chart-card"><div class="chart-title">📦 প্রতিটি পণ্যের বিস্তারিত</div><div class="prod-grid" id="custProds"></div></div>
     </div>
 
     <!-- LIST -->
     <div class="view" id="view-list">
       <div class="list-header">
         <h2 id="listTitle">📋 সকল মার্চেন্ট</h2>
-        <input class="search-input" type="text" id="searchInput" placeholder="🔍 নাম, এলাকা বা ধরন খুঁজুন..." oninput="renderList()"/>
+        <input class="search-box" type="text" id="searchBox" placeholder="🔍 নাম, এলাকা বা ধরন..." oninput="renderList()"/>
       </div>
-      <div class="table-card">
-        <div class="table-wrap"><table>
-          <thead><tr><th>মার্চেন্ট নাম</th><th>ব্যবসা</th><th>এলাকা</th><th>গ্যাস/মাস</th><th>মোট ৳/মাস</th><th>আগ্রহ</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th></tr></thead>
-          <tbody id="listTbody"></tbody>
-        </table></div>
-      </div>
+      <div class="table-card"><div class="table-wrap">
+        <table><thead><tr><th>মার্চেন্ট</th><th>ব্যবসা</th><th>এলাকা</th><th>গ্যাস/মাস</th><th>মোট ৳/মাস</th><th>আগ্রহ</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th></tr></thead>
+        <tbody id="listTbody"></tbody></table>
+      </div></div>
     </div>
 
-    <!-- ENTRY FORM -->
+    <!-- ENTRY -->
     <div class="view" id="view-entry">
       <div class="form-card">
         <div class="form-title" id="formTitle">➕ নতুন মার্চেন্ট এন্ট্রি</div>
 
-        <div class="section-hdr" style="background:var(--green)">👤 মার্চেন্ট পরিচয়</div>
+        <div class="sec-hdr" style="background:#1A7A45">👤 মার্চেন্ট পরিচয়</div>
         <div class="field-grid">
           <div><label class="field-label">Survey Date</label><input class="field-input" type="date" id="f_surveyDate"/></div>
-          <div><label class="field-label">Staff Name (স্টাফ নাম)</label>
-            <input class="field-input" type="text" id="f_staffName" placeholder="আপনার নাম লিখুন"/></div>
+          <div><label class="field-label">Staff Name (স্টাফ নাম)</label><input class="field-input" type="text" id="f_staffName" placeholder="আপনার নাম লিখুন"/></div>
           <div><label class="field-label">Merchant Name <span class="req">*</span></label><input class="field-input" type="text" id="f_merchantName" placeholder="মার্চেন্টের নাম"/></div>
           <div><label class="field-label">Mobile No <span class="req">*</span></label><input class="field-input" type="tel" id="f_mobileNo" placeholder="01XXXXXXXXX"/></div>
           <div><label class="field-label">Shop Name</label><input class="field-input" type="text" id="f_shopName" placeholder="দোকানের নাম"/></div>
           <div><label class="field-label">Business Type</label>
-            <select class="field-select" id="f_businessType"><option value="">— বেছে নিন —</option>
-            <option>Restaurant</option><option>Food Cart</option><option>Tea Stall</option><option>Bakery</option><option>Hotel</option><option>Other</option></select></div>
-          <div style="grid-column:1/-1"><label class="field-label">📍 Location / Address <span class="req">*</span></label><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px"><button type="button" id="gpsBtn" onclick="getGPS()" style="padding:10px 18px;background:#1565C0;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">📍 GPS Location নিন</button><span id="gpsStatus" style="font-size:12px;color:#888">GPS এখনো নেওয়া হয়নি</span></div><input class="field-input" type="text" id="f_area" placeholder="GPS নেওয়ার পর address এখানে আসবে"/><input type="hidden" id="f_lat"/><input type="hidden" id="f_lng"/><div id="gpsMapLink" style="margin-top:6px;font-size:12px;display:none"><a id="gpsLink" href="#" target="_blank" style="color:#1565C0;font-weight:600">🗺️ Google Maps-এ দেখুন</a></div></div>
+            <select class="field-select" id="f_businessType">
+              <option value="">— বেছে নিন —</option>
+              <option>Restaurant</option><option>Food Cart</option><option>Tea Stall</option><option>Bakery</option><option>Hotel</option><option>Other</option>
+            </select>
+          </div>
+          <div style="grid-column:1/-1">
+            <label class="field-label">📍 Location / Address <span class="req">*</span></label>
+            <div class="gps-row">
+              <button type="button" class="gps-btn" id="gpsBtn" onclick="getGPS()">📍 GPS Location নিন</button>
+              <span class="gps-status" id="gpsStatus">GPS এখনো নেওয়া হয়নি</span>
+            </div>
+            <input class="field-input" type="text" id="f_area" placeholder="GPS নেওয়ার পর এখানে address আসবে — চাইলে সম্পাদনা করুন"/>
+            <input type="hidden" id="f_lat"/>
+            <input type="hidden" id="f_lng"/>
+            <div class="gps-link" id="gpsMapLink"><a id="gpsLinkA" href="#" target="_blank">🗺️ Google Maps-এ দেখুন</a></div>
+          </div>
         </div>
 
-        <div class="section-hdr" style="background:#1A5276">🔵 গ্যাস ডেটা</div>
+        <div class="sec-hdr" style="background:#1A5276">🔵 গ্যাস ডেটা</div>
         <div class="field-grid">
           <div><label class="field-label">Gas/Month (সিলিন্ডার)</label><input class="field-input" type="number" min="0" id="f_gasCylindersPerMonth" placeholder="0"/></div>
           <div><label class="field-label">Cylinder Brand</label>
-            <select class="field-select" id="f_gasBrand"><option value="">— বেছে নিন —</option>
-            <option>Omera</option><option>Jamuna</option><option>Fresh</option><option>Bengal</option><option>Igash</option><option>Green</option><option>Delta</option><option>Other</option></select></div>
+            <select class="field-select" id="f_gasBrand">
+              <option value="">— বেছে নিন —</option>
+              <option>Omera</option><option>Jamuna</option><option>Fresh</option><option>Bengal</option><option>Igash</option><option>Green</option><option>Delta</option><option>Other</option>
+            </select>
+          </div>
           <div><label class="field-label">Price/Cylinder (৳)</label><input class="field-input" type="number" min="0" id="f_gasPricePerCylinder" placeholder="1900"/></div>
           <div><label class="field-label">Delivery</label>
-            <select class="field-select" id="f_gasDelivery"><option>Free</option><option>Paid</option></select></div>
+            <select class="field-select" id="f_gasDelivery"><option>Free</option><option>Paid</option></select>
+          </div>
         </div>
 
-        <div id="prodFormSections"></div>
+        <div id="prodSections"></div>
 
-        <div class="section-hdr" style="background:#CA6F1E">🎯 লিড ও ফলো-আপ</div>
+        <div class="sec-hdr" style="background:#CA6F1E">🎯 লিড ও ফলো-আপ</div>
         <div class="field-grid">
           <div><label class="field-label">CityBest-এ আগ্রহী?</label>
-            <select class="field-select" id="f_interestedInCityBest"><option>Maybe</option><option>Yes</option><option>No</option></select></div>
+            <select class="field-select" id="f_interestedInCityBest"><option>Maybe</option><option>Yes</option><option>No</option></select>
+          </div>
           <div><label class="field-label">কোন পণ্যে আগ্রহী</label><input class="field-input" type="text" id="f_productsInterested" placeholder="Gas, Rice, Potato..."/></div>
           <div><label class="field-label">Follow-up Status</label>
-            <select class="field-select" id="f_followUpStatus"><option>New</option><option>Contacted</option><option>Converted</option><option>Lost</option></select></div>
+            <select class="field-select" id="f_followUpStatus"><option>New</option><option>Contacted</option><option>Converted</option><option>Lost</option></select>
+          </div>
           <div><label class="field-label">Follow-up Date</label><input class="field-input" type="date" id="f_followUpDate"/></div>
-          <div style="grid-column:1/-1"><label class="field-label">Notes (মন্তব্য)</label>
-            <textarea class="field-input" id="f_notes" placeholder="যেকোনো মন্তব্য..."></textarea></div>
+          <div style="grid-column:1/-1"><label class="field-label">Notes (মন্তব্য)</label><textarea class="field-input" id="f_notes" placeholder="যেকোনো মন্তব্য..."></textarea></div>
         </div>
 
         <div class="submit-row">
@@ -273,495 +239,512 @@ textarea.field-input{resize:vertical;min-height:70px}
       </div>
     </div>
 
-  </div><!-- /content -->
-</div><!-- /app -->
+  </div>
+</div>
 
 <script>
 const API = 'https://citybest-1.onrender.com';
 const SK  = 'cb_survey_auth';
 
 const PRODUCTS = [
-  {key:'rice',         label:'Rice (চাল)',         unit:'kg/mo',    priceUnit:'৳/kg',   daily:false, cat:'grain'},
-  {key:'whiteRice',    label:'White Rice',          unit:'kg/mo',    priceUnit:'৳/kg',   daily:false, cat:'grain'},
-  {key:'potato',       label:'Potato (আলু)',        unit:'kg/mo',    priceUnit:'৳/kg',   daily:false, cat:'veg'},
-  {key:'onion',        label:'Onion (পেঁয়াজ)',     unit:'kg/mo',    priceUnit:'৳/kg',   daily:false, cat:'veg'},
-  {key:'oil',          label:'Oil (তেল)',           unit:'Ltr/day',  priceUnit:'৳/Ltr',  daily:true,  cat:'pantry'},
-  {key:'palmOil',      label:'Palm Oil',            unit:'kg/mo',    priceUnit:'৳/kg',   daily:false, cat:'pantry'},
-  {key:'flour',        label:'Flour (আটা)',         unit:'pack/mo',  priceUnit:'৳/pack', daily:false, cat:'grain'},
-  {key:'chicken',      label:'Chicken (মুরগি)',     unit:'kg/day',   priceUnit:'৳/kg',   daily:true,  cat:'protein'},
-  {key:'eggs',         label:'Eggs (ডিম)',          unit:'cage/day', priceUnit:'৳/cage', daily:true,  cat:'protein'},
-  {key:'beef',         label:'Beef (গরু)',          unit:'kg/day',   priceUnit:'৳/kg',   daily:true,  cat:'protein'},
-  {key:'mutton',       label:'Mutton (খাসি)',       unit:'kg/day',   priceUnit:'৳/kg',   daily:true,  cat:'protein'},
-  {key:'dal',          label:'Dal (ডাল)',           unit:'kg/mo',    priceUnit:'৳/kg',   daily:false, cat:'pantry'},
-  {key:'sugar',        label:'Sugar (চিনি)',        unit:'kg/mo',    priceUnit:'৳/kg',   daily:false, cat:'pantry'},
-  {key:'spices',       label:'Spices (মশলা)',       unit:'kg/mo',    priceUnit:'৳/kg',   daily:false, cat:'pantry'},
-  {key:'teaLeaves',    label:'Tea Leaves (চা)',     unit:'kg/mo',    priceUnit:'৳/kg',   daily:false, cat:'pantry'},
-  {key:'garlicGinger', label:'Garlic+Ginger',       unit:'kg/mo',    priceUnit:'৳/kg',   daily:false, cat:'veg'},
-  {key:'greenChili',   label:'Green Chili (মরিচ)', unit:'kg/mo',    priceUnit:'৳/kg',   daily:false, cat:'veg'},
+  {key:'rice',         label:'Rice (চাল)',         unit:'kg/mo',    pu:'৳/kg',   daily:false, cat:'grain'},
+  {key:'whiteRice',    label:'White Rice',          unit:'kg/mo',    pu:'৳/kg',   daily:false, cat:'grain'},
+  {key:'potato',       label:'Potato (আলু)',        unit:'kg/mo',    pu:'৳/kg',   daily:false, cat:'veg'},
+  {key:'onion',        label:'Onion (পেঁয়াজ)',     unit:'kg/mo',    pu:'৳/kg',   daily:false, cat:'veg'},
+  {key:'oil',          label:'Oil (তেল)',           unit:'Ltr/day',  pu:'৳/Ltr',  daily:true,  cat:'pantry'},
+  {key:'palmOil',      label:'Palm Oil',            unit:'kg/mo',    pu:'৳/kg',   daily:false, cat:'pantry'},
+  {key:'flour',        label:'Flour (আটা)',         unit:'pack/mo',  pu:'৳/pack', daily:false, cat:'grain'},
+  {key:'chicken',      label:'Chicken (মুরগি)',     unit:'kg/day',   pu:'৳/kg',   daily:true,  cat:'protein'},
+  {key:'eggs',         label:'Eggs (ডিম)',          unit:'cage/day', pu:'৳/cage', daily:true,  cat:'protein'},
+  {key:'beef',         label:'Beef (গরু)',          unit:'kg/day',   pu:'৳/kg',   daily:true,  cat:'protein'},
+  {key:'mutton',       label:'Mutton (খাসি)',       unit:'kg/day',   pu:'৳/kg',   daily:true,  cat:'protein'},
+  {key:'dal',          label:'Dal (ডাল)',           unit:'kg/mo',    pu:'৳/kg',   daily:false, cat:'pantry'},
+  {key:'sugar',        label:'Sugar (চিনি)',        unit:'kg/mo',    pu:'৳/kg',   daily:false, cat:'pantry'},
+  {key:'spices',       label:'Spices (মশলা)',       unit:'kg/mo',    pu:'৳/kg',   daily:false, cat:'pantry'},
+  {key:'teaLeaves',    label:'Tea Leaves (চা)',     unit:'kg/mo',    pu:'৳/kg',   daily:false, cat:'pantry'},
+  {key:'garlicGinger', label:'Garlic+Ginger',       unit:'kg/mo',    pu:'৳/kg',   daily:false, cat:'veg'},
+  {key:'greenChili',   label:'Green Chili (মরিচ)', unit:'kg/mo',    pu:'৳/kg',   daily:false, cat:'veg'},
 ];
 
-const CAT_INFO = {
-  grain:   {bg:'#e3f2fd', accent:'#1565C0', label:'Grain',    icon:'🌾'},
-  veg:     {bg:'#fff3e0', accent:'#E65100', label:'Vegetable',icon:'🥦'},
-  protein: {bg:'#fce4ec', accent:'#B71C1C', label:'Protein',  icon:'🍗'},
-  pantry:  {bg:'#f3e5f5', accent:'#6A1B9A', label:'Pantry',   icon:'🛢️'},
-  gas:     {bg:'#e8f5e9', accent:'#1A7A45', label:'Gas',      icon:'🔵'},
+const CATS = {
+  grain:   {bg:'#e3f2fd', ac:'#1565C0', label:'Grain'},
+  veg:     {bg:'#fff3e0', ac:'#E65100', label:'Vegetable'},
+  protein: {bg:'#fce4ec', ac:'#B71C1C', label:'Protein'},
+  pantry:  {bg:'#f3e5f5', ac:'#6A1B9A', label:'Pantry'},
+  gas:     {bg:'#e8f5e9', ac:'#1A7A45', label:'Gas'},
 };
 
-let merchants = [], aggregates = null, editingId = null;
+let merchants = [], aggregates = {}, editingId = null, gpsOK = false;
 
-function fmt(n){ return Math.round(n||0).toLocaleString('en-IN'); }
+function fmt(n) { return Math.round(n||0).toLocaleString('en-IN'); }
 
-// ── Auth ──────────────────────────────────────────────────────────────────
-async function doLogin(){
-  const pw = document.getElementById('pwInput').value;
-  const err = document.getElementById('pwError');
+// ── LOGIN ─────────────────────────────────────────────────────────────────
+function doLogin() {
+  var pw  = document.getElementById('pwInput').value;
+  var err = document.getElementById('pwError');
+  var btn = document.getElementById('loginBtn');
   err.textContent = '';
-  try{
-    const r = await fetch(`${API}/api/survey/auth`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw})});
-    if(r.ok){ sessionStorage.setItem(SK,'1'); showApp(); }
-    else err.textContent = 'পাসওয়ার্ড ভুল। আবার চেষ্টা করুন।';
-  }catch{ err.textContent = 'সার্ভারে সংযোগ হচ্ছে না।'; }
+  btn.textContent = 'যাচাই হচ্ছে...';
+  btn.disabled = true;
+  fetch(API + '/api/survey/auth', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({password: pw})
+  }).then(function(r) {
+    if (r.ok) {
+      sessionStorage.setItem(SK, '1');
+      showApp();
+    } else {
+      err.textContent = 'পাসওয়ার্ড ভুল। আবার চেষ্টা করুন।';
+      btn.textContent = 'প্রবেশ করুন';
+      btn.disabled = false;
+    }
+  }).catch(function() {
+    err.textContent = 'সার্ভারে সংযোগ হচ্ছে না।';
+    btn.textContent = 'প্রবেশ করুন';
+    btn.disabled = false;
+  });
 }
 
-function doLogout(){ sessionStorage.removeItem(SK); location.reload(); }
+document.getElementById('pwInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doLogin();
+});
 
-function showApp(){
-  document.getElementById('loginPage').style.display='none';
-  document.getElementById('app').style.display='block';
-  buildProdFormSections();
+function doLogout() { sessionStorage.removeItem(SK); location.reload(); }
+
+function showApp() {
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  buildProdSections();
   loadData();
-  setDefaultDate();
+  setDate();
 }
 
-// ── Data ──────────────────────────────────────────────────────────────────
-async function loadData(){
-  try{
-    const r = await fetch(`${API}/api/survey/stats/dashboard`,{headers:{'x-survey-token':'1'}});
-    const d = await r.json();
-    merchants  = d.merchants  || [];
-    aggregates = d.aggregates || {};
-    renderDashboard();
-    renderMerchantSelect();
-    renderList();
-    if(merchants.length) renderCustomerView();
-  }catch(e){ console.error(e); }
+// ── DATA ──────────────────────────────────────────────────────────────────
+function loadData() {
+  fetch(API + '/api/survey/stats/dashboard', {headers:{'x-survey-token':'1'}})
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      merchants  = d.merchants  || [];
+      aggregates = d.aggregates || {};
+      renderDashboard();
+      renderMerchantSel();
+      renderList();
+      if (merchants.length) renderCustomer();
+    }).catch(function(e){ console.error(e); });
 }
 
-// ── Nav ───────────────────────────────────────────────────────────────────
-function showView(v){
-  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(el=>el.classList.remove('active'));
-  document.getElementById('view-'+v).classList.add('active');
-  event.target.classList.add('active');
+// ── NAV ───────────────────────────────────────────────────────────────────
+function showView(v, btn) {
+  document.querySelectorAll('.view').forEach(function(el){ el.classList.remove('active'); });
+  document.querySelectorAll('.nb-tab').forEach(function(el){ el.classList.remove('active'); });
+  document.getElementById('view-' + v).classList.add('active');
+  btn.classList.add('active');
 }
 
-// ── Dashboard ─────────────────────────────────────────────────────────────
-function renderDashboard(){
-  const a = aggregates;
-  const totalMarket = merchants.reduce((s,m)=>s+(m.grandTotal||0),0);
-
-  // KPIs
+// ── DASHBOARD ─────────────────────────────────────────────────────────────
+function renderDashboard() {
+  var a = aggregates;
+  var totalMkt = merchants.reduce(function(s,m){ return s+(m.grandTotal||0); }, 0);
   document.getElementById('kpiGrid').innerHTML = [
-    {icon:'👥', val:a.totalMerchants||0,      label:'মোট মার্চেন্ট',     color:'#1A7A45'},
-    {icon:'🔴', val:a.highPriority||0,         label:'HIGH Priority',      color:'#C62828'},
-    {icon:'✅', val:a.interested||0,            label:'আগ্রহী (Yes)',       color:'#1565C0'},
+    {icon:'👥', val:a.totalMerchants||0,       label:'মোট মার্চেন্ট',    color:'#1A7A45'},
+    {icon:'🔴', val:a.highPriority||0,          label:'HIGH Priority',     color:'#C62828'},
+    {icon:'✅', val:a.interested||0,             label:'আগ্রহী (Yes)',      color:'#1565C0'},
     {icon:'🔵', val:(a.totalGasCylinders||0)+' cyl', label:'মোট গ্যাস/মাস', color:'#00695C'},
-    {icon:'💰', val:'৳'+fmt(totalMarket),       label:'মোট বাজার ৳/মাস',  color:'#6A1B9A'},
-  ].map(k=>`<div class="kpi-card" style="border-top:4px solid ${k.color}">
-    <div class="kpi-icon">${k.icon}</div>
-    <div class="kpi-val" style="color:${k.color}">${k.val}</div>
-    <div class="kpi-label">${k.label}</div>
-  </div>`).join('');
+    {icon:'💰', val:'৳'+fmt(totalMkt),          label:'মোট বাজার ৳/মাস', color:'#6A1B9A'},
+  ].map(function(k){
+    return '<div class="kpi-card" style="border-top:4px solid '+k.color+'">'
+      +'<div class="kpi-icon">'+k.icon+'</div>'
+      +'<div class="kpi-val" style="color:'+k.color+'">'+k.val+'</div>'
+      +'<div class="kpi-label">'+k.label+'</div></div>';
+  }).join('');
 
-  // Merchant bar chart
-  renderBarChart('merchantBarChart',
-    merchants.slice(0,8).map(m=>({label:(m.merchantName||'').substring(0,8), value:m.grandTotal||0, color:'#1A7A45'}))
-  );
-
-  // Category bar chart
-  renderBarChart('categoryBarChart',[
-    {label:'গ্যাস',     value:merchants.reduce((s,m)=>s+(m.gasTotal||0),0),     color:'#1A7A45'},
-    {label:'শস্য',      value:merchants.reduce((s,m)=>s+(m.grainTotal||0),0),   color:'#1565C0'},
-    {label:'সবজি',      value:merchants.reduce((s,m)=>s+(m.vegTotal||0),0),     color:'#E65100'},
-    {label:'আমিষ',      value:merchants.reduce((s,m)=>s+(m.proteinTotal||0),0), color:'#B71C1C'},
-    {label:'প্যান্ট্রি', value:merchants.reduce((s,m)=>s+(m.pantryTotal||0),0), color:'#6A1B9A'},
+  renderBar('merchantChart', merchants.slice(0,8).map(function(m){
+    return {label:(m.merchantName||'').substring(0,8), value:m.grandTotal||0, color:'#1A7A45'};
+  }));
+  renderBar('catChart', [
+    {label:'গ্যাস',    value:merchants.reduce(function(s,m){return s+(m.gasTotal||0);},0),     color:'#1A7A45'},
+    {label:'শস্য',     value:merchants.reduce(function(s,m){return s+(m.grainTotal||0);},0),   color:'#1565C0'},
+    {label:'সবজি',     value:merchants.reduce(function(s,m){return s+(m.vegTotal||0);},0),     color:'#E65100'},
+    {label:'আমিষ',     value:merchants.reduce(function(s,m){return s+(m.proteinTotal||0);},0), color:'#B71C1C'},
+    {label:'প্যান্ট্রি',value:merchants.reduce(function(s,m){return s+(m.pantryTotal||0);},0), color:'#6A1B9A'},
   ]);
 
-  // Brand table
-  const brands = a.byBrand||{};
-  document.getElementById('brandTbody').innerHTML = Object.entries(brands).map(([b,d],i)=>`
-    <tr><td style="font-weight:700;color:#1A5276">${b}</td>
-    <td style="text-align:center">${d.count}</td>
-    <td style="text-align:center">${a.totalMerchants?Math.round(d.count/a.totalMerchants*100)+'%':'—'}</td>
-    <td style="text-align:center">৳${fmt(d.avgPrice)}</td>
-    <td style="text-align:center;font-weight:700;color:#1A7A45">৳${fmt(d.totalSpend)}</td></tr>`).join('');
+  var brands = a.byBrand || {};
+  document.getElementById('brandTbody').innerHTML = Object.keys(brands).map(function(b,i){
+    var d = brands[b];
+    return '<tr><td style="font-weight:700;color:#1A5276">'+b+'</td>'
+      +'<td style="text-align:center">'+d.count+'</td>'
+      +'<td style="text-align:center">'+(a.totalMerchants?Math.round(d.count/a.totalMerchants*100)+'%':'—')+'</td>'
+      +'<td style="text-align:center">৳'+fmt(d.avgPrice)+'</td>'
+      +'<td style="text-align:center;font-weight:700;color:#1A7A45">৳'+fmt(d.totalSpend)+'</td></tr>';
+  }).join('');
 
-  // Demand table
-  const pt = a.productTotals||{};
-  const gasRow = `<tr><td style="font-weight:700">🔵 গ্যাস সিলিন্ডার</td><td style="color:#888;font-size:11px">cylinders</td>
-    <td style="text-align:center;font-weight:700">${fmt(a.totalGasCylinders)}</td>
-    <td style="text-align:center;font-weight:700;color:#1A7A45">৳${fmt(merchants.reduce((s,m)=>s+(m.gasTotal||0),0))}</td>
-    <td><span class="badge" style="background:#e8f5e9;color:#1A7A45">Gas</span></td></tr>`;
-  document.getElementById('demandTbody').innerHTML = gasRow + PRODUCTS.map(p=>{
-    const d = pt[p.key]||{};
-    const ci = CAT_INFO[p.cat]||{};
-    return `<tr><td style="font-weight:600">${p.label}</td>
-      <td style="color:#888;font-size:11px">${p.unit}</td>
-      <td style="text-align:center;font-weight:700">${fmt((d.totalQty||0)*(p.daily?30:1))}</td>
-      <td style="text-align:center;font-weight:700;color:#1A7A45">৳${fmt(d.totalSpend||0)}</td>
-      <td><span class="badge" style="background:${ci.bg};color:${ci.accent}">${ci.label||''}</span></td></tr>`;
+  var pt = a.productTotals || {};
+  var gasSpend = merchants.reduce(function(s,m){return s+(m.gasTotal||0);},0);
+  var rows = '<tr><td style="font-weight:700">🔵 গ্যাস সিলিন্ডার</td><td style="color:#888;font-size:11px">cylinders</td>'
+    +'<td style="text-align:center;font-weight:700">'+fmt(a.totalGasCylinders)+'</td>'
+    +'<td style="text-align:center;font-weight:700;color:#1A7A45">৳'+fmt(gasSpend)+'</td>'
+    +'<td><span class="badge" style="background:#e8f5e9;color:#1A7A45">Gas</span></td></tr>';
+  PRODUCTS.forEach(function(p){
+    var d = pt[p.key]||{}; var ci = CATS[p.cat]||{};
+    rows += '<tr><td style="font-weight:600">'+p.label+'</td>'
+      +'<td style="color:#888;font-size:11px">'+p.unit+'</td>'
+      +'<td style="text-align:center;font-weight:700">'+fmt((d.totalQty||0)*(p.daily?30:1))+'</td>'
+      +'<td style="text-align:center;font-weight:700;color:#1A7A45">৳'+fmt(d.totalSpend||0)+'</td>'
+      +'<td><span class="badge" style="background:'+ci.bg+';color:'+ci.ac+'">'+ci.label+'</span></td></tr>';
+  });
+  document.getElementById('demandTbody').innerHTML = rows;
+}
+
+function renderBar(id, data) {
+  var max = Math.max.apply(null, data.map(function(d){return d.value;})); if(!max) max=1;
+  document.getElementById(id).innerHTML = data.map(function(d){
+    return '<div class="bar-col">'
+      +'<div class="bar-val">'+(d.value>0?'৳'+fmt(d.value):'')+'</div>'
+      +'<div class="bar-body" style="background:'+d.color+';height:'+Math.max(d.value/max*100,d.value>0?3:0)+'%"></div>'
+      +'<div class="bar-lbl">'+d.label+'</div></div>';
   }).join('');
 }
 
-// ── Bar chart helper ──────────────────────────────────────────────────────
-function renderBarChart(containerId, data){
-  const max = Math.max(...data.map(d=>d.value),1);
-  document.getElementById(containerId).innerHTML = data.map(d=>`
-    <div class="bar-col">
-      <div class="bar-val">${d.value>0?'৳'+fmt(d.value):''}</div>
-      <div class="bar-body" style="background:${d.color};height:${Math.max(d.value/max*100,d.value>0?3:0)}%"></div>
-      <div class="bar-lbl">${d.label}</div>
-    </div>`).join('');
+// ── PER CUSTOMER ──────────────────────────────────────────────────────────
+function renderMerchantSel() {
+  document.getElementById('merchantSel').innerHTML = merchants.map(function(m){
+    return '<option value="'+m._id+'">'+m.merchantName+' — '+(m.businessType||'')+'</option>';
+  }).join('');
 }
 
-// ── Merchant select ───────────────────────────────────────────────────────
-function renderMerchantSelect(){
-  document.getElementById('merchantSelect').innerHTML =
-    merchants.map(m=>`<option value="${m._id}">${m.merchantName} — ${m.businessType||''}</option>`).join('');
-}
+function renderCustomer() {
+  var id = document.getElementById('merchantSel').value;
+  var m  = merchants.find(function(x){return x._id===id;}) || merchants[0];
+  if (!m) return;
+  var gasTotal     = (m.gasCylindersPerMonth||0)*(m.gasPricePerCylinder||0);
+  var grainTotal   = m.grainTotal||0;
+  var vegTotal     = m.vegTotal||0;
+  var pantryTotal  = m.pantryTotal||0;
+  var proteinTotal = m.proteinTotal||0;
+  var grand        = gasTotal+grainTotal+vegTotal+pantryTotal+proteinTotal;
 
-// ── Per-customer view ─────────────────────────────────────────────────────
-function renderCustomerView(){
-  const id = document.getElementById('merchantSelect').value;
-  const m  = merchants.find(x=>x._id===id)||merchants[0];
-  if(!m) return;
+  document.getElementById('custKPIs').innerHTML = [
+    {label:'ব্যবসার ধরন',   val:m.businessType||'—',  color:'#1565C0'},
+    {label:'এলাকা',         val:m.area||'—',           color:'#00695C'},
+    {label:'আগ্রহ',         val:m.interestedInCityBest||'—', color:'#E65100'},
+    {label:'গ্যাস/মাস',     val:(m.gasCylindersPerMonth||0)+' cyl', color:'#1A7A45'},
+    {label:'গ্যাস খরচ/মাস',val:'৳'+fmt(gasTotal),     color:'#1A5276'},
+    {label:'মোট খরচ/মাস',  val:'৳'+fmt(grand),        color:'#1A7A45'},
+  ].map(function(k){
+    return '<div class="info-card" style="border-left:4px solid '+k.color+'">'
+      +'<div class="info-label">'+k.label+'</div>'
+      +'<div class="info-val" style="color:'+k.color+'">'+k.val+'</div></div>';
+  }).join('');
 
-  const gasTotal     = (m.gasCylindersPerMonth||0)*(m.gasPricePerCylinder||0);
-  const grainTotal   = m.grainTotal||0;
-  const vegTotal     = m.vegTotal||0;
-  const pantryTotal  = m.pantryTotal||0;
-  const proteinTotal = m.proteinTotal||0;
-  const grandTotal   = gasTotal+grainTotal+vegTotal+pantryTotal+proteinTotal;
-
-  // KPIs
-  document.getElementById('customerKPIs').innerHTML = [
-    {label:'ব্যবসার ধরন',    val:m.businessType||'—',  color:'#1565C0'},
-    {label:'এলাকা',          val:m.area||'—',           color:'#00695C'},
-    {label:'আগ্রহ',          val:m.interestedInCityBest||'—', color:'#E65100'},
-    {label:'গ্যাস/মাস',      val:(m.gasCylindersPerMonth||0)+' cyl', color:'#1A7A45'},
-    {label:'গ্যাস খরচ/মাস', val:'৳'+fmt(gasTotal),     color:'#1A5276'},
-    {label:'মোট খরচ/মাস',   val:'৳'+fmt(grandTotal),   color:'#1A7A45'},
-  ].map(k=>`<div class="info-card" style="border-left:4px solid ${k.color}">
-    <div class="info-label">${k.label}</div>
-    <div class="info-val" style="color:${k.color}">${k.val}</div>
-  </div>`).join('');
-
-  // Category bar
-  renderBarChart('custBarChart',[
-    {label:'গ্যাস',     value:gasTotal,     color:'#1A7A45'},
-    {label:'শস্য',      value:grainTotal,   color:'#1565C0'},
-    {label:'সবজি',      value:vegTotal,     color:'#E65100'},
-    {label:'আমিষ',      value:proteinTotal, color:'#B71C1C'},
-    {label:'প্যান্ট্রি', value:pantryTotal,  color:'#6A1B9A'},
+  renderBar('custBarChart',[
+    {label:'গ্যাস',    value:gasTotal,     color:'#1A7A45'},
+    {label:'শস্য',     value:grainTotal,   color:'#1565C0'},
+    {label:'সবজি',     value:vegTotal,     color:'#E65100'},
+    {label:'আমিষ',     value:proteinTotal, color:'#B71C1C'},
+    {label:'প্যান্ট্রি',value:pantryTotal,  color:'#6A1B9A'},
   ]);
 
-  // Hbars
-  const cats = [
-    {label:'🔵 গ্যাস',     value:gasTotal,     color:'#1A7A45'},
-    {label:'🌾 শস্য',      value:grainTotal,   color:'#1565C0'},
-    {label:'🥦 সবজি',      value:vegTotal,     color:'#E65100'},
-    {label:'🍗 আমিষ',      value:proteinTotal, color:'#B71C1C'},
-    {label:'🛢️ প্যান্ট্রি', value:pantryTotal,  color:'#6A1B9A'},
+  var cats = [
+    {label:'🔵 গ্যাস',    value:gasTotal,     color:'#1A7A45'},
+    {label:'🌾 শস্য',     value:grainTotal,   color:'#1565C0'},
+    {label:'🥦 সবজি',     value:vegTotal,     color:'#E65100'},
+    {label:'🍗 আমিষ',     value:proteinTotal, color:'#B71C1C'},
+    {label:'🛢️ প্যান্ট্রি',value:pantryTotal,  color:'#6A1B9A'},
   ];
-  document.getElementById('custHbars').innerHTML = cats.map(c=>`
-    <div class="hbar-row">
-      <div class="hbar-labels"><span class="hbar-label">${c.label}</span><span class="hbar-spend">৳${fmt(c.value)}</span></div>
-      <div class="hbar-track"><div class="hbar-fill" style="width:${grandTotal?c.value/grandTotal*100:0}%;background:${c.color}"></div></div>
-    </div>`).join('')+
-    `<div class="hbar-total"><span>মোট</span><span>৳${fmt(grandTotal)}</span></div>`;
+  document.getElementById('custHbars').innerHTML = cats.map(function(c){
+    return '<div class="hbar-row">'
+      +'<div class="hbar-top"><span style="font-weight:500">'+c.label+'</span><span style="color:#888">৳'+fmt(c.value)+'</span></div>'
+      +'<div class="hbar-track"><div class="hbar-fill" style="width:'+(grand?c.value/grand*100:0)+'%;background:'+c.color+'"></div></div>'
+      +'</div>';
+  }).join('') + '<div class="hbar-total"><span>মোট</span><span>৳'+fmt(grand)+'</span></div>';
 
-  // Product cards
-  const prods = m.products||{};
-  let html = '';
-  if((m.gasCylindersPerMonth||0)>0){
-    html+=`<div class="prod-card" style="background:#e8f5e9;border-top:3px solid #1A7A45">
-      <div class="prod-cat" style="color:#1A7A45">Gas</div>
-      <div class="prod-name">🔵 Gas Cylinder</div>
-      <div class="prod-qty">${m.gasCylindersPerMonth} cylinders/mo</div>
-      <div class="prod-price">৳${fmt(m.gasPricePerCylinder)}/cyl</div>
-      <div class="prod-total" style="border-top:1px solid #1A7A4544;color:#1A7A45">৳${fmt(gasTotal)}/mo</div>
-    </div>`;
+  var prods = m.products||{};
+  var html = '';
+  if ((m.gasCylindersPerMonth||0)>0) {
+    html += '<div class="prod-card" style="background:#e8f5e9;border-top:3px solid #1A7A45">'
+      +'<div class="prod-cat" style="color:#1A7A45">Gas</div>'
+      +'<div class="prod-name">🔵 Gas Cylinder</div>'
+      +'<div class="prod-qty">'+m.gasCylindersPerMonth+' cylinders/mo</div>'
+      +'<div class="prod-price">৳'+fmt(m.gasPricePerCylinder)+'/cyl</div>'
+      +'<div class="prod-total" style="border-top:1px solid #1A7A4544;color:#1A7A45">৳'+fmt(gasTotal)+'/mo</div></div>';
   }
-  PRODUCTS.forEach(p=>{
-    const d = prods[p.key];
-    if(!d||!d.qty) return;
-    const ci = CAT_INFO[p.cat]||{};
-    const moTotal = d.daily?d.qty*d.price*30:d.qty*d.price;
-    html+=`<div class="prod-card" style="background:${ci.bg};border-top:3px solid ${ci.accent}">
-      <div class="prod-cat" style="color:${ci.accent}">${ci.label}</div>
-      <div class="prod-name">${p.label}</div>
-      <div class="prod-qty">${d.qty} ${p.unit}${d.daily?' → '+(d.qty*30)+'/mo':''}</div>
-      <div class="prod-price">৳${fmt(d.price)} ${p.priceUnit}</div>
-      <div class="prod-total" style="border-top:1px solid ${ci.accent}44;color:${ci.accent}">৳${fmt(moTotal)}/mo</div>
-    </div>`;
+  PRODUCTS.forEach(function(p){
+    var d = prods[p.key]; if(!d||!d.qty) return;
+    var ci = CATS[p.cat]||{};
+    var tot = d.daily?d.qty*d.price*30:d.qty*d.price;
+    html += '<div class="prod-card" style="background:'+ci.bg+';border-top:3px solid '+ci.ac+'">'
+      +'<div class="prod-cat" style="color:'+ci.ac+'">'+ci.label+'</div>'
+      +'<div class="prod-name">'+p.label+'</div>'
+      +'<div class="prod-qty">'+d.qty+' '+p.unit+(d.daily?' → '+(d.qty*30)+'/mo':'')+'</div>'
+      +'<div class="prod-price">৳'+fmt(d.price)+' '+p.pu+'</div>'
+      +'<div class="prod-total" style="border-top:1px solid '+ci.ac+'44;color:'+ci.ac+'">৳'+fmt(tot)+'/mo</div></div>';
   });
-  document.getElementById('custProdGrid').innerHTML = html||'<p style="color:#888;padding:20px">এই মার্চেন্টের কোনো পণ্য ডেটা নেই</p>';
+  document.getElementById('custProds').innerHTML = html || '<p style="color:#888;padding:20px">পণ্য ডেটা নেই</p>';
 }
 
-function editSelectedMerchant(){
-  const id = document.getElementById('merchantSelect').value;
-  const m  = merchants.find(x=>x._id===id);
-  if(m) loadForEdit(m._id);
+function editFromCustomer() {
+  var id = document.getElementById('merchantSel').value;
+  if (id) loadForEdit(id);
 }
 
-// ── List ──────────────────────────────────────────────────────────────────
-function renderList(){
-  const q = (document.getElementById('searchInput').value||'').toLowerCase();
-  const filtered = merchants.filter(m=>
-    !q||((m.merchantName||'').toLowerCase().includes(q))||
-    ((m.businessType||'').toLowerCase().includes(q))||
-    ((m.area||'').toLowerCase().includes(q))
-  );
-  document.getElementById('listTitle').textContent = `📋 সকল মার্চেন্ট (${merchants.length})`;
-  document.getElementById('listTbody').innerHTML = filtered.map(m=>{
-    const intColor = m.interestedInCityBest==='Yes'?'background:#e8f5e9;color:#1A7A45':
-                     m.interestedInCityBest==='Maybe'?'background:#fff3e0;color:#E65100':'background:#ffebee;color:#C62828';
-    return `<tr>
-      <td style="font-weight:700;color:#1A5276">${m.merchantName||''}<br><span style="font-size:11px;color:#888;font-weight:400">${m.shopName||''}</span></td>
-      <td>${m.businessType||''}</td>
-      <td style="color:#555">${m.area||''}</td>
-      <td style="text-align:center;font-weight:700;color:#1A7A45">${m.gasCylindersPerMonth||0}</td>
-      <td style="text-align:right;font-weight:700;color:#1A7A45">৳${fmt(m.grandTotal)}</td>
-      <td><span class="badge" style="${intColor}">${m.interestedInCityBest||''}</span></td>
-      <td><span class="badge" style="background:#e3f2fd;color:#1565C0">${m.followUpStatus||''}</span></td>
-      <td><div class="action-btns">
-        <button class="action-btn" style="background:#e8f5e9;color:#1A7A45" onclick="viewCustomer('${m._id}')">👁️</button>
-        <button class="action-btn" style="background:#e3f2fd;color:#1565C0" onclick="loadForEdit('${m._id}')">✏️</button>
-        <button class="action-btn" style="background:#ffebee;color:#C62828" onclick="deleteMerchant('${m._id}')">🗑️</button>
-      </div></td>
-    </tr>`;
-  }).join('')||`<tr><td colspan="8" style="padding:30px;text-align:center;color:#888">কোনো মার্চেন্ট পাওয়া যায়নি</td></tr>`;
+// ── LIST ──────────────────────────────────────────────────────────────────
+function renderList() {
+  var q = (document.getElementById('searchBox').value||'').toLowerCase();
+  var filtered = merchants.filter(function(m){
+    return !q || (m.merchantName||'').toLowerCase().includes(q)
+               || (m.businessType||'').toLowerCase().includes(q)
+               || (m.area||'').toLowerCase().includes(q);
+  });
+  document.getElementById('listTitle').textContent = '📋 সকল মার্চেন্ট ('+merchants.length+')';
+  document.getElementById('listTbody').innerHTML = filtered.map(function(m){
+    var ic = m.interestedInCityBest==='Yes'?'background:#e8f5e9;color:#1A7A45'
+           : m.interestedInCityBest==='Maybe'?'background:#fff3e0;color:#E65100'
+           : 'background:#ffebee;color:#C62828';
+    return '<tr>'
+      +'<td style="font-weight:700;color:#1A5276">'+m.merchantName+'<br><span style="font-size:11px;color:#888;font-weight:400">'+(m.shopName||'')+'</span></td>'
+      +'<td>'+(m.businessType||'')+'</td>'
+      +'<td style="color:#555">'+(m.area||'').substring(0,30)+'</td>'
+      +'<td style="text-align:center;font-weight:700;color:#1A7A45">'+(m.gasCylindersPerMonth||0)+'</td>'
+      +'<td style="text-align:right;font-weight:700;color:#1A7A45">৳'+fmt(m.grandTotal)+'</td>'
+      +'<td><span class="badge" style="'+ic+'">'+(m.interestedInCityBest||'')+'</span></td>'
+      +'<td><span class="badge" style="background:#e3f2fd;color:#1565C0">'+(m.followUpStatus||'')+'</span></td>'
+      +'<td><div class="act-btns">'
+      +'<button class="act-btn" style="background:#e8f5e9;color:#1A7A45" onclick="viewCust(\''+m._id+'\')">👁️</button>'
+      +'<button class="act-btn" style="background:#e3f2fd;color:#1565C0" onclick="loadForEdit(\''+m._id+'\')">✏️</button>'
+      +'<button class="act-btn" style="background:#ffebee;color:#C62828" onclick="delMerchant(\''+m._id+'\')">🗑️</button>'
+      +'</div></td></tr>';
+  }).join('') || '<tr><td colspan="8" style="padding:30px;text-align:center;color:#888">কোনো মার্চেন্ট পাওয়া যায়নি</td></tr>';
 }
 
-function viewCustomer(id){
-  document.getElementById('merchantSelect').value = id;
-  renderCustomerView();
-  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(el=>el.classList.remove('active'));
+function viewCust(id) {
+  document.getElementById('merchantSel').value = id;
+  renderCustomer();
+  document.querySelectorAll('.view').forEach(function(el){el.classList.remove('active');});
+  document.querySelectorAll('.nb-tab').forEach(function(el){el.classList.remove('active');});
   document.getElementById('view-customers').classList.add('active');
-  document.querySelectorAll('.nav-tab')[1].classList.add('active');
-}
-
-// ── Form ──────────────────────────────────────────────────────────────────
-function buildProdFormSections(){
-  const cats = ['grain','veg','protein','pantry'];
-  const catNames = {grain:'🌾 Grain পণ্যসমূহ',veg:'🥦 Vegetable পণ্যসমূহ',protein:'🍗 Protein পণ্যসমূহ',pantry:'🛢️ Pantry পণ্যসমূহ'};
-  const catColors = {grain:'#1565C0',veg:'#E65100',protein:'#B71C1C',pantry:'#6A1B9A'};
-  let html = '';
-  cats.forEach(cat=>{
-    const prods = PRODUCTS.filter(p=>p.cat===cat);
-    const ci = CAT_INFO[cat];
-    html+=`<div class="section-hdr" style="background:${catColors[cat]}">${catNames[cat]}</div>
-    <div class="prod-form-grid">`;
-    prods.forEach(p=>{
-      const qKey = p.daily?`f_${p.key}QtyPerDay`:`f_${p.key}Qty`;
-      const pKey = `f_${p.key}Price`;
-      html+=`<div class="prod-form-card" style="background:${ci.bg};border:1.5px solid ${ci.accent}33">
-        <div class="prod-form-name" style="color:${ci.accent}">${p.label}</div>
-        <div class="prod-form-inputs">
-          <div><label class="field-label">Qty (${p.unit})</label>
-            <input class="field-input" type="number" min="0" id="${qKey}" placeholder="0" oninput="calcProdTotal('${p.key}')"/></div>
-          <div><label class="field-label">Price (${p.priceUnit})</label>
-            <input class="field-input" type="number" min="0" id="${pKey}" placeholder="0" oninput="calcProdTotal('${p.key}')"/></div>
-        </div>
-        <div class="prod-monthly" style="color:${ci.accent}" id="total_${p.key}"></div>
-      </div>`;
-    });
-    html+='</div>';
-  });
-  document.getElementById('prodFormSections').innerHTML = html;
-}
-
-function calcProdTotal(key){
-  const p = PRODUCTS.find(x=>x.key===key);
-  const qKey = p.daily?`f_${key}QtyPerDay`:`f_${key}Qty`;
-  const qty   = parseFloat(document.getElementById(qKey)?.value)||0;
-  const price = parseFloat(document.getElementById(`f_${key}Price`)?.value)||0;
-  const total = p.daily ? qty*price*30 : qty*price;
-  const el = document.getElementById(`total_${key}`);
-  if(el) el.textContent = total>0 ? `মাসিক মোট: ৳${fmt(total)}${p.daily?' (×30)':''}` : '';
+  document.querySelectorAll('.nb-tab')[1].classList.add('active');
 }
 
 // ── GPS ───────────────────────────────────────────────────────────────────
-let gpsConfirmed = false;
+function getGPS() {
+  var btn    = document.getElementById('gpsBtn');
+  var status = document.getElementById('gpsStatus');
+  var mapDiv = document.getElementById('gpsMapLink');
+  var link   = document.getElementById('gpsLinkA');
 
-async function getGPS(){
-  const btn    = document.getElementById('gpsBtn');
-  const status = document.getElementById('gpsStatus');
-  const mapDiv = document.getElementById('gpsMapLink');
-  const link   = document.getElementById('gpsLink');
-
-  if(!navigator.geolocation){
+  if (!navigator.geolocation) {
     status.textContent = 'GPS সাপোর্ট নেই';
     status.style.color = '#C62828'; return;
   }
-
-  btn.textContent = 'লোকেশন নেওয়া হচ্ছে...';
+  btn.textContent = '⏳ লোড হচ্ছে...';
   btn.disabled = true;
+  status.textContent = 'অনুগ্রহ করে অপেক্ষা করুন...';
+  status.style.color = '#888';
 
-  navigator.geolocation.getCurrentPosition(async pos => {
-    const lat = pos.coords.latitude.toFixed(6);
-    const lng = pos.coords.longitude.toFixed(6);
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    var lat = pos.coords.latitude.toFixed(6);
+    var lng = pos.coords.longitude.toFixed(6);
     document.getElementById('f_lat').value = lat;
     document.getElementById('f_lng').value = lng;
 
-    try {
-      const r = await fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json');
-      const d = await r.json();
-      document.getElementById('f_area').value = d.display_name || lat+', '+lng;
-    } catch {
-      document.getElementById('f_area').value = lat+', '+lng;
-    }
+    fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json')
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        document.getElementById('f_area').value = d.display_name || (lat+', '+lng);
+      }).catch(function(){
+        document.getElementById('f_area').value = lat+', '+lng;
+      });
 
-    const mapsUrl = 'https://www.google.com/maps?q='+lat+','+lng;
+    var mapsUrl = 'https://www.google.com/maps?q='+lat+','+lng;
     link.href = mapsUrl;
     mapDiv.style.display = 'block';
-    gpsConfirmed = true;
-    btn.textContent = 'GPS নেওয়া হয়েছে';
+    gpsOK = true;
+    btn.textContent = '✅ GPS নেওয়া হয়েছে';
     btn.style.background = '#1A7A45';
     btn.disabled = false;
     status.textContent = 'lat: '+lat+', lng: '+lng;
     status.style.color = '#1A7A45';
-  }, err => {
-    btn.textContent = 'GPS Location নিন';
+  }, function() {
+    btn.textContent = '📍 GPS Location নিন';
     btn.disabled = false;
     status.textContent = 'লোকেশন অ্যাক্সেস দিন এবং আবার চেষ্টা করুন';
     status.style.color = '#C62828';
   }, {enableHighAccuracy:true, timeout:15000});
 }
 
-function setDefaultDate(){
-  const d = new Date().toISOString().slice(0,10);
-  const el = document.getElementById('f_surveyDate');
-  if(el) el.value = d;
+// ── FORM ──────────────────────────────────────────────────────────────────
+function buildProdSections() {
+  var catOrder = ['grain','veg','protein','pantry'];
+  var catNames = {grain:'🌾 Grain পণ্যসমূহ',veg:'🥦 Vegetable পণ্যসমূহ',protein:'🍗 Protein পণ্যসমূহ',pantry:'🛢️ Pantry পণ্যসমূহ'};
+  var catColors= {grain:'#1565C0',veg:'#E65100',protein:'#B71C1C',pantry:'#6A1B9A'};
+  var html = '';
+  catOrder.forEach(function(cat){
+    var ci = CATS[cat];
+    html += '<div class="sec-hdr" style="background:'+catColors[cat]+'">'+catNames[cat]+'</div><div class="prod-form-grid">';
+    PRODUCTS.filter(function(p){return p.cat===cat;}).forEach(function(p){
+      var qid = p.daily?'f_'+p.key+'QtyPerDay':'f_'+p.key+'Qty';
+      var pid = 'f_'+p.key+'Price';
+      html += '<div class="prod-form-card" style="background:'+ci.bg+';border:1.5px solid '+ci.ac+'33">'
+        +'<div class="prod-form-name" style="color:'+ci.ac+'">'+p.label+'</div>'
+        +'<div class="prod-inputs">'
+        +'<div><label class="field-label">Qty ('+p.unit+')</label><input class="field-input" type="number" min="0" id="'+qid+'" placeholder="0" oninput="calcTotal(\''+p.key+'\')"/></div>'
+        +'<div><label class="field-label">Price ('+p.pu+')</label><input class="field-input" type="number" min="0" id="'+pid+'" placeholder="0" oninput="calcTotal(\''+p.key+'\')"/></div>'
+        +'</div><div class="prod-monthly" style="color:'+ci.ac+'" id="tot_'+p.key+'"></div></div>';
+    });
+    html += '</div>';
+  });
+  document.getElementById('prodSections').innerHTML = html;
 }
 
-function getFormData(){
-  const g = id => document.getElementById(id)?.value||'';
-  const gn = id => parseFloat(document.getElementById(id)?.value)||0;
-  const data = {
-    surveyDate: g('f_surveyDate'), staffName: g('f_staffName'),
-    merchantName: g('f_merchantName'), mobileNo: g('f_mobileNo'),
-    shopName: g('f_shopName'), businessType: g('f_businessType'), area: g('f_area'),
-    gasCylindersPerMonth: gn('f_gasCylindersPerMonth'), gasBrand: g('f_gasBrand'),
-    gasPricePerCylinder: gn('f_gasPricePerCylinder'), gasDelivery: g('f_gasDelivery'),
-    interestedInCityBest: g('f_interestedInCityBest'), productsInterested: g('f_productsInterested'),
-    followUpStatus: g('f_followUpStatus'), followUpDate: g('f_followUpDate'), notes: g('f_notes'),
-    lat: g('f_lat'),
-    lng: g('f_lng'),
+function calcTotal(key) {
+  var p   = PRODUCTS.find(function(x){return x.key===key;});
+  var qid = p.daily?'f_'+key+'QtyPerDay':'f_'+key+'Qty';
+  var qty   = parseFloat(document.getElementById(qid).value)||0;
+  var price = parseFloat(document.getElementById('f_'+key+'Price').value)||0;
+  var tot   = p.daily ? qty*price*30 : qty*price;
+  var el    = document.getElementById('tot_'+key);
+  if (el) el.textContent = tot>0 ? 'মাসিক মোট: ৳'+fmt(tot)+(p.daily?' (×30)':'') : '';
+}
+
+function setDate() {
+  var el = document.getElementById('f_surveyDate');
+  if (el) el.value = new Date().toISOString().slice(0,10);
+}
+
+function g(id) { var el=document.getElementById(id); return el?el.value:''; }
+function gn(id){ return parseFloat(g(id))||0; }
+
+function getFormData() {
+  var data = {
+    surveyDate:g('f_surveyDate'), staffName:g('f_staffName'),
+    merchantName:g('f_merchantName'), mobileNo:g('f_mobileNo'),
+    shopName:g('f_shopName'), businessType:g('f_businessType'),
+    area:g('f_area'), lat:g('f_lat'), lng:g('f_lng'),
+    gasCylindersPerMonth:gn('f_gasCylindersPerMonth'), gasBrand:g('f_gasBrand'),
+    gasPricePerCylinder:gn('f_gasPricePerCylinder'), gasDelivery:g('f_gasDelivery'),
+    interestedInCityBest:g('f_interestedInCityBest'), productsInterested:g('f_productsInterested'),
+    followUpStatus:g('f_followUpStatus'), followUpDate:g('f_followUpDate'), notes:g('f_notes'),
   };
-  PRODUCTS.forEach(p=>{
-    const qKey = p.daily?`f_${p.key}QtyPerDay`:`f_${p.key}Qty`;
-    const dbQKey = p.daily?`${p.key}QtyPerDay`:`${p.key}Qty`;
-    data[dbQKey] = gn(qKey);
-    data[`${p.key}Price`] = gn(`f_${p.key}Price`);
+  PRODUCTS.forEach(function(p){
+    var qk = p.daily?p.key+'QtyPerDay':p.key+'Qty';
+    var fqk = p.daily?'f_'+p.key+'QtyPerDay':'f_'+p.key+'Qty';
+    data[qk] = gn(fqk);
+    data[p.key+'Price'] = gn('f_'+p.key+'Price');
   });
   return data;
 }
 
-function fillForm(m){
-  const s = (id,val) => { const el=document.getElementById(id); if(el) el.value=val||''; };
+function fillForm(m) {
+  function s(id,val){ var el=document.getElementById(id); if(el) el.value=val||''; }
   s('f_surveyDate',m.surveyDate); s('f_staffName',m.staffName);
   s('f_merchantName',m.merchantName); s('f_mobileNo',m.mobileNo);
-  s('f_shopName',m.shopName); s('f_businessType',m.businessType); s('f_area',m.area);
+  s('f_shopName',m.shopName); s('f_businessType',m.businessType);
+  s('f_area',m.area); s('f_lat',m.lat); s('f_lng',m.lng);
   s('f_gasCylindersPerMonth',m.gasCylindersPerMonth); s('f_gasBrand',m.gasBrand);
   s('f_gasPricePerCylinder',m.gasPricePerCylinder); s('f_gasDelivery',m.gasDelivery||'Free');
   s('f_interestedInCityBest',m.interestedInCityBest||'Maybe');
   s('f_productsInterested',m.productsInterested); s('f_followUpStatus',m.followUpStatus||'New');
   s('f_followUpDate',m.followUpDate); s('f_notes',m.notes);
-  PRODUCTS.forEach(p=>{
-    const qKey = p.daily?`f_${p.key}QtyPerDay`:`f_${p.key}Qty`;
-    const dbQKey = p.daily?`${p.key}QtyPerDay`:`${p.key}Qty`;
-    s(qKey, m[dbQKey]); s(`f_${p.key}Price`, m[`${p.key}Price`]);
-    calcProdTotal(p.key);
+  PRODUCTS.forEach(function(p){
+    var qk = p.daily?p.key+'QtyPerDay':p.key+'Qty';
+    var fqk = p.daily?'f_'+p.key+'QtyPerDay':'f_'+p.key+'Qty';
+    s(fqk, m[qk]); s('f_'+p.key+'Price', m[p.key+'Price']);
+    calcTotal(p.key);
   });
+  if (m.lat && m.lng) {
+    var link = document.getElementById('gpsLinkA');
+    link.href = 'https://www.google.com/maps?q='+m.lat+','+m.lng;
+    document.getElementById('gpsMapLink').style.display = 'block';
+    document.getElementById('gpsStatus').textContent = 'lat: '+m.lat+', lng: '+m.lng;
+    document.getElementById('gpsStatus').style.color = '#1A7A45';
+    document.getElementById('gpsBtn').textContent = '✅ GPS আগে নেওয়া হয়েছে';
+    document.getElementById('gpsBtn').style.background = '#1A7A45';
+  }
 }
 
-async function loadForEdit(id){
-  try{
-    const r = await fetch(`${API}/api/survey/${id}`,{headers:{'x-survey-token':'1'}});
-    const m = await r.json();
-    editingId = id;
-    fillForm(m);
-    document.getElementById('formTitle').textContent = '✏️ মার্চেন্ট সম্পাদনা';
-    document.getElementById('submitBtn').textContent = '✅ আপডেট করুন';
-    document.getElementById('cancelBtn').style.display = 'inline-block';
-    document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
-    document.querySelectorAll('.nav-tab').forEach(el=>el.classList.remove('active'));
-    document.getElementById('view-entry').classList.add('active');
-    document.querySelectorAll('.nav-tab')[3].classList.add('active');
-    window.scrollTo(0,0);
-  }catch(e){ alert('লোড ব্যর্থ হয়েছে'); }
+function loadForEdit(id) {
+  fetch(API+'/api/survey/'+id, {headers:{'x-survey-token':'1'}})
+    .then(function(r){return r.json();})
+    .then(function(m){
+      editingId = id;
+      gpsOK = true; // editing doesn't require new GPS
+      fillForm(m);
+      document.getElementById('formTitle').textContent = '✏️ মার্চেন্ট সম্পাদনা';
+      document.getElementById('submitBtn').textContent = '✅ আপডেট করুন';
+      document.getElementById('cancelBtn').style.display = 'inline-block';
+      document.querySelectorAll('.view').forEach(function(el){el.classList.remove('active');});
+      document.querySelectorAll('.nb-tab').forEach(function(el){el.classList.remove('active');});
+      document.getElementById('view-entry').classList.add('active');
+      document.querySelectorAll('.nb-tab')[3].classList.add('active');
+      window.scrollTo(0,0);
+    }).catch(function(){ alert('লোড ব্যর্থ হয়েছে'); });
 }
 
-function cancelEdit(){
-  editingId = null;
+function cancelEdit() {
+  editingId = null; gpsOK = false;
   document.getElementById('formTitle').textContent = '➕ নতুন মার্চেন্ট এন্ট্রি';
   document.getElementById('submitBtn').textContent = '✅ সংরক্ষণ করুন';
   document.getElementById('cancelBtn').style.display = 'none';
-  document.querySelectorAll('input,select,textarea').forEach(el=>{
-    if(el.id.startsWith('f_')) el.value='';
-  });
-  PRODUCTS.forEach(p=>{ const el=document.getElementById(`total_${p.key}`); if(el) el.textContent=''; });
-  setDefaultDate();
-  document.getElementById('saveMsg').textContent='';
+  document.querySelectorAll('[id^="f_"]').forEach(function(el){ el.value=''; });
+  PRODUCTS.forEach(function(p){ var el=document.getElementById('tot_'+p.key); if(el) el.textContent=''; });
+  document.getElementById('gpsBtn').textContent = '📍 GPS Location নিন';
+  document.getElementById('gpsBtn').style.background = '#1565C0';
+  document.getElementById('gpsBtn').disabled = false;
+  document.getElementById('gpsStatus').textContent = 'GPS এখনো নেওয়া হয়নি';
+  document.getElementById('gpsStatus').style.color = '#888';
+  document.getElementById('gpsMapLink').style.display = 'none';
+  document.getElementById('saveMsg').textContent = '';
+  setDate();
 }
 
-async function submitForm(){
-  const data = getFormData();
-  if(!data.merchantName||!data.mobileNo){
-    document.getElementById('saveMsg').textContent='❌ নাম এবং মোবাইল নম্বর দিন।';
-    document.getElementById('saveMsg').style.color='#C62828'; return;
+function submitForm() {
+  var data = getFormData();
+  var msg  = document.getElementById('saveMsg');
+  if (!data.merchantName || !data.mobileNo) {
+    msg.textContent = '❌ নাম এবং মোবাইল নম্বর দিন।';
+    msg.style.color = '#C62828'; return;
   }
-  if(!gpsConfirmed && !editingId){
-    document.getElementById('saveMsg').textContent='❌ প্রথমে GPS Location নিন।';
-    document.getElementById('saveMsg').style.color='#C62828'; return;
+  if (!gpsOK && !editingId) {
+    msg.textContent = '❌ প্রথমে GPS Location নিন।';
+    msg.style.color = '#C62828'; return;
   }
-    document.getElementById('saveMsg').style.color='#C62828'; return;
-  }
-  const btn = document.getElementById('submitBtn');
-  btn.disabled=true; btn.textContent='সংরক্ষণ হচ্ছে...';
-  try{
-    const url    = editingId?`${API}/api/survey/${editingId}`:`${API}/api/survey`;
-    const method = editingId?'PUT':'POST';
-    const r = await fetch(url,{method,headers:{'Content-Type':'application/json','x-survey-token':'1'},body:JSON.stringify(data)});
-    if(r.ok){
-      document.getElementById('saveMsg').textContent='✅ সংরক্ষিত হয়েছে!';
-      document.getElementById('saveMsg').style.color='#1A7A45';
-      cancelEdit();
-      await loadData();
-      setTimeout(()=>{ document.getElementById('saveMsg').textContent=''; },2000);
-    } else {
-      document.getElementById('saveMsg').textContent='❌ সংরক্ষণ ব্যর্থ হয়েছে।';
-      document.getElementById('saveMsg').style.color='#C62828';
-    }
-  }catch{
-    document.getElementById('saveMsg').textContent='❌ সার্ভার ত্রুটি।';
-    document.getElementById('saveMsg').style.color='#C62828';
-  }
-  btn.disabled=false;
-  btn.textContent = editingId?'✅ আপডেট করুন':'✅ সংরক্ষণ করুন';
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.textContent = 'সংরক্ষণ হচ্ছে...';
+  msg.textContent = '';
+  var url    = editingId ? API+'/api/survey/'+editingId : API+'/api/survey';
+  var method = editingId ? 'PUT' : 'POST';
+  fetch(url, {method:method, headers:{'Content-Type':'application/json','x-survey-token':'1'}, body:JSON.stringify(data)})
+    .then(function(r){
+      if (r.ok) {
+        msg.textContent = '✅ সংরক্ষিত হয়েছে!';
+        msg.style.color = '#1A7A45';
+        cancelEdit();
+        loadData();
+        setTimeout(function(){ msg.textContent=''; }, 2000);
+      } else {
+        msg.textContent = '❌ সংরক্ষণ ব্যর্থ হয়েছে।';
+        msg.style.color = '#C62828';
+      }
+      btn.disabled = false;
+      btn.textContent = editingId ? '✅ আপডেট করুন' : '✅ সংরক্ষণ করুন';
+    }).catch(function(){
+      msg.textContent = '❌ সার্ভার ত্রুটি।';
+      msg.style.color = '#C62828';
+      btn.disabled = false;
+      btn.textContent = '✅ সংরক্ষণ করুন';
+    });
 }
 
-async function deleteMerchant(id){
-  if(!confirm('এই মার্চেন্ট মুছে ফেলবেন?')) return;
-  await fetch(`${API}/api/survey/${id}`,{method:'DELETE',headers:{'x-survey-token':'1'}});
-  await loadData();
+function delMerchant(id) {
+  if (!confirm('এই মার্চেন্ট মুছে ফেলবেন?')) return;
+  fetch(API+'/api/survey/'+id, {method:'DELETE', headers:{'x-survey-token':'1'}})
+    .then(function(){ loadData(); });
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────
-if(sessionStorage.getItem(SK)) showApp();
+// ── INIT ──────────────────────────────────────────────────────────────────
+if (sessionStorage.getItem(SK)) showApp();
 </script>
 </body>
 </html>
