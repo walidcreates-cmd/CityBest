@@ -12,6 +12,19 @@ admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
 app.use(cors());
 app.use(express.json());
 
+function verifyAdminJWT(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) return res.status(401).json({ error: 'Unauthorized' });
+  const token = authHeader.split(' ')[1];
+  try {
+    const jwt = require('jsonwebtoken');
+    jwt.verify(token, process.env.JWT_SECRET);
+    next();
+  } catch (err) {
+    return res.status(401).json({ error: 'Invalid admin token' });
+  }
+}
+
 async function verifyToken(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer '))
@@ -43,7 +56,7 @@ app.post('/api/survey/auth', (req, res) => {
 app.use('/api/products', require('./routes/products'));
 app.use('/api/orders',   verifyToken,  require('./routes/orders'));
 app.use('/api/admin',    verifyToken,  require('./routes/admin'));
-app.use('/api/finance',  verifyToken,  require('./routes/finance'));
+app.use('/api/finance',  verifyAdminJWT,  require('./routes/finance'));
 
 app.use('/api/survey',   verifySurvey, require('./routes/survey'));
 
