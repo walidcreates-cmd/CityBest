@@ -43,6 +43,8 @@ app.post('/api/survey/auth', (req, res) => {
 app.use('/api/products', require('./routes/products'));
 app.use('/api/orders',   verifyToken,  require('./routes/orders'));
 app.use('/api/admin',    verifyToken,  require('./routes/admin'));
+app.use('/api/finance',  verifyToken,  require('./routes/finance'));
+
 app.use('/api/survey',   verifySurvey, require('./routes/survey'));
 
 app.get('/', (req, res) => res.json({ status: '✅ CityBest API running', version: '1.2.0' }));
