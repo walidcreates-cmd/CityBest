@@ -27,14 +27,14 @@ export default function Finance() {
   const fetchAll = async () => {
     setLoading(true);
     try {
-      const [s, y, e] = await Promise.all([
-        fetch(`${API}/api/finance/summary?month=${selectedMonth}`, { headers: authHeaders() }).then(r => r.json()),
-        fetch(`${API}/api/finance/yearly?year=${selectedMonth.slice(0,4)}`, { headers: authHeaders() }).then(r => r.json()),
-        fetch(`${API}/api/finance/expenses?month=${selectedMonth}`, { headers: authHeaders() }).then(r => r.json()),
+      const [sr, yr, er] = await Promise.all([
+        fetch(`${API}/api/finance/summary?month=${selectedMonth}`, { headers: authHeaders() }),
+        fetch(`${API}/api/finance/yearly?year=${selectedMonth.slice(0,4)}`, { headers: authHeaders() }),
+        fetch(`${API}/api/finance/expenses?month=${selectedMonth}`, { headers: authHeaders() }),
       ]);
-      setSummary(s);
-      setYearlyData(y.map((d, i) => ({ name: MONTHS[i].slice(0,3), revenue: d.revenue, expenses: d.expenses, profit: d.profit })));
-      setExpenses(e);
+      if (sr.ok) setSummary(await sr.json());
+      if (yr.ok) { const y = await yr.json(); setYearlyData(y.map((d, i) => ({ name: MONTHS[i].slice(0,3), revenue: d.revenue, expenses: d.expenses, profit: d.profit }))); }
+      if (er.ok) setExpenses(await er.json());
     } catch (err) { console.error(err); }
     setLoading(false);
   };
@@ -68,15 +68,15 @@ export default function Finance() {
         <div style={s.kpiRow}>
           <div style={s.kpiCard}>
             <p style={s.kpiLabel}>মোট আয়</p>
-            <p style={{...s.kpiValue, color:'#1a9e5c'}}>৳{summary.revenue.toLocaleString()}</p>
+            <p style={{...s.kpiValue, color:'#1a9e5c'}}>৳{(summary.revenue||0).toLocaleString()}</p>
           </div>
           <div style={s.kpiCard}>
             <p style={s.kpiLabel}>মোট খরচ</p>
-            <p style={{...s.kpiValue, color:'#e53935'}}>৳{summary.expenses.toLocaleString()}</p>
+            <p style={{...s.kpiValue, color:'#e53935'}}>৳{(summary.expenses||0).toLocaleString()}</p>
           </div>
           <div style={s.kpiCard}>
             <p style={s.kpiLabel}>নিট মুনাফা</p>
-            <p style={{...s.kpiValue, color: summary.profit >= 0 ? '#1a9e5c' : '#e53935'}}>৳{summary.profit.toLocaleString()}</p>
+            <p style={{...s.kpiValue, color: (summary.profit||0) >= 0 ? '#1a9e5c' : '#e53935'}}>৳{(summary.profit||0).toLocaleString()}</p>
           </div>
           <div style={s.kpiCard}>
             <p style={s.kpiLabel}>মার্জিন</p>
