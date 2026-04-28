@@ -5,22 +5,18 @@ const API = import.meta.env.VITE_API_URL || 'https://citybest-1.onrender.com';
 const MONTHS = ['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
 const CATEGORIES = ['inventory','rent','salary','delivery','tech','misc'];
 const CAT_BN = { inventory:'ইনভেন্টরি', rent:'ভাড়া', salary:'বেতন', delivery:'ডেলিভারি', tech:'টেক', misc:'অন্যান্য' };
+const fmt = (n) => (Number(n) || 0).toLocaleString();
 
-function getAdminToken() {
-  return localStorage.getItem('adminToken') || '';
-}
-
-function authHeaders() {
-  return { 'Content-Type': 'application/json', Authorization: `Bearer ${getAdminToken()}` };
-}
+function getAdminToken() { return localStorage.getItem('adminToken') || ''; }
+function authHeaders() { return { 'Content-Type': 'application/json', Authorization: `Bearer ${getAdminToken()}` }; }
 
 export default function Finance() {
   const now = new Date();
   const [selectedMonth, setSelectedMonth] = useState(`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`);
-  const [summary, setSummary] = useState(null);
+  const [summary, setSummary] = useState({ revenue:0, expenses:0, profit:0, margin:0, orderCount:0 });
   const [yearlyData, setYearlyData] = useState([]);
   const [expenses, setExpenses] = useState([]);
-  const [form, setForm] = useState({ category: 'inventory', amount: '', note: '', date: new Date().toISOString().slice(0,10) });
+  const [form, setForm] = useState({ category:'inventory', amount:'', note:'', date: new Date().toISOString().slice(0,10) });
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -32,9 +28,9 @@ export default function Finance() {
         fetch(`${API}/api/finance/yearly?year=${selectedMonth.slice(0,4)}`, { headers: authHeaders() }),
         fetch(`${API}/api/finance/expenses?month=${selectedMonth}`, { headers: authHeaders() }),
       ]);
-      if (sr.ok) setSummary(await sr.json());
-      if (yr.ok) { const y = await yr.json(); setYearlyData(y.map((d, i) => ({ name: MONTHS[i].slice(0,3), revenue: d.revenue, expenses: d.expenses, profit: d.profit }))); }
-      if (er.ok) setExpenses(await er.json());
+      if (sr.ok) { const d = await sr.json(); setSummary({ revenue: d.revenue||0, expenses: d.expenses||0, profit: d.profit||0, margin: d.margin||0, orderCount: d.orderCount||0 }); }
+      if (yr.ok) { const y = await yr.json(); if (Array.isArray(y)) setYearlyData(y.map((d,i) => ({ name: MONTHS[i].slice(0,3), revenue: d.revenue||0, expenses: d.expenses||0 }))); }
+      if (er.ok) { const e = await er.json(); if (Array.isArray(e)) setExpenses(e); }
     } catch (err) { console.error(err); }
     setLoading(false);
   };
@@ -44,15 +40,17 @@ export default function Finance() {
   const addExpense = async () => {
     if (!form.amount || !form.date) return alert('পরিমাণ ও তারিখ দিন');
     setSubmitting(true);
-    await fetch(`${API}/api/finance/expenses`, { method: 'POST', headers: authHeaders(), body: JSON.stringify({ ...form, amount: Number(form.amount) }) });
-    setForm({ category: 'inventory', amount: '', note: '', date: new Date().toISOString().slice(0,10) });
-    await fetchAll();
+    try {
+      await fetch(`${API}/api/finance/expenses`, { method:'POST', headers: authHeaders(), body: JSON.stringify({ ...form, amount: Number(form.amount) }) });
+      setForm({ category:'inventory', amount:'', note:'', date: new Date().toISOString().slice(0,10) });
+      await fetchAll();
+    } catch(err) { console.error(err); }
     setSubmitting(false);
   };
 
   const deleteExpense = async (id) => {
     if (!window.confirm('মুছে ফেলবেন?')) return;
-    await fetch(`${API}/api/finance/expenses/${id}`, { method: 'DELETE', headers: authHeaders() });
+    await fetch(`${API}/api/finance/expenses/${id}`, { method:'DELETE', headers: authHeaders() });
     await fetchAll();
   };
 
@@ -63,40 +61,21 @@ export default function Finance() {
         <input type="month" value={selectedMonth} onChange={e => setSelectedMonth(e.target.value)} style={s.monthPicker} />
       </div>
 
-      {/* KPI Cards */}
-      {summary && (
-        <div style={s.kpiRow}>
-          <div style={s.kpiCard}>
-            <p style={s.kpiLabel}>মোট আয়</p>
-            <p style={{...s.kpiValue, color:'#1a9e5c'}}>৳{(summary.revenue||0).toLocaleString()}</p>
-          </div>
-          <div style={s.kpiCard}>
-            <p style={s.kpiLabel}>মোট খরচ</p>
-            <p style={{...s.kpiValue, color:'#e53935'}}>৳{(summary.expenses||0).toLocaleString()}</p>
-          </div>
-          <div style={s.kpiCard}>
-            <p style={s.kpiLabel}>নিট মুনাফা</p>
-            <p style={{...s.kpiValue, color: (summary.profit||0) >= 0 ? '#1a9e5c' : '#e53935'}}>৳{(summary.profit||0).toLocaleString()}</p>
-          </div>
-          <div style={s.kpiCard}>
-            <p style={s.kpiLabel}>মার্জিন</p>
-            <p style={{...s.kpiValue, color:'#1565c0'}}>{summary.margin}%</p>
-          </div>
-          <div style={s.kpiCard}>
-            <p style={s.kpiLabel}>অর্ডার</p>
-            <p style={{...s.kpiValue, color:'#6a1b9a'}}>{summary.orderCount}টি</p>
-          </div>
-        </div>
-      )}
+      <div style={s.kpiRow}>
+        <div style={s.kpiCard}><p style={s.kpiLabel}>মোট আয়</p><p style={{...s.kpiValue, color:'#1a9e5c'}}>৳{fmt(summary.revenue)}</p></div>
+        <div style={s.kpiCard}><p style={s.kpiLabel}>মোট খরচ</p><p style={{...s.kpiValue, color:'#e53935'}}>৳{fmt(summary.expenses)}</p></div>
+        <div style={s.kpiCard}><p style={s.kpiLabel}>নিট মুনাফা</p><p style={{...s.kpiValue, color: summary.profit >= 0 ? '#1a9e5c' : '#e53935'}}>৳{fmt(summary.profit)}</p></div>
+        <div style={s.kpiCard}><p style={s.kpiLabel}>মার্জিন</p><p style={{...s.kpiValue, color:'#1565c0'}}>{summary.margin}%</p></div>
+        <div style={s.kpiCard}><p style={s.kpiLabel}>অর্ডার</p><p style={{...s.kpiValue, color:'#6a1b9a'}}>{summary.orderCount}টি</p></div>
+      </div>
 
-      {/* Chart */}
       <div style={s.card}>
         <h2 style={s.cardTitle}>{selectedMonth.slice(0,4)} সালের আয় ও খরচ</h2>
         <ResponsiveContainer width="100%" height={240}>
           <BarChart data={yearlyData} margin={{ top:8, right:8, left:0, bottom:0 }}>
             <XAxis dataKey="name" tick={{ fontSize:11 }} />
             <YAxis tick={{ fontSize:11 }} />
-            <Tooltip formatter={v => `৳${v.toLocaleString()}`} />
+            <Tooltip formatter={v => `৳${Number(v||0).toLocaleString()}`} />
             <Legend />
             <Bar dataKey="revenue" name="আয়" fill="#1a9e5c" radius={[4,4,0,0]} />
             <Bar dataKey="expenses" name="খরচ" fill="#e53935" radius={[4,4,0,0]} />
@@ -104,21 +83,19 @@ export default function Finance() {
         </ResponsiveContainer>
       </div>
 
-      {/* Add Expense */}
       <div style={s.card}>
         <h2 style={s.cardTitle}>খরচ যোগ করুন</h2>
         <div style={s.formRow}>
-          <select value={form.category} onChange={e => setForm({...form, category: e.target.value})} style={s.input}>
+          <select value={form.category} onChange={e => setForm({...form, category:e.target.value})} style={s.input}>
             {CATEGORIES.map(c => <option key={c} value={c}>{CAT_BN[c]}</option>)}
           </select>
-          <input type="number" placeholder="পরিমাণ (৳)" value={form.amount} onChange={e => setForm({...form, amount: e.target.value})} style={s.input} />
-          <input type="date" value={form.date} onChange={e => setForm({...form, date: e.target.value})} style={s.input} />
-          <input type="text" placeholder="নোট (ঐচ্ছিক)" value={form.note} onChange={e => setForm({...form, note: e.target.value})} style={{...s.input, flex:2}} />
+          <input type="number" placeholder="পরিমাণ (৳)" value={form.amount} onChange={e => setForm({...form, amount:e.target.value})} style={s.input} />
+          <input type="date" value={form.date} onChange={e => setForm({...form, date:e.target.value})} style={s.input} />
+          <input type="text" placeholder="নোট (ঐচ্ছিক)" value={form.note} onChange={e => setForm({...form, note:e.target.value})} style={{...s.input, flex:2}} />
           <button onClick={addExpense} disabled={submitting} style={s.btn}>{submitting ? '...' : 'যোগ করুন'}</button>
         </div>
       </div>
 
-      {/* Expense Table */}
       <div style={s.card}>
         <h2 style={s.cardTitle}>খরচের তালিকা — {MONTHS[parseInt(selectedMonth.slice(5,7))-1]}</h2>
         {loading ? <p style={{color:'#888'}}>লোড হচ্ছে...</p> : expenses.length === 0 ? <p style={{color:'#888'}}>কোনো খরচ নেই</p> : (
@@ -126,11 +103,7 @@ export default function Finance() {
             <table style={s.table}>
               <thead>
                 <tr style={{background:'#f5f5f5'}}>
-                  <th style={s.th}>তারিখ</th>
-                  <th style={s.th}>ক্যাটাগরি</th>
-                  <th style={s.th}>পরিমাণ</th>
-                  <th style={s.th}>নোট</th>
-                  <th style={s.th}></th>
+                  <th style={s.th}>তারিখ</th><th style={s.th}>ক্যাটাগরি</th><th style={s.th}>পরিমাণ</th><th style={s.th}>নোট</th><th style={s.th}></th>
                 </tr>
               </thead>
               <tbody>
@@ -138,7 +111,7 @@ export default function Finance() {
                   <tr key={e._id} style={{borderBottom:'1px solid #f0f0f0'}}>
                     <td style={s.td}>{new Date(e.date).toLocaleDateString('bn-BD')}</td>
                     <td style={s.td}>{CAT_BN[e.category]}</td>
-                    <td style={{...s.td, color:'#e53935', fontWeight:700}}>৳{e.amount.toLocaleString()}</td>
+                    <td style={{...s.td, color:'#e53935', fontWeight:700}}>৳{fmt(e.amount)}</td>
                     <td style={s.td}>{e.note || '—'}</td>
                     <td style={s.td}><button onClick={() => deleteExpense(e._id)} style={s.delBtn}>মুছুন</button></td>
                   </tr>
