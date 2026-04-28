@@ -55,7 +55,7 @@ app.post('/api/survey/auth', (req, res) => {
 
 app.use('/api/products', require('./routes/products'));
 app.use('/api/orders',   verifyToken,  require('./routes/orders'));
-app.use('/api/admin',    verifyAdminJWT,  require('./routes/admin'));
+app.use('/api/admin',    verifyToken,  require('./routes/admin'));
 app.use('/api/finance',  require('./routes/finance'));
 
 app.use('/api/survey',   verifySurvey, require('./routes/survey'));
