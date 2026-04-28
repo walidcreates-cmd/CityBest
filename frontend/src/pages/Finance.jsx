@@ -95,7 +95,7 @@ export default function Finance() {
           {form.category === 'custom' && (
             <input type="text" placeholder="খরচের নাম লিখুন (যেমন: বিদ্যুৎ বিল)" value={form.customLabel} onChange={e => setForm({...form, customLabel:e.target.value})} style={s.input} />
           )}
-          <input type="number" placeholder="পরিমাণ (৳)" value={form.amount} onChange={e => setForm({...form, amount:e.target.value})} style={s.input} />
+          <input type="text" inputMode="numeric" placeholder="পরিমাণ (৳)" value={form.amount} onChange={e => setForm({...form, amount:e.target.value.replace(/[^0-9.]/g,'')})} style={s.input} />
           <input type="date" value={form.date} onChange={e => setForm({...form, date:e.target.value})} style={s.input} />
           <input type="text" placeholder="নোট (ঐচ্ছিক)" value={form.note} onChange={e => setForm({...form, note:e.target.value})} style={{...s.input, flex:2}} />
           <button onClick={addExpense} disabled={submitting} style={s.btn}>{submitting ? '...' : 'যোগ করুন'}</button>
