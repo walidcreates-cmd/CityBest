@@ -3,8 +3,8 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } fro
 
 const API = import.meta.env.VITE_API_URL || 'https://citybest-1.onrender.com';
 const MONTHS = ['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
-const CATEGORIES = ['inventory','rent','salary','delivery','tech','misc'];
-const CAT_BN = { inventory:'ইনভেন্টরি', rent:'ভাড়া', salary:'বেতন', delivery:'ডেলিভারি', tech:'টেক', misc:'অন্যান্য' };
+const CATEGORIES = ['inventory','rent','salary','delivery','tech','misc','custom'];
+const CAT_BN = { inventory:'ইনভেন্টরি', rent:'ভাড়া', salary:'বেতন', delivery:'ডেলিভারি', tech:'টেক', misc:'অন্যান্য', custom:'কাস্টম' };
 const fmt = (n) => (Number(n) || 0).toLocaleString();
 
 function getAdminToken() { return localStorage.getItem('adminToken') || ''; }
@@ -16,7 +16,7 @@ export default function Finance() {
   const [summary, setSummary] = useState({ revenue:0, expenses:0, profit:0, margin:0, orderCount:0 });
   const [yearlyData, setYearlyData] = useState([]);
   const [expenses, setExpenses] = useState([]);
-  const [form, setForm] = useState({ category:'inventory', amount:'', note:'', date: new Date().toISOString().slice(0,10) });
+  const [form, setForm] = useState({ category:'inventory', customLabel:'', amount:'', note:'', date: new Date().toISOString().slice(0,10) });
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -39,10 +39,13 @@ export default function Finance() {
 
   const addExpense = async () => {
     if (!form.amount || !form.date) return alert('পরিমাণ ও তারিখ দিন');
+    if (form.category === 'custom' && !form.customLabel.trim()) return alert('খরচের নাম লিখুন');
     setSubmitting(true);
     try {
-      await fetch(`${API}/api/finance/expenses`, { method:'POST', headers: authHeaders(), body: JSON.stringify({ ...form, amount: Number(form.amount) }) });
-      setForm({ category:'inventory', amount:'', note:'', date: new Date().toISOString().slice(0,10) });
+      const category = form.category === 'custom' ? form.customLabel.trim() : form.category;
+      const payload = { category, amount: Number(form.amount), note: form.note, date: form.date };
+      await fetch(`${API}/api/finance/expenses`, { method:'POST', headers: authHeaders(), body: JSON.stringify(payload) });
+      setForm({ category:'inventory', customLabel:'', amount:'', note:'', date: new Date().toISOString().slice(0,10) });
       await fetchAll();
     } catch(err) { console.error(err); }
     setSubmitting(false);
@@ -86,9 +89,12 @@ export default function Finance() {
       <div style={s.card}>
         <h2 style={s.cardTitle}>খরচ যোগ করুন</h2>
         <div style={s.formRow}>
-          <select value={form.category} onChange={e => setForm({...form, category:e.target.value})} style={s.input}>
+          <select value={form.category} onChange={e => setForm({...form, category:e.target.value, customLabel:''})} style={s.input}>
             {CATEGORIES.map(c => <option key={c} value={c}>{CAT_BN[c]}</option>)}
           </select>
+          {form.category === 'custom' && (
+            <input type="text" placeholder="খরচের নাম লিখুন (যেমন: বিদ্যুৎ বিল)" value={form.customLabel} onChange={e => setForm({...form, customLabel:e.target.value})} style={s.input} />
+          )}
           <input type="number" placeholder="পরিমাণ (৳)" value={form.amount} onChange={e => setForm({...form, amount:e.target.value})} style={s.input} />
           <input type="date" value={form.date} onChange={e => setForm({...form, date:e.target.value})} style={s.input} />
           <input type="text" placeholder="নোট (ঐচ্ছিক)" value={form.note} onChange={e => setForm({...form, note:e.target.value})} style={{...s.input, flex:2}} />
@@ -110,7 +116,7 @@ export default function Finance() {
                 {expenses.map(e => (
                   <tr key={e._id} style={{borderBottom:'1px solid #f0f0f0'}}>
                     <td style={s.td}>{new Date(e.date).toLocaleDateString('bn-BD')}</td>
-                    <td style={s.td}>{CAT_BN[e.category]}</td>
+                    <td style={s.td}>{CAT_BN[e.category] || e.category}</td>
                     <td style={{...s.td, color:'#e53935', fontWeight:700}}>৳{fmt(e.amount)}</td>
                     <td style={s.td}>{e.note || '—'}</td>
                     <td style={s.td}><button onClick={() => deleteExpense(e._id)} style={s.delBtn}>মুছুন</button></td>
